@@ -2,13 +2,24 @@
 
 A free science discovery desk with a dark mauve reading view, playful illustrations, and real papers from eLife and five PLOS journals.
 
+**[Live site](https://findastra.github.io/paper-girl/)** *(static edition on GitHub Pages)*
+
 - **Surprise me:** discovers a different article and checks its publisher summary and CC BY license.
 - **Article index:** searchable metadata for the supported Europe PMC collection; summary verification happens as papers are opened.
 - **Shared search history:** persistent anonymous filters, timestamps, results, and unsuccessful searches.
 - **Reading history:** an anonymous browser cookie prevents repeats across visits on the same browser.
 - **Daily paper:** a rotating selection with clearly attributed publisher explanations or prepared Paper Girl commentary.
 
-Built with React, TypeScript, Vinext, Cloudflare Workers, and D1. No paid AI dependency. Publishing this repository does not itself deploy the website or copy the local article database.
+Built with React, TypeScript, Vinext, Cloudflare Workers, and D1. No paid AI dependency. Publishing this repository does not itself deploy the Cloudflare site or copy the local article database.
+
+## Live site (static edition)
+
+The [live site](https://findastra.github.io/paper-girl/) is a static build of the same page, published to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`. GitHub Pages has no server or database, so `lib/browser-library.ts` answers the app's `/api/*` requests in the visitor's browser:
+
+- **Surprise me** and the **article index** query Europe PMC directly from the browser.
+- **Reading history** and **search history** are kept in that browser's local storage, so search history is personal rather than shared between visitors.
+
+Build it locally with `npm run build:static`; the output goes to `dist-static/`. The Cloudflare edition is unchanged and still has the shared index and shared history.
 
 ## Run locally
 
