@@ -1,14 +1,22 @@
 {
-  "desktop_scale": 0.78,
-  "alpha": "Desktop renderer thresholds partial alpha to prevent magenta color-key flecks",
+  "pet": "paper-girl",
+  "creator": "Astra",
+  "assistant": "OpenAI Codex (GPT-6)",
+  "date": "2026-10-11",
+  "status": "draft",
+  "desktop_scale": 0.936,
   "sparkles": false,
   "renderer": "astras-pet-apps/scripts/desktop-pets-20261011.cs",
-  "status": "draft",
-  "date": "2026-10-11",
-  "art_files": [],
-  "creator": "Astra",
-  "scale_reference": "Standard 58.75 logical-pixel height, with aspect-ratio width clamp before scaling",
-  "assistant": "OpenAI Codex (GPT-6)",
-  "notes": "Latest desktop size: 20% larger than prior 0.65 multiplier.",
-  "pet": "paper-girl"
+  "art_files": [
+    "desktop-art/paper-girl/idle-20261011.png",
+    "desktop-art/paper-girl/blink-20261011.png",
+    "desktop-art/paper-girl/happy-20261011.png",
+    "desktop-art/paper-girl/curious-20261011.png",
+    "desktop-art/paper-girl/worried-20261011.png",
+    "desktop-art/paper-girl/sad-20261011.png",
+    "desktop-art/paper-girl/sick-20261011.png",
+    "desktop-art/paper-girl/alarmed-20261011.png",
+    "desktop-art/paper-girl/sleep-20261011.png"
+  ],
+  "notes": "Pink newspaper with lashes, no bow; 20% larger than prior .78 scale."
 }
