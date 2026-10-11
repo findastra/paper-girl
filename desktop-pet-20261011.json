@@ -18,6 +18,8 @@
     "desktop-art/paper-girl/sleep-20261011.png",
     "desktop-art/paper-girl/worried-20261011.png"
   ],
-  "notes": "Pink NEWS newspaper with lashes, folded corner and columns; same 42.3 logical-pixel height as File Master.",
-  "source_sheet": "desktop-art/paper-girl/sheet-20261011.png"
+  "notes": "Pink newspaper with no lettering or lashes, folded corner and columns; small black rectangular eyes with white highlights matching File Master. Height remains 42.3 logical pixels.",
+  "source_sheet": "desktop-art/paper-girl/sheet-20261011.png",
+  "paired_with": "file-master",
+  "following": "Always roam together in the shared desktop host. File Master leads initially; dragging either pet makes it lead while the companion catches up. Both pause for interaction and remain neighbors in the floor lineup."
 }
