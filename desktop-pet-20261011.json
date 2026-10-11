@@ -4,19 +4,20 @@
   "assistant": "OpenAI Codex (GPT-6)",
   "date": "2026-10-11",
   "status": "draft",
-  "desktop_scale": 0.936,
+  "desktop_scale": 0.72,
   "sparkles": false,
   "renderer": "astras-pet-apps/scripts/desktop-pets-20261011.cs",
   "art_files": [
-    "desktop-art/paper-girl/idle-20261011.png",
+    "desktop-art/paper-girl/alarmed-20261011.png",
     "desktop-art/paper-girl/blink-20261011.png",
-    "desktop-art/paper-girl/happy-20261011.png",
     "desktop-art/paper-girl/curious-20261011.png",
-    "desktop-art/paper-girl/worried-20261011.png",
+    "desktop-art/paper-girl/happy-20261011.png",
+    "desktop-art/paper-girl/idle-20261011.png",
     "desktop-art/paper-girl/sad-20261011.png",
     "desktop-art/paper-girl/sick-20261011.png",
-    "desktop-art/paper-girl/alarmed-20261011.png",
-    "desktop-art/paper-girl/sleep-20261011.png"
+    "desktop-art/paper-girl/sleep-20261011.png",
+    "desktop-art/paper-girl/worried-20261011.png"
   ],
-  "notes": "Pink newspaper with lashes, no bow; 20% larger than prior .78 scale."
+  "notes": "Pink NEWS newspaper with lashes, folded corner and columns; same 42.3 logical-pixel height as File Master.",
+  "source_sheet": "desktop-art/paper-girl/sheet-20261011.png"
 }
