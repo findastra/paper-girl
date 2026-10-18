@@ -189,14 +189,6 @@ Limits: this browser interface does not install or start native programs. Where 
 Version [v0.1.0-20261008-pets](https://github.com/findastra/paper-girl/tree/v0.1.0-20261008-pets). Added with OpenAI Codex (GPT-6), 2026-10-08.
 
 ## Desktop pet update - 2026-10-11
-Latest desktop size: 20% larger than prior 0.65 multiplier. Desktop artwork status: draft. Manifest: [desktop-pet-20261011.json](desktop-pet-20261011.json). The native companion renders this art; existing browser interface behavior is unchanged. Generated character artwork uses OpenAI image generation; source sheets and derived frames are included where applicable. Public credit: Astra. Integrated by OpenAI Codex (GPT-6).
+Latest desktop size: 20% larger than prior 0.65 multiplier. Desktop artwork status: draft. Manifest: [desktop-pet-20261011.json (in the hub)](https://raw.githubusercontent.com/findastra/astras-pet-os/main/desktop-art/paper-girl/desktop-pet-20261011.json). The native companion renders this art; existing browser interface behavior is unchanged. Generated character artwork uses OpenAI image generation; source sheets and derived frames are included where applicable. Public credit: Astra. Integrated by OpenAI Codex (GPT-6).
 
-Desktop appearance draft updated 2026-10-11: see [desktop details](desktop-pet-20261011.json). This changes the desktop pet, not application features.
-
-## Limits
-
-What is not done, plainly. From the hub's [intelligence levels](https://github.com/findastra/astras-pet-os/blob/main/INTELLIGENCE-LEVELS.md) (checked 2026-10-17):
-
-- **Program (L1/L2):** ✅ **Made by Astra:** **Paper Girl**: [findastra.github.io/paper-girl](https://findastra.github.io/paper-girl/), the free science discovery website
-- **Runtime (L2):** — **Should:** bring fresh research and articles to the site (suggested)
-- **Agentic harness (L3):** — not built yet
+Desktop appearance draft updated 2026-10-11: see [desktop details](https://raw.githubusercontent.com/findastra/astras-pet-os/main/desktop-art/paper-girl/desktop-pet-20261011.json). This changes the desktop pet, not application features.
