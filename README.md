@@ -178,11 +178,11 @@ The portable build runs Vinext directly without a host `timeout` command. The ma
 - [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
 
 
-## Paper Girl pet interface
+## Paper Patty pet interface
 
 *An Intelligent App, or Pet, by Astra.*
 
-Open [paper-girl-20261008.html](paper-girl-20261008.html) in a modern browser, or double-click Paper Girl in Astra's PetOS. The nine original pet moods and manifest are included.
+Open [paper-girl-20261008.html](paper-girl-20261008.html) in a modern browser, or double-click Paper Patty in Astra's PetOS. The nine original pet moods and manifest are included.
 
 Limits: this browser interface does not install or start native programs. Where an existing web app is available, the Cage opens that app. Draft controls store their data in the current browser and do not imply connected services. Existing application instructions above still apply.
 
