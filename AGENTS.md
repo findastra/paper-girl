@@ -12,4 +12,6 @@ Desktop appearance revision by OpenAI Codex (GPT-6), 2026-10-11. See https://raw
 
 Paired desktop revision by OpenAI Codex (GPT-6), 2026-10-11: Paper Girl and File Master use matching small eyes and travel together. Artwork and companion behavior are recorded in https://raw.githubusercontent.com/findastra/astras-pet-os/main/desktop-art/paper-girl/desktop-pet-20261011.json; implementation and tests live in astras-pet-os.
 
-Pictures moved to the hub (one art source, Flash Audit A58, Astra 2026-10-18): every picture of Paper Girl Patty lives only in [findastra/astras-pet-os](https://github.com/findastra/astras-pet-os) (`art/frames/paper-girl/`, `desktop-art/paper-girl/`); this repo links to them and keeps no copy, so change a picture there, never here. By Claude Opus 5.5 (`claude-opus-5-5`), 2026-10-18.
+Pictures moved to the hub (one art source, Flash Audit A58, Astra 2026-10-18): every picture of Paper Patty lives only in [findastra/astras-pet-os](https://github.com/findastra/astras-pet-os) (`art/frames/paper-girl/`, `desktop-art/paper-girl/`); this repo links to them and keeps no copy, so change a picture there, never here. By Claude Opus 5.5 (`claude-opus-5-5`), 2026-10-18.
+
+The pet is **Paper Patty** (Astra, 2026-10-18; it was Paper Girl Patty). Her program keeps its name, Paper Girl, and the art id stays `paper-girl`. The name lives in the hub's `pet-programs.json`. By Claude Opus 5.5 (`claude-opus-5-5`), 2026-10-18.

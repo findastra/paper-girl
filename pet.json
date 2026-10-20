@@ -1,5 +1,5 @@
 {
-  "pet": "Paper Girl Patty",
+  "pet": "Paper Patty",
   "kind": "pet-app",
   "owner": "Astra",
   "sprite": "pet-sprite-20261008.json",
@@ -14,7 +14,7 @@
   },
   "version": "0.1.0-20261008-pets",
   "source": "https://github.com/findastra/paper-girl/tree/v0.1.0-20261008-pets",
-  "built_with": "OpenAI Codex (GPT-6), 2026-10-08; OpenAI Codex (GPT-6), 2026-10-11",
+  "built_with": "OpenAI Codex (GPT-6), 2026-10-08; OpenAI Codex (GPT-6), 2026-10-11; Claude Opus 5.5 (claude-opus-5-5), 2026-10-18 (renamed Paper Patty)",
   "desktop_pet": "https://raw.githubusercontent.com/findastra/astras-pet-os/main/desktop-art/paper-girl/desktop-pet-20261011.json",
   "desktop_art_built_with": "OpenAI Codex (GPT-6), built-in imagegen and native renderer, 2026-10-11",
   "audit": {
