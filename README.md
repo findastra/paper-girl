@@ -180,7 +180,7 @@ The portable build runs Vinext directly without a host `timeout` command. The ma
 
 ## Paper Patty pet interface
 
-*An Intelligent App, or Pet, by Astra.*
+*By Astra.*
 
 Open [paper-girl-20261008.html](paper-girl-20261008.html) in a modern browser, or double-click Paper Patty in Astra's PetOS. The nine original pet moods and manifest are included.
 
