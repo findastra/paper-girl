@@ -74,7 +74,13 @@ async function selectPaper(filters: Filters, current: string, exclude: string[],
   const seen = new Set([...s.visits, ...exclude, current]);
   const usable = (r: RecordData) => eligible(r) && !seen.has(r.pmcid) && s.checked[r.pmcid] !== 'unavailable';
 
-  const total = (await search(query, {pageSize: 1}, deadline)).hitCount;
+  // Sample the dates that actually contain research. Starting every draw in 1900 heavily
+  // favored the first few papers from these much newer journals.
+  const [oldest, newest] = await Promise.all([
+    search(query, {pageSize: 1, core: true, sort: 'FIRST_PDATE_D asc'}, deadline),
+    search(query, {pageSize: 1, core: true, sort: 'FIRST_PDATE_D desc'}, deadline),
+  ]);
+  const total = oldest.hitCount;
   if (!total) throw new LibraryError('No papers match these filters yet. Try another subject or a wider date range.', 404);
 
   // Small result sets are read whole. Large ones are sampled by jumping to a random publication date and reading
@@ -83,29 +89,51 @@ async function selectPaper(filters: Filters, current: string, exclude: string[],
   if (total <= 300) {
     rounds.push(async () => (await search(query, {pageSize: 300, core: true}, deadline)).resultList?.result || []);
   } else {
-    const t0 = Date.parse(start), t1 = Date.parse(end);
-    for (let i = 0; i < 6; i++) rounds.push(async () => {
+    const firstDate = Date.parse(oldest.resultList?.result?.[0]?.firstPublicationDate || start);
+    const lastDate = Date.parse(newest.resultList?.result?.[0]?.firstPublicationDate || end);
+    const t0 = Math.max(Date.parse(start), Number.isFinite(firstDate) ? firstDate : Date.parse(start));
+    const t1 = Math.max(t0, Math.min(Date.parse(end), Number.isFinite(lastDate) ? lastDate : Date.parse(end)));
+    for (let i = 0; i < 4; i++) rounds.push(async () => {
       const pivot = dayKey(new Date(t0 + Math.random() * (t1 - t0)));
       const forward = i % 2 === 0;
       const window = forward ? `FIRST_PDATE:[${pivot} TO ${end}]` : `FIRST_PDATE:[${start} TO ${pivot}]`;
       const q = query.replace(/FIRST_PDATE:\[[^\]]+\]/, window);
       return (await search(q, {pageSize: 25, core: true, sort: forward ? 'FIRST_PDATE_D asc' : 'FIRST_PDATE_D desc'}, deadline)).resultList?.result || [];
     });
+    // A draw may land on already-read papers. Walk a few real cursor pages as a fallback
+    // instead of interpreting those repeated samples as an exhausted collection.
+    let cursor: string | undefined = '*';
+    for (let i = 0; i < 3; i++) rounds.push(async () => {
+      if (!cursor) return [];
+      const data = await search(query, {pageSize: PAGE, core: true, sort: 'FIRST_PDATE_D desc', cursor}, deadline);
+      cursor = data.nextCursorMark && data.nextCursorMark !== cursor ? data.nextCursorMark : undefined;
+      return data.resultList?.result || [];
+    });
   }
 
   let anyUnread = false;
+  const attempted = new Set<string>();
+  const maxChecks = total <= 300 ? total : 90;
   for (const round of rounds) {
     deadline.throwIfAborted();
-    const pool = shuffled((await round()).filter(usable));
+    if (attempted.size >= maxChecks) break;
+    const pool = shuffled((await round()).filter(r => usable(r) && !attempted.has(r.pmcid)));
     if (pool.length) anyUnread = true;
-    for (let i = 0; i < Math.min(pool.length, 9); i += 3) {
-      const papers = await Promise.all(pool.slice(i, i + 3).map(r => verify(r, deadline).catch(() => null)));
-      const paper = papers.find((p): p is Paper => !!p);
+    for (let i = 0; i < pool.length && attempted.size < maxChecks; i += 3) {
+      deadline.throwIfAborted();
+      const batch = pool.slice(i, i + Math.min(3, maxChecks - attempted.size));
+      batch.forEach(r => attempted.add(r.pmcid));
+      const results = await Promise.allSettled(batch.map(r => verify(r, deadline)));
+      deadline.throwIfAborted();
+      const paper = results.flatMap(result => result.status === 'fulfilled' && result.value ? [result.value] : [])[0];
       save();
       if (paper) return paper;
+      // An unavailable service is retryable; it does not mean these papers lack a summary.
+      const failed = results.find(result => result.status === 'rejected');
+      if (failed?.status === 'rejected') throw failed.reason;
     }
   }
-  if (!anyUnread) throw new LibraryError('You have seen all available matches for these filters. Try another subject or a wider date range.', 404);
+  if (!anyUnread) throw new LibraryError('This search did not find an unread paper. Try again, another subject, or a wider date range.', 404);
   throw new LibraryError('Those candidates did not have a usable publisher summary. Try another search; your current paper is safe.', 404);
 }
 

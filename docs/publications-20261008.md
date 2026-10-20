@@ -1,5 +1,8 @@
 # Pet interface publication
 
+For the science website update and preserved local work, see the
+[2026-10-20 chat closeout](paper-girl-handoff-20261020.md).
+
 - Date: 2026-10-08 (America/Denver)
 - Source tag: [v0.1.0-20261008-pets](https://github.com/findastra/paper-girl/tree/v0.1.0-20261008-pets)
 - Exact source commit: [`170225bcb74129ddb11208764c323e30351d5659`](https://github.com/findastra/paper-girl/commit/170225bcb74129ddb11208764c323e30351d5659)

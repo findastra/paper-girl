@@ -1,0 +1,98 @@
+{
+  "PMC13485301": {
+    "discipline": "Biology",
+    "headline": "Evolution may keep an old blueprint in the drawer.",
+    "hook": "Some worker ants lost their extra light-sensing eyes, yet parts of the machinery for building them still briefly switch on.",
+    "explanation": "Researchers traced the history of these tiny eyes and watched eye-building genes during ant development. Even workers without the extra eyes showed some of that gene activity. Think of an old blueprint still in the drawer: losing the finished feature may not erase every instruction used to make it. That could help explain why these eyes have reappeared in different ant lineages.",
+    "importance": "Evolution may sometimes reuse machinery that was never completely lost. That offers a possible explanation for how a vanished trait can return without being rebuilt entirely from scratch.",
+    "caveat": "The work concerns one ant subfamily. Brief gene activity supports retained machinery; it does not fully explain why that activity persists."
+  },
+  "PMC13436957": {
+    "discipline": "Psychology",
+    "headline": "A gray number can make an eye react to color.",
+    "hook": "For some people, numbers automatically come with colors. Their pupils can respond to that experienced brightness even when the screen stays gray.",
+    "explanation": "Researchers tested 16 people with number–color synesthesia and two comparison groups. The synesthesia group's pupils became smaller for numbers associated with brighter colors and larger for darker ones. Think of the pupil as a camera aperture responding partly to the brain's version of the scene. No extra colored light was entering the eye: the measured changes tracked the participants' reported experiences.",
+    "importance": "Pupil measurements could complement people's descriptions of synesthesia. They also offer a way to study how the brain helps construct what we experience, instead of simply copying incoming light.",
+    "caveat": "Only 16 people with this particular form of synesthesia were studied. This does not establish a diagnostic test for every kind of synesthesia."
+  },
+  "PMC13183373": {
+    "discipline": "Earth science",
+    "headline": "Ancient footprints reveal life rebuilding after disaster.",
+    "hook": "After Earth's largest mass extinction, some river ecosystems were rebuilding a surprisingly complex community about two million years later.",
+    "explanation": "Researchers examined ancient rocks in North China for roots, tracks, burrows and other remains. Think of those traces as a neighborhood's surviving footprints: together, they reveal more than one resident could. The evidence suggests plants and animals at several levels of a food web were living there. Burrowing may have helped some animals cope with harsh conditions above ground.",
+    "importance": "Recovery from a mass extinction was not necessarily equally slow everywhere. These river deposits help scientists reconstruct where complex communities returned and how organisms survived extreme conditions.",
+    "caveat": "The fossils document particular river environments in North China. They do not show that all land ecosystems recovered at the same time."
+  },
+  "PMC13461149": {
+    "discipline": "Earth science",
+    "headline": "City wildlife has no universal size requirement.",
+    "hook": "Being big can help some species tolerate city life. For others, size offers little guidance—or the relationship runs the other way.",
+    "explanation": "Researchers compared urban sightings of more than 30,000 plant and animal species, examining size where measurements were available. Larger plants were generally more associated with cities, but animals showed varied patterns. Size is not a universal entry ticket: different groups face different combinations of food, movement and habitat. Most species in the dataset were more associated with less urban places.",
+    "importance": "Planning for wildlife needs more than one simple rule. This dataset helps researchers test which combinations of traits are associated with urban life, rather than assuming all organisms respond alike.",
+    "caveat": "Recorded sightings are uneven. Rare or seldom-recorded species were underrepresented, and these associations do not by themselves establish what causes urban success."
+  },
+  "PMC12991640": {
+    "discipline": "Chemistry",
+    "headline": "Even a poison specialist can struggle with the cocktail.",
+    "hook": "Monarch caterpillars turn some milkweed poisons into protection. But tolerating one chemical is not the same as handling a mixture.",
+    "explanation": "Researchers fed caterpillars five purified milkweed toxins, separately or mixed at the same total concentration. The mixture reduced growth and toxin storage compared with the average response to individual compounds. Imagine a chemical obstacle course with several different hurdles, rather than more of the same hurdle. Some toxins also had to be changed chemically before storage. The results suggest that chemical variety itself can strengthen a plant's defense.",
+    "importance": "A plant's defenses cannot always be understood one ingredient at a time. The combination matters, even for an insect that has evolved to eat that plant.",
+    "caveat": "This was a 10-day laboratory feeding study using treated leaf discs. It does not establish effects on wild monarch populations or adult butterflies."
+  },
+  "PMC12074634": {
+    "discipline": "Biology",
+    "headline": "Baby bats may benefit from more than a song playlist.",
+    "hook": "Young bats practice sounds much like babbling babies. Pups with more involved mothers practiced longer and produced more adult-like sounds.",
+    "explanation": "Researchers followed 19 wild greater sac-winged bat pups, recording babbling and interactions with their mothers. More maternal interaction went with longer practice and a wider variety of mature song sounds. Think of learning an instrument: hearing the tune and having social company while practicing are different parts of the experience. More singing adult males nearby was not associated with the same improvements.",
+    "importance": "Vocal learning may depend on a youngster's social surroundings as well as the sounds it hears. Studying other vocal learners can help researchers investigate how that relationship evolved.",
+    "caveat": "This observational study cannot establish that maternal behavior caused better learning. The instrument analogy does not mean bat mothers deliberately taught or rewarded songs."
+  },
+  "PMC11832168": {
+    "discipline": "Psychology",
+    "headline": "A newborn's brain is already listening for the pattern.",
+    "hook": "Babies only a few days old showed brain responses to repeating patterns in both speech sounds and speakers' voices.",
+    "explanation": "Researchers played carefully arranged sound sequences to newborns up to four days old while recording electrical brain activity. Their brains tracked recurring syllable patterns despite changing voices, and voice patterns despite changing syllables. Think of detecting a repeating beat before knowing the song. A later response differed for syllable-based patterns, which the researchers linked to early word processing.",
+    "importance": "Early learning may include a broad pattern-detection ability, alongside differences in how speech sounds are processed. This helps researchers ask what the brain brings to language learning from the beginning.",
+    "caveat": "Brain responses to artificial sound sequences do not show that newborns understood words or their meanings. The beat analogy describes pattern sensitivity, not conscious counting."
+  },
+  "PMC12695028": {
+    "discipline": "Biology",
+    "headline": "A shark's whole toolbox tells more than one tooth.",
+    "hook": "One shark tooth is a clue. The assortment across its mouth can tell a different story about where the shark lives.",
+    "explanation": "Researchers compared tooth outlines across major groups of living sharks, looking at individual shapes and differences across the mouth. Think of a toolbox: its collection of tools tells you something a single blade cannot. Variation among teeth within a jaw was especially informative about habitat, while other features more closely tracked ancestry. Different scales of detail revealed different parts of the story.",
+    "importance": "Looking at an entire set of teeth could improve how researchers connect anatomy with lifestyle. It may also help them interpret extinct sharks, whose teeth often survive as fossils.",
+    "caveat": "The analysis used two-dimensional outlines, excluded plankton-feeding sharks and did not directly measure tooth size or feeding performance."
+  },
+  "PMC12456951": {
+    "discipline": "Earth science",
+    "headline": "A striped farm can bring more beetles to the table.",
+    "hook": "Fields with alternating crop strips supported a richer mix of ground beetles than fields planted with one crop.",
+    "explanation": "Across four years at four Dutch organic farms, researchers compared beetles in crop strips and single-crop fields. The strips brought together communities associated with different crops. Think of placing two neighborhood restaurants side by side: together they attract a broader set of regulars. Much of the extra diversity came from combining those existing communities, rather than finding beetles unique to strip cropping.",
+    "importance": "Growing different crops side by side may make productive farmland more welcoming to wildlife. Ground beetles can eat pests and weed seeds, making their communities relevant to farming as well as biodiversity.",
+    "caveat": "Results came from four organic farms. Trap catches reflect movement as well as abundance; more beetles caught does not automatically establish better pest control."
+  },
+  "PMC10942584": {
+    "discipline": "Chemistry",
+    "headline": "A plant can pick up its neighbor's chemical alarm.",
+    "hook": "A maize plant being eaten by caterpillars releases airborne chemicals. An undamaged neighbor can respond before caterpillars reach it.",
+    "explanation": "Researchers linked glass chambers so air traveled from an attacked maize plant to an untouched one. The receiver showed a small early response, followed by a stronger burst alongside defense-related hormones. Think of a chemical smoke alarm: exposure can put defenses on standby and later activate them. The delayed pattern persisted under continuous light, so changing daylight alone did not explain it.",
+    "importance": "Timing matters when studying how plants respond to one another. Understanding these signals could help researchers investigate pest detection and crop defenses, though practical field applications still need testing.",
+    "caveat": "The experiment used young plants of one maize variety in controlled chambers. An “alarm” is a metaphor for chemistry, not conscious warning or conversation."
+  },
+  "PMC12604854": {
+    "discipline": "Biology",
+    "headline": "A tiny spider may remember who it has met.",
+    "hook": "Jumping spiders mostly live alone. Yet these tiny hunters appeared to tell a familiar spider from a stranger, despite having a very small brain.",
+    "explanation": "Researchers introduced pairs through transparent barriers. The spiders approached new individuals, stayed farther from familiar ones, and approached again when a different spider appeared. Think of a tiny visual guest list: the pattern suggests they retained information about individuals they had seen.",
+    "importance": "Brain size may be a poor shortcut for judging memory. This study gives researchers a way to compare individual recognition across animals with very different nervous systems.",
+    "caveat": "Approach distance was an indirect measure of recognition. These experiments do not establish what spiders consciously experience."
+  },
+  "PMC13553068": {
+    "discipline": "Biology",
+    "headline": "A yak’s best friend might be a tiny gardener.",
+    "hook": "Pika are often treated as pests. But in this grassland study, having some around helped yaks gain more weight.",
+    "explanation": "Think of pika as tiny gardeners with a particular weeding habit. They clip a poisonous plant, leaving more room for grasses that yaks can eat. In summer field experiments, yaks gained up to 42% more weight where pika were present. Moderate numbers helped most; too many became competitors.",
+    "importance": "Removing every small herbivore could backfire. Managing the balance between species may sometimes help livestock more than eliminating an apparent pest.",
+    "caveat": "This was one grassland system studied in summer. The findings may not apply to every season, landscape, or herd."
+  }
+}

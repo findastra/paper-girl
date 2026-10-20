@@ -11,5 +11,5 @@ export default defineConfig({
   define: {'import.meta.env.VITE_PAPER_GIRL_STATIC': JSON.stringify('1')},
   resolve: {alias: {'@': fileURLToPath(new URL('.', import.meta.url))}},
   plugins: [react()],
-  build: {outDir: '../dist-static', emptyOutDir: true},
+  build: {outDir: '../dist-static', emptyOutDir: true, rollupOptions: {output: {entryFileNames:'assets/paper-girl-20261019.js',chunkFileNames:'assets/[name]-20261019.js',assetFileNames:'assets/[name]-20261019[extname]'}}},
 });
