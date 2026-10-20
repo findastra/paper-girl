@@ -85,4 +85,20 @@ from the existence of the note.
 
 Next-maintainer receipt: pending.
 Independent review and browser verification: pending.
-Integration and deployment results: recorded below after the push attempt.
+Integration: verified. Commit `93d742dfe591b33dc9446e2e13eae44f8a59ada7`
+was fast-forwarded into remote `main` on 2026-10-20. A subsequent
+`git ls-remote origin refs/heads/main` returned that exact revision.
+The release checkout was clean after the push. The original source commit
+and branch remain available locally, including the omitted optional CI change.
+
+Deployment: unverified. After the merge, the public website URL
+`https://findastra.github.io/paper-girl/` returned HTTP 404. The unauthenticated
+GitHub Actions API also returned 404, and `gh auth status` reported no logged-in
+GitHub host. Git push authentication worked, but these results do not establish
+whether Pages ran or why the site is unavailable. Next maintainer: inspect the
+existing repository's Pages settings and Actions run with authorized access.
+Do not claim the website update is live until verified.
+
+GitHub's push response also reported dependency alerts on the default branch
+(62 total, including 1 critical and 30 high). These were not assessed or fixed
+in this website closeout; review the repository's Dependabot findings separately.
