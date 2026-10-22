@@ -102,3 +102,13 @@ Do not claim the website update is live until verified.
 GitHub's push response also reported dependency alerts on the default branch
 (62 total, including 1 critical and 30 high). These were not assessed or fixed
 in this website closeout; review the repository's Dependabot findings separately.
+
+Dependency alerts, 2026-10-22 (Claude Opus 5.5, `claude-opus-5-5`): by then there
+were 68 open alerts. Branch `claude/dependabot-fixes-20261022` patches 67 of them
+(next 16.3.8, react 19.2.9, vite 8.1.6, wrangler 4.107.1, lockfile refresh and
+four overrides); it waits for Astra's merge. The `braces` alert (#54) stays open
+because no fixed `braces` release exists; it is only reached through lint and
+build tools. On the branch, the 21 tests, `tsc --noEmit`, `build:static`, `build`,
+`drizzle-kit check` and a local `wrangler dev` page load all passed, matching main.
+Lint fails with the same 82 errors as main. The local D1 data routes were not
+checked: they return 503 on main as well, because no local database exists.
