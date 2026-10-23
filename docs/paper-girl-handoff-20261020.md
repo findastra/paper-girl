@@ -83,8 +83,10 @@ from the existence of the note.
 
 ## Receipt and review
 
-Next-maintainer receipt: pending.
-Independent review and browser verification: pending.
+Next-maintainer receipt: Claude Opus 5.5 (`claude-opus-5-5`), 2026-10-22, after
+reading this note, AGENTS.md and the recent commits.
+Independent review and browser verification: done 2026-10-22; see "Browser review"
+below.
 Integration: verified. Commit `93d742dfe591b33dc9446e2e13eae44f8a59ada7`
 was fast-forwarded into remote `main` on 2026-10-20. A subsequent
 `git ls-remote origin refs/heads/main` returned that exact revision.
@@ -106,9 +108,29 @@ in this website closeout; review the repository's Dependabot findings separately
 Dependency alerts, 2026-10-22 (Claude Opus 5.5, `claude-opus-5-5`): by then there
 were 68 open alerts. Branch `claude/dependabot-fixes-20261022` patches 67 of them
 (next 16.3.8, react 19.2.9, vite 8.1.6, wrangler 4.107.1, lockfile refresh and
-four overrides); it waits for Astra's merge. The `braces` alert (#54) stays open
+four overrides); Astra merged it as PR #6 (`834755d`), and GitHub then marked
+67 alerts fixed. The `braces` alert (#54) stays open
 because no fixed `braces` release exists; it is only reached through lint and
 build tools. On the branch, the 21 tests, `tsc --noEmit`, `build:static`, `build`,
 `drizzle-kit check` and a local `wrangler dev` page load all passed, matching main.
 Lint fails with the same 82 errors as main. The local D1 data routes were not
 checked: they return 503 on main as well, because no local database exists.
+
+Browser review, 2026-10-22 (Claude Opus 5.5, `claude-opus-5-5`), at main `03548d1`
+(after PRs #4, #5 and #6): `npm run build:static`, served with `vite preview` on
+127.0.0.1 and opened in the Claude app's built-in browser.
+- The paper card comes first, with dark mauve styling and the Strange hook /
+  Cool explanation / Why it matters sections. Today's prepared card (baby bats,
+  eLife 2025) has its plain-English take and its small-print caveat.
+- The subject filters and "Surprise me" work: Physics returned a PLOS
+  Computational Biology paper (ciliary beating), labelled "Science", with an
+  attributed author-summary reading guide; the search history count went to 1.
+  Physics results come from the mostly life-science collection, as noted above.
+- At 375 px wide the page fits with no sideways scrolling.
+- No console errors; every local file loaded (200).
+- Pet interface `paper-girl-20261008.html`: the page and Paper Patty's sprite
+  load, but its embedded window and "Open original Paper Girl" link point to
+  `https://findastra.github.io/paper-girl/`, which returns 404. The repo has been
+  private since 2026-10-20 and has no Pages site, so the Pages workflow fails on
+  every push to main. Astra chose on 2026-10-22 to leave that workflow on. The
+  embedded window needs a different target, or Pages, before it shows the website.
