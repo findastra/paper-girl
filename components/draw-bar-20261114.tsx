@@ -95,6 +95,11 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
  // Redone 2026-11-14 (Astra did not like the little deck with "Draw" or the "Order my deck" pill): everything centered
  // under the card, type circles, then stars, then two matching buttons side by side: Draw a card (gold) and Order my deck.
  return <div className="draw-picker" aria-label="Draw a card"><div className="pick-left">
+  {/* Draw Card at the top of the section, right under the card (Astra, 2026-11-14). Plain words (Astra, 2026-11-14): "Draw Card 1/5" ... "Draw Card 5/5"; once all five are drawn the button goes
+       gray and counts down to the next draws */}
+   <button type="button" className={'pick-draw'+(busy?' busy':'')+(out?' out':'')} disabled={busy||out} onClick={()=>{if(out)return;spendDraw();onDraw()}}>
+    {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:<>Draw Card <span className="draw-count-paren">({DRAWS_PER_DAY-left+1}/{DRAWS_PER_DAY})</span></>}</button>
+  <span className="draw-status" role="status" aria-live="polite">{status}</span>
   {/* The same gold divider between the card and the choices (Astra, 2026-11-14) */}
   <div className="pick-divider pick-divider-top" aria-hidden="true"><i/><span>✦</span><i/></div>
   <span className="pick-label pick-label-top">Subject</span>
@@ -116,18 +121,13 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
    </div>
   </div>
   {/* Published: This year, Past years or Any year (newer papers are more likely, see AGE_ODDS) */}
-  <div className="pick-row">
-   <span className="pick-label">Published</span>
-   <div className="pick-years" role="radiogroup" aria-label="Published">
+  {/* PUBLISHED over its buttons, which are the same size as every other pill, two to a row (Astra, 2026-11-14) */}
+  <span className="pick-label pick-label-top">Published</span>
+  <div className="pick-years pick-grid" role="radiogroup" aria-label="Published">
     {[...YEAR_CHOICES,'Any year'].map((label,i)=>{const v=i<YEAR_CHOICES.length?i+1:0;return <button key={label} role="radio" aria-checked={year===v}
      className={'pick-year'+(year===v?' on':'')} disabled={busy} onClick={()=>onYear(v)}>{label}</button>})}
-   </div>
   </div></div>
   <div className="pick-actions">
-   {/* Plain words (Astra, 2026-11-14): "Draw Card 1/5" ... "Draw Card 5/5"; once all five are drawn the button goes
-       gray and counts down to the next draws */}
-   <button type="button" className={'pick-draw'+(busy?' busy':'')+(out?' out':'')} disabled={busy||out} onClick={()=>{if(out)return;spendDraw();onDraw()}}>
-    {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:<>Draw Card <span className="draw-count-paren">({DRAWS_PER_DAY-left+1}/{DRAWS_PER_DAY})</span></>}</button>
    {/* Some space, then a fancy gold divider, then the other buttons (Astra, 2026-11-14) */}
    <div className="pick-divider" aria-hidden="true"><i/><span>✦</span><i/></div>
    <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>setOrdering(o=>!o)}><Printer size={16} aria-hidden="true"/>Order my deck</button>
@@ -136,7 +136,6 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
   </div>
   {/* The motto, moved here from the header (Astra, 2026-11-14): centered under the buttons, gold handwriting */}
   <p className="pick-motto">Every card, one idea wiser.</p>
-  <span className="draw-status" role="status" aria-live="polite">{status}</span>
  </div>;
 }
 

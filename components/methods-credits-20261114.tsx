@@ -23,7 +23,7 @@ export function MethodsCredits(){
   <h3>What the numbers mean</h3>
   <ul>
    <li><b>Read time:</b> how long the full original article takes to read, counting its words at 230 words a minute.</li>
-   <li><b>Reading difficulty</b> (1–5 stars, also the card’s LV.): how hard the original paper is to read.</li>
+   <li><b>Reading difficulty</b> (1–5 stars, also the card’s LV): how hard the original paper is to read.</li>
    <li><b>Rarity score:</b> {SCORE.perStar} points for each star, {SCORE.perYear} for every year since the paper came
     out, and {SCORE.author} when the paper’s own author has checked the card.{' '}
     {TIERS.map((t,i)=>`${t.min}${t.max===null?'+':`–${t.max}`} ${RARITY[t.tier]}${i<TIERS.length-1?', ':'.'}`).join('')}</li>

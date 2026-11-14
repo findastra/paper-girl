@@ -146,7 +146,7 @@ function PapermonSeal({id,author}:{id:string;author:boolean}){
   <g transform="translate(60 61) scale(.24) translate(-96 -101)"><StencilFan id={id} fills={['#7a520c33','#fff8e04d','#fff8e080']}/></g>
  </svg></span>;
 }
-// Abbreviated months end with a period, like "No." and "LV." (Astra, 2026-11-14): "Nov. 14, 2026"; May is not shortened.
+// Abbreviated months end with a period, like "No." (Astra, 2026-11-14): "Nov. 14, 2026"; May is not shortened.
 const MONTHS=['Jan.','Feb.','Mar.','Apr.','May','Jun.','Jul.','Aug.','Sep.','Oct.','Nov.','Dec.'];
 const shortDate=(d:string)=>{const t=new Date(d+'T12:00:00');return `${MONTHS[t.getMonth()]} ${t.getDate()}, ${t.getFullYear()}`};
 /** The card number as Astra asked for it: four digits, "0001" (the data keeps "000,001", which read ticks use). */
@@ -260,7 +260,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
      <div className="deck-top">
       <span className="deck-type" title={type.covers?`${card.subject}: ${type.covers}`:card.subject}><TypeIcon aria-hidden="true"/></span>
       <div className="deck-title"><p className="deck-name">{card.name}</p></div>
-      <span className="deck-lv" aria-label={`Level ${card.lv}`}><small aria-hidden="true">LV.</small><b aria-hidden="true">{card.lv}</b></span>
+      <span className="deck-lv" aria-label={`Level ${card.lv}`}><small aria-hidden="true">LV</small><b aria-hidden="true">{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
       {(tier>=4||gold)&&<><Glitter seed={card.no} gold={gold} count={30}/><Glitter seed={card.no+':tiny'} gold={gold} count={42} small/></>}</div></div>
