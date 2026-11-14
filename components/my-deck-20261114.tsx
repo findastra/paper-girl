@@ -108,7 +108,7 @@ export function StencilFan({id,fills,gap=10}:{id:string;fills:string[];gap?:numb
 function SunSeal({id}:{id:string}){
  const g=`sun-g-${id}`;
  return <svg className="sun-seal" viewBox="0 0 40 40" aria-hidden="true">
-  <defs><linearGradient id={g} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff3c4"/><stop offset=".4" stopColor="#e8bb52"/><stop offset=".75" stopColor="#b8862e"/><stop offset="1" stopColor="#8a5a10"/></linearGradient></defs>
+  <defs><linearGradient id={g} x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stopColor="#fff3cc"/><stop offset=".2" stopColor="#efc65e"/><stop offset=".38" stopColor="#fff8e0"/><stop offset=".56" stopColor="#dcae48"/><stop offset=".74" stopColor="#fbe6a6"/><stop offset="1" stopColor="#cf9c38"/><animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/></linearGradient></defs>
   <polygon points={sunburst(20,20,19.5,14.5,16)} fill={`url(#${g})`} stroke="#7a520c" strokeWidth=".8" strokeLinejoin="round"/>
   <circle cx="20" cy="20" r="11.5" fill={`url(#${g})`} stroke="#7a520c" strokeWidth=".8"/>
   <circle cx="20" cy="20" r="9.8" fill="none" stroke="#fff3c4" strokeOpacity=".8" strokeWidth=".7"/>
@@ -122,9 +122,9 @@ function PapermonSeal({id,author}:{id:string;author:boolean}){
  const g=`seal-g-${id}`,d=`seal-d-${id}`,c=`seal-c-${id}`,p=`seal-p-${id}`;
  return <svg className="pm-seal" viewBox="0 0 120 120" role="img" aria-label={author?'Papermon seal: Author’s Edition Card':'Papermon seal: Certificate of Authenticity'}>
   <defs>
-   <linearGradient id={g} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff3c4"/><stop offset=".35" stopColor="#e8bb52"/><stop offset=".7" stopColor="#b8862e"/><stop offset="1" stopColor="#7a520c"/></linearGradient>
-   <linearGradient id={d} x1="1" y1="1" x2="0" y2="0"><stop offset="0" stopColor="#fff3c4"/><stop offset=".4" stopColor="#e0ac45"/><stop offset="1" stopColor="#8a5a10"/></linearGradient>
-   <linearGradient id={c} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#c48a24"/><stop offset=".4" stopColor="#fff3c4"/><stop offset=".6" stopColor="#f3d27a"/><stop offset="1" stopColor="#a8761c"/></linearGradient>
+   <linearGradient id={g} x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stopColor="#fff3c4"/><stop offset=".35" stopColor="#e8bb52"/><stop offset=".7" stopColor="#b8862e"/><stop offset="1" stopColor="#7a520c"/><animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/></linearGradient>
+   <linearGradient id={d} x1="1" y1="1" x2="0" y2="0" spreadMethod="reflect"><stop offset="0" stopColor="#fff3c4"/><stop offset=".4" stopColor="#e0ac45"/><stop offset="1" stopColor="#8a5a10"/><animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/></linearGradient>
+   <linearGradient id={c} x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stopColor="#c48a24"/><stop offset=".4" stopColor="#fff3c4"/><stop offset=".6" stopColor="#f3d27a"/><stop offset="1" stopColor="#a8761c"/><animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/></linearGradient>
    <path id={p} d="M60,60 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/>
   </defs>
   <polygon points={sunburst(60,60,59,51,32)} fill={`url(#${g})`} stroke="#7a520c" strokeWidth=".7" strokeLinejoin="round"/>

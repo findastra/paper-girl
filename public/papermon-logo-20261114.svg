@@ -3,13 +3,13 @@
        (Astra, 2026-11-14: no white border, "see-through"): each card cuts a thin gap out of the cards behind it, so
        whatever is behind the logo shows through. The same shapes are in StencilFan (components/my-deck-20261114.tsx). -->
   <defs>
-    <!-- The gold cards' own gold (Astra, 2026-11-14), with the same slow sheen drifting across -->
-    <linearGradient id="pm-g1" x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stop-color="#e8bb52"/><stop offset=".2" stop-color="#c89434"/><stop offset=".38" stop-color="#f3d68a"/><stop offset=".56" stop-color="#b8862e"/><stop offset=".74" stop-color="#e3b858"/><stop offset="1" stop-color="#a8761c"/>
-      <animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="9s" repeatCount="indefinite"/></linearGradient>
-    <linearGradient id="pm-g2" x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stop-color="#f6dc96"/><stop offset=".2" stop-color="#dcae48"/><stop offset=".38" stop-color="#fbe6a6"/><stop offset=".56" stop-color="#cf9c38"/><stop offset=".74" stop-color="#efc65e"/><stop offset="1" stop-color="#b8862e"/>
-      <animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="9s" begin="-1.5s" repeatCount="indefinite"/></linearGradient>
+    <!-- Exactly the gold card's gold and sheen (Astra, 2026-11-14: every gold thing shimmers the same way) -->
+    <linearGradient id="pm-g1" x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stop-color="#fff3cc"/><stop offset=".2" stop-color="#efc65e"/><stop offset=".38" stop-color="#fff8e0"/><stop offset=".56" stop-color="#dcae48"/><stop offset=".74" stop-color="#fbe6a6"/><stop offset="1" stop-color="#cf9c38"/>
+      <animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/></linearGradient>
+    <linearGradient id="pm-g2" x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stop-color="#fff3cc"/><stop offset=".2" stop-color="#efc65e"/><stop offset=".38" stop-color="#fff8e0"/><stop offset=".56" stop-color="#dcae48"/><stop offset=".74" stop-color="#fbe6a6"/><stop offset="1" stop-color="#cf9c38"/>
+      <animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" begin="-1.5s" repeatCount="indefinite"/></linearGradient>
     <linearGradient id="pm-g3" x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stop-color="#fff3cc"/><stop offset=".2" stop-color="#efc65e"/><stop offset=".38" stop-color="#fff8e0"/><stop offset=".56" stop-color="#dcae48"/><stop offset=".74" stop-color="#fbe6a6"/><stop offset="1" stop-color="#cf9c38"/>
-      <animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="9s" begin="-3s" repeatCount="indefinite"/></linearGradient>
+      <animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" begin="-3s" repeatCount="indefinite"/></linearGradient>
     <rect id="pm-card" x="64" y="40" width="72" height="108" rx="10"/>
     <!-- Back card: cut by the middle and front cards. Middle card: cut by the front card. -->
     <mask id="pm-cut1" maskUnits="userSpaceOnUse" x="-60" y="-60" width="320" height="320">
