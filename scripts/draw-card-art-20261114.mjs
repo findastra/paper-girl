@@ -21,6 +21,8 @@ const ORIGINALS = new URL('../art-originals/cards/', import.meta.url);
 const STYLE = [
   'Style: retro 1990s Saturday-morning cartoon cel with a hand-painted gouache background, warm grainy colors, bouncy rubber-hose energy.',
   'One clear main subject, cartoonish and cute but not girly, filling most of the square, scientifically recognizable.',
+  // Astra, 2026-11-14: the hero is always a living thing with eyes, even for abstract papers.
+  'The hero is always a living creature with expressive cartoon eyes, even if the real thing has none.',
   'No text, letters, logos, stars, sparkles or hearts (except numbers that are the subject itself).',
 ].join(' ');
 // gpt-image-1 is gone from the API (2026-11-14); PAPER_PATTY_IMAGE_MODEL picks another without editing this file.

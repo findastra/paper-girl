@@ -23,7 +23,7 @@ const SUBJECT:Record<string,{icon:LucideIcon;color:string}>={
 const FALLBACK={icon:CircleHelp,color:'#6b6470'};
 
 function Stars({n}:{n:number}){
- return <span className="deck-stars" aria-label={`Difficulty ${n} of 5`}>{[1,2,3,4,5].map(i=><i key={i} className={i<=n?'on':''}>★</i>)}</span>;
+ return <span className="deck-stars" aria-label={`Difficulty ${n} of 5`}><em>Difficulty</em>{[1,2,3,4,5].map(i=><i key={i} className={i<=n?'on':''} aria-hidden="true">★</i>)}</span>;
 }
 
 // Sparkles from Astra's portfolio (findastra.github.io, the twinkles over her portrait): four-point stars that grow,
@@ -72,14 +72,14 @@ function DeckCard({card}:{card:Card}){
      <div className="deck-top">
       <span className="deck-type" title={card.subject}><TypeIcon aria-hidden="true"/></span>
       <p className="deck-name">{card.name}</p>
-      <span className="deck-lv">LV <b>{card.lv}</b></span>
+      <span className="deck-lv" aria-label={`Level ${card.lv}`}><b>{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
       {(card.lv>=4||gold)&&<Glitter seed={card.no} gold={gold}/>}</div></div>
      <div className="deck-stats">
       <div><span>type</span><b className="deck-type-stat"><i aria-hidden="true"><TypeIcon/></i>{card.subject}</b></div>
       <div><span>paper</span><a href={card.url} target="_blank" rel="noreferrer">Open ↗</a></div>
-      <label className="deck-read"><span>read</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/><b>{read?'Read':'Not yet'}</b></label>
+      <label className="deck-read"><span>read paper</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/><b>{read?'Read':'Not yet'}</b></label>
      </div>
      <div className="deck-band"><span className="deck-rarity">{rarity}</span><Stars n={card.lv}/></div>
     </div>
