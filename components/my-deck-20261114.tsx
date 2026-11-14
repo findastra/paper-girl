@@ -47,9 +47,11 @@ export function rarityOf(card:{lv:number;published?:string;author?:boolean;examp
 // goes in the more specific one (a genetics paper is Genetics, not Biology).
 const SUBJECT:Record<string,{icon:LucideIcon;color:string;covers:string}>={
  // Each subject always has the same symbol and color (Astra, 2026-11-14: "psychology, which is always a brain in pink").
+ // No subject color looks gold or bronze (Astra, 2026-11-14): Chemistry is now aqua, Engineering orange-red, Environment
+ // forest green, since Uncommon cards take their subject's color and gold is only for certified cards.
  Biology:{icon:Leaf,color:'#4f9a5e',covers:'living things: animals, plants, cells, evolution'},
  Psychology:{icon:Brain,color:'#d26a9a',covers:'the mind and behavior: thinking, memory, feelings, the brain at work'},
- Chemistry:{icon:FlaskConical,color:'#d08a2e',covers:'molecules, reactions and materials'},
+ Chemistry:{icon:FlaskConical,color:'#16a3c4',covers:'molecules, reactions and materials'},
  'Earth science':{icon:Globe2,color:'#3f8ccc',covers:'the planet itself: rocks, oceans, weather, earthquakes, fossils'},
  Physics:{icon:Atom,color:'#d4664a',covers:'forces, energy, light and motion'},
  Math:{icon:Sigma,color:'#2f9c95',covers:'numbers, patterns, models and chance'},
@@ -58,10 +60,10 @@ const SUBJECT:Record<string,{icon:LucideIcon;color:string;covers:string}>={
  Genetics:{icon:Dna,color:'#7a5ec8',covers:'genes, DNA, heredity and mutations'},
  Space:{icon:Telescope,color:'#34478f',covers:'planets, stars and spaceflight'},
  'Computer science':{icon:Cpu,color:'#56656f',covers:'computers, code, algorithms and AI'},
- Engineering:{icon:Cog,color:'#8a6a4a',covers:'building things: devices, robots, sensors'},
+ Engineering:{icon:Cog,color:'#e0532f',covers:'building things: devices, robots, sensors'},
  // Added 2026-11-14 (Astra: "yes, add both")
  'Social science':{icon:Users,color:'#8e4f8a',covers:'people and societies: economics, education, culture, language, the past'},
- Environment:{icon:TreePine,color:'#7a8a22',covers:'nature as a whole: ecosystems, climate, conservation, pollution'}};
+ Environment:{icon:TreePine,color:'#2f8a57',covers:'nature as a whole: ecosystems, climate, conservation, pollution'}};
 const FALLBACK={icon:CircleHelp,color:'#6b6470',covers:''};
 /** Every type, in order, with its symbol and color, for the draw bar's pills (Astra, 2026-11-14). */
 export const TYPES=Object.entries(SUBJECT).map(([name,t])=>({name,label:name.replace(/\b\w/g,c=>c.toUpperCase()),icon:t.icon,color:t.color,covers:t.covers}));
@@ -146,14 +148,13 @@ function PapermonSeal({id,author,example=false}:{id:string;author:boolean;exampl
   </defs>
   <polygon points={sunburst(60,60,59,51,32)} fill="none" stroke="#7a520c" strokeWidth=".7" strokeLinejoin="round"/>
   <circle cx="60" cy="60" r="48" fill="#7a520c" fillOpacity=".16" stroke="#fff3c4" strokeOpacity=".8" strokeWidth="1"/>
-  <circle cx="60" cy="60" r="45.5" fill="#fff8e0" fillOpacity=".1"/>
   <text fontSize={fs.toFixed(2)} fontWeight="700" letterSpacing="1" fill="#5a3c06" fontFamily="'Times New Roman',Times,serif">
    <textPath href={`#${p}`} startOffset="25%" textAnchor="middle">{words}</textPath></text>
-  <circle cx="60" cy="60" r="29" fill="#7a520c" fillOpacity=".16" stroke="#7a520c" strokeWidth=".8"/>
-  <circle cx="60" cy="60" r="26.5" fill="none" stroke="#fff3c4" strokeOpacity=".7" strokeWidth=".8"/>
   {/* The logo as a stencil (Astra, 2026-11-14: no white border, "see-through"): each card cuts a thin gap out of the
       cards behind it, so the outline is the seal's own gold showing through. */}
-  <g transform="translate(60 61) scale(.24) translate(-96 -101)"><StencilFan id={id} fills={['#7a520c33','#fff8e04d','#fff8e080']}/></g>
+  {/* The card-fan logo, the same stencil as the site's logo, centered on the fan's own outline (its box is 20-171.8 by
+      35.3-161.9 in logo units): deeper gold cards with see-through gaps, so it reads on the seal's gold */}
+  <g transform="translate(60 60) scale(.33) translate(-95.9 -98.6)"><StencilFan id={id} fills={['#7a520c66','#7a520c40','#7a520c1f']}/></g>
  </svg></span>;
 }
 // Abbreviated months end with a period, like "No." (Astra, 2026-11-14): "Nov. 14, 2026"; May is not shortened.
@@ -335,20 +336,12 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
           seal on the right, say what the seal certifies, who certified it and when; other cards leave the space empty.
           An author's certification only shows when the paper's own author checked the card. */}
       <div className="deck-made">{card.author&&!gold&&<b className="deck-approved">Approved by its author</b>}
-       {gold&&card.example&&<>
-        <span><b>Certification:</b> Author’s Edition (example)</span>
-        <span><b>Author certifier:</b> none yet</span>
-        <span>This card shows how a certified card looks.</span>
-       </>}
-       {gold&&!card.example&&(card.author?<>
-        <span><b>Certification:</b> Author’s Edition</span>
-        <span><b>Author certifier:</b> {card.certifiedBy||'the paper’s author'}</span>
-        {card.certifiedOn&&<span><b>Author certification date:</b> {shortDate(card.certifiedOn)}</span>}
-       </>:<>
-        <span><b>Certification:</b> Authenticity</span>
-        <span><b>Certified by:</b> Papermon</span>
-        {card.made&&<span><b>Certification date:</b> {shortDate(card.made)}</span>}
-       </>)}</div>
+       {/* Gold cards: the author's name and the date they certified the card (Astra, 2026-11-14). The example card shows
+           a placeholder name; its front and seal say Example. */}
+       {gold&&<>
+        <span><b>Author’s name:</b> {card.example?'[Author’s name]':card.certifiedBy||'the paper’s author'}</span>
+        <span><b>Author’s certification date:</b> <em className="deck-date">{card.example?shortDate(card.made||'2026-11-14'):card.certifiedOn?shortDate(card.certifiedOn):'—'}</em></span>
+       </>}</div>
       {gold&&<PapermonSeal id={card.no.replace(/\D/g,'')} author={!!card.author} example={!!card.example}/>}
      </div>
     </div>

@@ -1534,3 +1534,53 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 :root{--sheen-offset:repeating-linear-gradient(135deg,#ecc775 0px,#dcae48 43px,#fbe6a6 173px,#cf9c38 290px,#fff3cc 360px,#efc65e 504px,#fff8e0 634px,#ecc775 720px)}
 .gold-card .deck-band{background:var(--sheen-offset)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
  border-top:.35cqw solid #b8862e!important;box-shadow:inset 0 .4cqw .8cqw #5a3c0626}
+
+/* ---------------- Enter Card Code (Astra, 2026-11-14) ---------------- */
+/* The button: the full width of the menu, first, with a little card picture like the other buttons' icons */
+.pick-actions .pick-code{grid-column:1/-1;width:100%!important}
+.card-icon{flex:none}
+/* The mock of a printed card's back, with the code's spot under a gold scratch-off strip along the bottom edge */
+.code-mock{display:flex;align-items:center;gap:16px;margin:4px 0 6px}
+.code-mock-card{position:relative;flex:none;width:150px;aspect-ratio:330/462;border-radius:10px;padding:12px 12px 0;box-sizing:border-box;
+ display:flex;flex-direction:column;gap:7px;border:2px solid transparent;
+ background:linear-gradient(#fbfaf6,#fbfaf6) padding-box,var(--sheen) border-box;background-size:100% 100%,var(--gold-size);background-position:0 0,var(--gold-pos,0 0);
+ box-shadow:0 6px 14px #0000002e}
+.code-mock-section b{display:block;font-family:'Space Grotesk',sans-serif;font-size:6.5px;letter-spacing:.6px;color:#8a5a10;text-decoration:underline;margin-bottom:3px}
+.code-mock-section i,.code-mock-foot i{display:block;height:3px;border-radius:2px;background:#d8d4cc;margin:2px 0}
+.code-mock-section i.short,.code-mock-foot i.short{width:60%}
+.code-mock-foot{margin-top:auto;padding-bottom:22px}
+.code-mock-strip{position:absolute;left:50%;bottom:7px;transform:translateX(-50%);width:68%;height:15px;border-radius:3px;overflow:hidden;
+ display:grid;grid-template-columns:1fr 1fr;box-shadow:0 0 0 1.5px #c9952e,0 0 0 4px #c9952e33}
+.code-mock-foil{display:grid;place-items:center;font-family:'DM Sans',Arial,sans-serif;font-size:4.6px;font-weight:700;letter-spacing:.3px;color:#5a3c06;
+ background:var(--sheen);background-size:var(--gold-size);background-position:var(--gold-pos,0 0);background-repeat:no-repeat;white-space:nowrap}
+.code-mock-code{display:grid;place-items:center;font-family:'DM Sans',Arial,sans-serif;font-size:6.2px;font-weight:700;letter-spacing:.2px;color:#1c1a1e;background:#efece6;
+ -webkit-mask:linear-gradient(90deg,#000 70%,#0006);white-space:nowrap}
+.code-mock figcaption{font-size:14px;line-height:1.5}
+.card-code form label{max-width:260px}
+.card-code input{font-family:'DM Sans',Arial,sans-serif!important;font-weight:700!important;letter-spacing:1.5px;text-transform:uppercase}
+.code-note{margin:0;font-size:14px;line-height:1.5}
+@media(max-width:520px){.code-mock{flex-direction:column;align-items:flex-start}}
+/* The mock bigger, so the strip and the whole example code read clearly */
+.code-mock-card{width:200px!important;padding:15px 15px 0!important;gap:9px!important;border-radius:12px!important}
+.code-mock-section b{font-size:8.5px!important;margin-bottom:4px!important}
+.code-mock-section i,.code-mock-foot i{height:4px!important;margin:3px 0!important}
+.code-mock-foot{padding-bottom:30px!important}
+.code-mock-strip{width:84%!important;height:21px!important;bottom:9px!important;grid-template-columns:44% 56%!important}
+.code-mock-foil{font-size:5.6px!important;letter-spacing:.2px!important}
+.code-mock-code{font-size:9px!important;letter-spacing:.4px!important}
+
+/* Uncommon cards in their subject's own color (Astra, 2026-11-14), with a soft shimmer, no copper: the face, the
+   picture frame and the band are light and deep shades of the subject color (--sc) */
+.lv2{--rc:color-mix(in srgb,var(--sc) 60%,#000)!important;
+ --frame:linear-gradient(135deg,color-mix(in srgb,var(--sc) 30%,#fff),var(--sc) 35%,color-mix(in srgb,var(--sc) 18%,#fff) 52%,color-mix(in srgb,var(--sc) 80%,#000) 72%,color-mix(in srgb,var(--sc) 40%,#fff))!important}
+.lv2 .deck-face{background:linear-gradient(135deg,color-mix(in srgb,var(--sc) 24%,#fff),color-mix(in srgb,var(--sc) 52%,#fff) 22%,color-mix(in srgb,var(--sc) 12%,#fff) 40%,color-mix(in srgb,var(--sc) 44%,#fff) 60%,color-mix(in srgb,var(--sc) 20%,#fff) 80%,color-mix(in srgb,var(--sc) 48%,#fff))!important;
+ background-size:220% 220%!important;animation:deck-prism 12s ease-in-out infinite alternate!important}
+.lv2 .deck-band{background:linear-gradient(100deg,color-mix(in srgb,var(--sc) 62%,#fff),color-mix(in srgb,var(--sc) 26%,#fff) 35%,color-mix(in srgb,var(--sc) 72%,#fff) 60%,color-mix(in srgb,var(--sc) 36%,#fff) 85%)!important;
+ border-top-color:color-mix(in srgb,var(--sc) 70%,#000)!important}
+.lv2 .deck-band .deck-rarity,.lv2 .deck-band .deck-rarity.shiny{background:none!important;color:color-mix(in srgb,var(--sc) 55%,#000)!important;-webkit-text-fill-color:color-mix(in srgb,var(--sc) 55%,#000)!important}
+/* The rarity chart's Uncommon swatch: a strip of subject colors, since each Uncommon card takes its own */
+.rc-t2{background:linear-gradient(90deg,#4f9a5e,#d26a9a,#16a3c4,#3f8ccc,#d4664a,#2f9c95,#7a5ec8)!important}
+/* The Any subject circle's rainbow without an amber (gold-looking) slice */
+.pick-dot.any i{background:conic-gradient(#d26a9a,#16a3c4,#4f9a5e,#3f8ccc,#8d6bc8,#d26a9a) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important}
+/* A date on the card back never breaks in the middle */
+.deck-made .deck-date{font-style:normal;white-space:nowrap}

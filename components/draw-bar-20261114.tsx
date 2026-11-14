@@ -6,6 +6,7 @@ import {useEffect,useRef,useState,useSyncExternalStore,type ReactNode,type CSSPr
 import {ChevronUp,ChevronDown,Printer,Shuffle} from 'lucide-react';
 import {TYPES,MAX_STARS} from '@/components/my-deck-20261114';
 import {dayKey} from '@/lib/science';
+import {CardCodeButton} from '@/components/card-code-20261114';
 
 /**
  * Five draws a day per reader (Astra, 2026-11-14: "let's do 5 a day"): every new card is written and checked by an AI,
@@ -129,6 +130,8 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
   <div className="pick-actions">
    {/* Some space, then a fancy gold divider, then the other buttons (Astra, 2026-11-14) */}
    <div className="pick-divider" aria-hidden="true"><i/><span>✦</span><i/></div>
+   {/* Enter Card Code (Astra, 2026-11-14): the code from a printed card adds it to your deck; the full width, first */}
+   <CardCodeButton/>
    <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>setOrdering(o=>!o)}><Printer size={16} aria-hidden="true"/>Order My Deck</button>
    {children}
   </div>

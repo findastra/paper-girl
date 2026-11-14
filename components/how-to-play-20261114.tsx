@@ -6,7 +6,7 @@ import type {CSSProperties} from 'react';
 import {SUBJECTS,SCORE,TIERS,RARITY,MAX_STARS,GOLD_TIER,tierOf} from '@/components/my-deck-20261114';
 import {AGE_ODDS} from '@/components/draw-bar-20261114';
 
-const LOOK:Record<number,string>={1:'a white card',2:'a copper card',3:'a silver card',
+const LOOK:Record<number,string>={1:'a white card',2:'a card in its subject’s own color',3:'a silver card',
  4:'a rainbow card with sparkles on the picture',5:'a gold card with sparkles all over'};
 const range=(t:typeof TIERS[number])=>t.max===null?`${t.min}+`:`${t.min}–${t.max}`;
 // Worked out from SCORE, so the examples follow any change to the weights.
