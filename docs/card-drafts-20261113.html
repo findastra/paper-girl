@@ -79,7 +79,13 @@ body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background
 .foot .mark{font-size:3cqw;opacity:1}
 
 /* Back */
-.back{gap:3cqw;padding:7cqw 7cqw 5cqw;justify-content:space-between}
+.back{gap:3cqw;padding:9cqw 9cqw 7cqw;justify-content:space-between}
+/* The back's border (Astra, 2026-11-13): a double line just inside the edge, tinted by rarity. */
+.back .rim{position:absolute;inset:3cqw;border:.5cqw solid var(--rim,#2a1f2c55);border-radius:2cqw;box-shadow:inset 0 0 0 1.2cqw transparent,inset 0 0 0 1.45cqw var(--rim2,#2a1f2c22);pointer-events:none;z-index:2}
+.lv2 .back{--rim:#5d7d95;--rim2:#5d7d9533}
+.lv3 .back{--rim:#b88a3c;--rim2:#b88a3c33}
+.lv4 .back,.lv5 .back{--rim:#8a63c9;--rim2:#8a63c944}
+.author .back{--rim:#b9862a;--rim2:#b9862a55}
 .back .sec h4{font-size:3.4cqw;letter-spacing:.35cqw;margin-bottom:1.2cqw}
 .back .sec p.t{font-size:6.2cqw;line-height:1.25;font-weight:500;margin:0}
 .back .foot{font-size:3.2cqw;opacity:.85}
@@ -131,6 +137,7 @@ for(let k=1;k<=6;k++){
     <div class="foot"><span>${esc(P.journal)} · ${esc(P.set)}</span><span><span class="mark">${L.m}</span> ${P.no}</span></div>
    </div>
    <div class="face back">
+    <div class="rim" aria-hidden="true"></div>
     <div class="sec"><h4>STRANGE HOOK</h4><p class="t">${esc(P.shortHook)}</p></div>
     <div class="sec"><h4>WHAT THEY FOUND</h4><p class="t">${esc(P.shortFound)}</p></div>
     <div class="sec"><h4>WHY IT MATTERS</h4><p class="t">${esc(P.shortMatters)}</p></div>
