@@ -10,7 +10,20 @@ import seedData from '@/lib/data/seeds.json';
 import editorialData from '@/lib/data/editorial-20261019.json';
 import {formatArticleSummary,ARTICLE_SECTION_LABELS} from '@/lib/article-summary-20261019';
 import {LibraryPanel} from '@/components/library-panel';
-import {MyDeck,DeckCard,cards as deckCards,subjectColor} from '@/components/my-deck-20261114';
+import {MyDeck,DeckCard,cards as deckCards} from '@/components/my-deck-20261114';
+// The page's accent is always gold, whatever card is drawn (Astra, 2026-11-14), so the line beside "Why it matters"
+// and the other accents stay gold.
+/**
+ * "Papermon" as a chunky trading-card-game word (Astra, 2026-11-14: like a monster-card game's logo, kept gold, with
+ * no black outline): a big first letter, the rest riding a gentle arch, in the gold cards' own shining gold, with a
+ * deep gold edge and a trademark sign.
+ */
+const WORD='Papermon';
+function PapermonWord(){
+ return <strong className="pm-word" aria-label="Papermon">{[...WORD].map((ch,i)=>{const t=(i-1)/(WORD.length-2),lift=i===0?0:Math.sin(Math.PI*t)*.12;
+  return <b key={i} aria-hidden="true" style={{verticalAlign:`${lift.toFixed(3)}em`}} className={i===0?'big':''}>{ch}</b>})}<sup className="pm-tm" aria-label="trademark">™</sup></strong>;
+}
+const PAGE_GOLD={['--accent' as string]:'#d9a53f',['--sub' as string]:'#c9952e'};
 import {AstraFooter} from '@/components/astra-footer-20261114';
 import {DrawPicker,TYPE_ITEMS,LEVEL_ITEMS,allowedGroups,groupOfYear,groupRange,weightedPick} from '@/components/draw-bar-20261114';
 import {HowToPlay} from '@/components/how-to-play-20261114';
@@ -79,9 +92,9 @@ export default function Home(){
  const moreInfo=<div className="source-dialog-copy more-info"><p>{summary.attribution}</p><p>{summary.sourceNote}</p>{paper.caveat&&<p><b>The small print:</b> {paper.caveat}</p>}<h3>{paper.title}</h3><p>{paper.authors}</p><p>Published {paper.publicationDate} · DOI {paper.doi||'not supplied'}</p><p>{paper.copyright||paper.authors} · <a href={paper.licenseUrl} target="_blank" rel="noreferrer">Creative Commons attribution license</a></p><details><summary>Full publisher explanation</summary>{p.map((t,i)=><p key={i}>{t}</p>)}</details><p><a href={paper.fullTextUrl} target="_blank" rel="noreferrer">Full text at Europe PMC</a> · <a href={paper.articleUrl} target="_blank" rel="noreferrer">Original article</a></p></div>;
  const popup=(label:string,title:string,body:ReactNode,description?:string)=><Dialog><DialogTrigger asChild><button type="button" className="pick-more">{label}</button></DialogTrigger><DialogContent className="source-dialog"><DialogTitle>{title}</DialogTitle>{description&&<DialogDescription>{description}</DialogDescription>}{body}</DialogContent></Dialog>;
  const researchDetails=sourceOpen&&<div id="research-details" className="research-details"><h2>{paper.title}</h2><p>{paper.authors}</p><p>Published {paper.publicationDate} · DOI {paper.doi||'not supplied'}</p><p>{paper.copyright||paper.authors} · <a href={paper.licenseUrl} target="_blank" rel="noreferrer">Creative Commons attribution license</a></p><p>{summary.sourceNote}</p><details><summary>Full publisher explanation</summary>{p.map((t,i)=><p key={i}>{t}</p>)}</details><a href={paper.fullTextUrl} target="_blank" rel="noreferrer">Full text at Europe PMC</a></div>;
- return <div className={showDeck?'site deck-mode':'site'}><header><a className="brand" href={base}>{showDeck&&<img className="brand-logo" src={base+'papermon-logo-20261114.svg'} alt="" width={64} height={64}/>}Paper<span>mon</span><Sparkles size={23}/></a>{showDeck&&<p className="site-motto">Every card, <em>one idea wiser.</em></p>}<span className="header-note">a little science. a lot of curiosity.</span><button onClick={showDaily} disabled={busy} className={daily?'daily-link active':'daily-link'}><Sun size={16}/> Today’s paper</button></header>
+ return <div className={showDeck?'site deck-mode':'site'}><header><a className="brand" href={base}>{showDeck&&<img className="brand-logo" src={base+'papermon-logo-20261114.svg'} alt="" width={64} height={64}/>}{showDeck?<PapermonWord/>:<>Paper<span>mon</span></>}<Sparkles size={23}/></a><span className="header-note">a little science. a lot of curiosity.</span><button onClick={showDaily} disabled={busy} className={daily?'daily-link active':'daily-link'}><Sun size={16}/> Today’s paper</button></header>
  <main><div className="above-card"><span><Sparkles size={14}/>{showDeck?(daily?'CARD OF THE DAY':'YOUR NEW RABBIT HOLE'):(daily?'YOUR PAPER OF THE DAY':'YOUR NEW RABBIT HOLE')}</span><span>{date?new Date(date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'}):''}</span></div>
- <div className="cotd-box" style={showDeck?{['--accent' as string]:subjectColor(paperCard?.subject||paper.discipline),['--sub' as string]:subjectColor(paperCard?.subject||paper.discipline)}:undefined}><article className="paper-card" aria-busy={busy}><div className="paper-copy" key={paper.pmcid}><div className="paper-sheet-wrap"><div className="paper-sheet"><h1 className={((paper.headline||paper.title).length>95)?'long-title':''}>{paper.headline||paper.title.replace(/\.$/,'')}</h1>
+ <div className="cotd-box" style={showDeck?PAGE_GOLD:undefined}><article className="paper-card" aria-busy={busy}><div className="paper-copy" key={paper.pmcid}><div className="paper-sheet-wrap"><div className="paper-sheet"><h1 className={((paper.headline||paper.title).length>95)?'long-title':''}>{paper.headline||paper.title.replace(/\.$/,'')}</h1>
  <div className="story-section hook"><span className="section-label"><span>01</span> {ARTICLE_SECTION_LABELS[0]}</span>{paperCard?.paper?.hook?paras(paperCard.paper.hook):<p>{summary.hook}</p>}</div><div className="story-section"><span className="section-label"><span>02</span> {paperCard?'WHAT THEY FOUND':ARTICLE_SECTION_LABELS[1]}</span>{paperCard?.paper?.found?paras(paperCard.paper.found):<p>{summary.explanation}</p>}</div><div className="story-section significance"><span className="section-label"><span>03</span> {ARTICLE_SECTION_LABELS[2]}</span>{/* The side line runs only beside the body (Astra, 2026-11-14) */}<div className="matters-body">{paperCard?.paper?.matters?paras(paperCard.paper.matters):<p>{summary.importance}</p>}</div></div>
  {/* 04 Bibliography (Astra, 2026-11-14): only the paper cited exactly as you would cite it (MLA 9th edition,
      EasyBib's default style). Nothing after it on the paper; the study's small print is in More information. */}
@@ -107,7 +120,7 @@ export default function Home(){
  <div className="shuffle-row"><p>No paywalls here. Just one more “wait, really?”</p><button className="shuffle-button" disabled={busy} onClick={()=>{shuffle().catch(()=>{})}}>{busy?<LoaderCircle size={20} className="spin"/>:<Shuffle size={20}/>} {busy?'Finding a paper…':'Surprise me'} {!busy&&<Sparkles size={16}/>}</button></div><div role="status" aria-live="polite" className="status">{status}{reads>0&&!busy&&<span>{reads} new {reads===1?'discovery':'discoveries'} this session</span>}</div>{error&&<div className="error" role="alert"><Info size={17}/><p>{error}</p><button onClick={()=>setError('')} aria-label="Dismiss message"><X size={16}/></button></div>}</section>
  {/* Deck mode: "Where the science comes from" lives on the paper, in Article information (Astra, 2026-11-14) */}
  </div>
- <LibraryPanel revision={reads}/>{showDeck&&<MyDeck onPick={c=>{const s=seeds.find(x=>x.pmcid===c.pmcid);if(!s)return;setPaper({...s,...editorials[s.pmcid]});setDaily(false);setSourceOpen(false);setError('');setDrawStatus('');window.scrollTo({top:0,behavior:'smooth'})}}/>}{!showDeck&&scienceFooter}
+ <LibraryPanel revision={reads}/>{showDeck&&<MyDeck onPick={c=>{const s=seeds.find(x=>x.pmcid===c.pmcid);if(!s)return;setPaper({...s,...editorials[s.pmcid]});setDaily(false);setSourceOpen(false);setError('');setDrawStatus('');(document.activeElement as HTMLElement|null)?.blur?.();setTimeout(()=>requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'smooth'})),60)}}/>}{!showDeck&&scienceFooter}
  {showDeck&&<AstraFooter/>}
  </main></div>
 }

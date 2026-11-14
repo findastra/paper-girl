@@ -74,21 +74,27 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
  // Redone 2026-11-14 (Astra did not like the little deck with "Draw" or the "Order my deck" pill): everything centered
  // under the card, type circles, then stars, then two matching buttons side by side: Draw a card (gold) and Order my deck.
  return <div className="draw-picker" aria-label="Draw a card"><div className="pick-left">
-  <div className="pick-types" role="radiogroup" aria-label="Type">
-   <button role="radio" aria-checked={type===0} title="Random type" aria-label="Random type" className={'pick-dot any'+(type===0?' on':'')} disabled={busy} onClick={()=>onType(0)}><i aria-hidden="true">?</i></button>
-   {TYPES.map((t,i)=>{const Icon=t.icon;return <button key={t.name} role="radio" aria-checked={type===i+1} title={t.label} aria-label={t.label}
-    className={'pick-dot'+(type===i+1?' on':'')} style={{'--tc':t.color} as CSSProperties} disabled={busy} onClick={()=>onType(i+1)}><i aria-hidden="true"><Icon/></i></button>})}
+  {/* Each circle with its subject's name to the right, in two columns (Astra, 2026-11-14) */}
+  <div className="pick-types labeled" role="radiogroup" aria-label="Type">
+   <button role="radio" aria-checked={type===0} title="Any subject" className={'pick-dot any'+(type===0?' on':'')} disabled={busy} onClick={()=>onType(0)}><i aria-hidden="true">?</i><span>Any subject</span></button>
+   {TYPES.map((t,i)=>{const Icon=t.icon;return <button key={t.name} role="radio" aria-checked={type===i+1} title={t.label}
+    className={'pick-dot'+(type===i+1?' on':'')} style={{'--tc':t.color} as CSSProperties} disabled={busy} onClick={()=>onType(i+1)}><i aria-hidden="true"><Icon/></i><span>{t.label}</span></button>})}
   </div>
-  <div className="pick-stars" role="radiogroup" aria-label="Difficulty">
-   {[1,2,3,4,5].map(n=><button key={n} role="radio" aria-checked={level===n} aria-label={`Reading difficulty ${n} of 5`} title={`Reading difficulty ${n}`}
-    className={'pick-star'+(level>=n?' on':'')} disabled={busy} onClick={()=>onLevel(level===n?0:n)}>★</button>)}
-   <span className="pick-any">{level?`reading difficulty ${level} of 5`:'any reading difficulty'}</span>
+  {/* Each row says what it picks, on the right (Astra, 2026-11-14): Reading difficulty, Published */}
+  <div className="pick-row">
+   <div className="pick-stars" role="radiogroup" aria-label="Reading difficulty">
+    {[1,2,3,4,5].map(n=><button key={n} role="radio" aria-checked={level===n} aria-label={`Reading difficulty ${n} of 5`} title={`Reading difficulty ${n}`}
+     className={'pick-star'+(level>=n?' on':'')} disabled={busy} onClick={()=>onLevel(level===n?0:n)}>★</button>)}
+   </div>
+   <span className="pick-label">Reading difficulty<small>{level?`${level} of 5`:'any'}</small></span>
   </div>
-  {/* Published: this year or past years; tap again for any year (newer papers are more likely, see AGE_ODDS) */}
-  <div className="pick-years" role="radiogroup" aria-label="Published">
-   {YEAR_CHOICES.map((label,i)=><button key={label} role="radio" aria-checked={year===i+1} className={'pick-year'+(year===i+1?' on':'')} disabled={busy}
-    onClick={()=>onYear(year===i+1?0:i+1)}>{label}</button>)}
-   <span className="pick-any">{year?'':'any year'}</span>
+  {/* Published: This year, Past years or Any year, three buttons (newer papers are more likely, see AGE_ODDS) */}
+  <div className="pick-row">
+   <div className="pick-years" role="radiogroup" aria-label="Published">
+    {[...YEAR_CHOICES,'Any year'].map((label,i)=>{const v=i<YEAR_CHOICES.length?i+1:0;return <button key={label} role="radio" aria-checked={year===v}
+     className={'pick-year'+(year===v?' on':'')} disabled={busy} onClick={()=>onYear(v)}>{label}</button>})}
+   </div>
+   <span className="pick-label">Published</span>
   </div></div>
   <div className="pick-actions">
    <button type="button" className={'pick-draw'+(busy?' busy':'')} disabled={busy} onClick={onDraw}><span className="pick-draw-icon" aria-hidden="true">✦</span>{busy?'Drawing…':'Draw a card'}<span className="pick-draw-icon" aria-hidden="true">✦</span></button>
@@ -96,6 +102,8 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
    {children}
    {ordering&&<p className="pick-order-note" role="status">Printed decks are coming soon. Your cards are saved here until then.</p>}
   </div>
+  {/* The motto, moved here from the header (Astra, 2026-11-14): centered under the buttons, gold handwriting */}
+  <p className="pick-motto">Every card, one idea wiser.</p>
   <span className="draw-status" role="status" aria-live="polite">{status}</span>
  </div>;
 }

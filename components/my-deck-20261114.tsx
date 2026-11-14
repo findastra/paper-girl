@@ -7,12 +7,13 @@
 // Live since 2026-11-14 as the normal page (?classic shows the old one). For now everyone sees the same five starter
 // cards (lib/data/sample-deck-20261114.json) until Paper Patty makes cards per visitor. Card rules: docs/card-plan-20261113.md.
 import {useEffect,useState,type CSSProperties} from 'react';
-import {Atom,Brain,Check,CircleHelp,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
+import {Atom,Brain,CircleHelp,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import '@/app/my-deck-20261114.css';
 
-export type Card={cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+// certifiedBy / certifiedOn: who checked the card for its paper's authors and when (only on author-checked cards).
+export type Card={cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;certifiedBy?:string;certifiedOn?:string;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
 export const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 /**
@@ -85,6 +86,35 @@ const fmtDate=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{mo
 function sunburst(cx:number,cy:number,outer:number,inner:number,points:number){
  return Array.from({length:points*2},(_,i)=>{const r=i%2?inner:outer,a=Math.PI*i/points-Math.PI/2;return `${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`}).join(' ');
 }
+/**
+ * The Papermon logo's three fanned cards as a stencil (Astra, 2026-11-14): no drawn border; each card is masked by a
+ * slightly larger copy of the cards in front of it, so a thin see-through gap outlines them. Same shapes as
+ * public/papermon-logo-20261114.svg.
+ */
+const FAN=[-20,-2,16];
+export function StencilFan({id,fills,gap=10}:{id:string;fills:string[];gap?:number}){
+ const card=(a:number,fill:string,stroke?:string)=><rect key={a} x="64" y="40" width="72" height="108" rx="10" fill={fill} stroke={stroke} strokeWidth={stroke?gap:undefined} strokeLinejoin="round" transform={`rotate(${a} 100 175)`}/>;
+ return <>
+  <defs>{FAN.slice(0,2).map((_,i)=><mask key={i} id={`fan-m${i}-${id}`} maskUnits="userSpaceOnUse" x="-60" y="-60" width="320" height="320">
+   <rect x="-60" y="-60" width="320" height="320" fill="#fff"/>{FAN.slice(i+1).map(a=>card(a,'#000','#000'))}</mask>)}</defs>
+  {FAN.map((a,i)=><g key={a} mask={i<2?`url(#fan-m${i}-${id})`:undefined}>{card(a,fills[i])}</g>)}
+ </>;
+}
+/**
+ * The "read" mark (Astra, 2026-11-14): a plain gold circle until the paper is read, then a gold sun with jagged
+ * triangle points, like a certification seal, with a check in the middle. It fills the same spot as the circle, so
+ * ticking it never moves anything (no stamp at the top left: Astra, 2026-11-14).
+ */
+function SunSeal({id}:{id:string}){
+ const g=`sun-g-${id}`;
+ return <svg className="sun-seal" viewBox="0 0 40 40" aria-hidden="true">
+  <defs><linearGradient id={g} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff3c4"/><stop offset=".4" stopColor="#e8bb52"/><stop offset=".75" stopColor="#b8862e"/><stop offset="1" stopColor="#8a5a10"/></linearGradient></defs>
+  <polygon points={sunburst(20,20,19.5,14.5,16)} fill={`url(#${g})`} stroke="#7a520c" strokeWidth=".8" strokeLinejoin="round"/>
+  <circle cx="20" cy="20" r="11.5" fill={`url(#${g})`} stroke="#7a520c" strokeWidth=".8"/>
+  <circle cx="20" cy="20" r="9.8" fill="none" stroke="#fff3c4" strokeOpacity=".8" strokeWidth=".7"/>
+  <path d="M14.5 20.5l3.6 3.6 7.4-8" fill="none" stroke="#4a3104" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"/>
+ </svg>;
+}
 function PapermonSeal({id,author}:{id:string;author:boolean}){
  const words=author?'AUTHOR’S EDITION CARD ✦ PAPERMON ✦ ':'PAPERMON ✦ CERTIFICATE OF AUTHENTICITY ✦ ';
  // Fit the crest's words once around the ring (radius 38, about 239 units round).
@@ -104,11 +134,9 @@ function PapermonSeal({id,author}:{id:string;author:boolean}){
    <textPath href={`#${p}`} startOffset="25%" textAnchor="middle">{words}</textPath></text>
   <circle cx="60" cy="60" r="29" fill={`url(#${d})`} stroke="#7a520c" strokeWidth=".8"/>
   <circle cx="60" cy="60" r="26.5" fill="none" stroke="#fff3c4" strokeOpacity=".7" strokeWidth=".8"/>
-  <g transform="translate(60 61) scale(.24) translate(-96 -101)" stroke="#fff8e0" strokeOpacity=".75" strokeWidth="5" strokeLinejoin="round">
-   <rect x="64" y="40" width="72" height="108" rx="10" fill={`url(#${g})`} transform="rotate(-20 100 175)"/>
-   <rect x="64" y="40" width="72" height="108" rx="10" fill={`url(#${d})`} transform="rotate(-2 100 175)"/>
-   <rect x="64" y="40" width="72" height="108" rx="10" fill={`url(#${c})`} transform="rotate(16 100 175)"/>
-  </g>
+  {/* The logo as a stencil (Astra, 2026-11-14: no white border, "see-through"): each card cuts a thin gap out of the
+      cards behind it, so the outline is the seal's own gold showing through. */}
+  <g transform="translate(60 61) scale(.24) translate(-96 -101)"><StencilFan id={id} fills={[`url(#${g})`,`url(#${d})`,`url(#${c})`]}/></g>
  </svg>;
 }
 const shortDate=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
@@ -136,12 +164,14 @@ function useRead(no:string):[boolean,(v:boolean)=>void]{const m=useReadMap();ret
 /** Every subject with its symbol, name and color, for places that list them (the How to play rules). */
 export const SUBJECTS=Object.entries(SUBJECT).map(([name,t])=>({name,icon:t.icon,color:t.color}));
 
-export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
+// onNext (in a pile): tapping the card's back puts it at the bottom of the pile instead of turning it back over.
+export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;onNext?:()=>void}){
  const [flipped,setFlipped]=useState(false);
  // The sheen that sweeps across the card while it turns, like light on a real card; flips toggle between two
  // identical animations so each flip plays it again.
  const [sweep,setSweep]=useState(0);
  const [read,setRead]=useRead(card.no);
+ const [note,setNote]=useState<''|'report'|'author'>('');
  const turn=()=>{setFlipped(f=>!f);setSweep(s=>s===1?2:1)};
  // Rarity comes from the rarity score (difficulty, age and the author's check, weighted); the stars still show how
  // hard the paper is to read.
@@ -149,7 +179,7 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
  const type=SUBJECT[card.subject]||FALLBACK;const TypeIcon=type.icon;
  const own=(t:EventTarget)=>!!(t as HTMLElement).closest('a,label,input,button');
  // A click always flips the card (Astra, 2026-11-14). In My deck its back has a button that opens the write-up up top.
- const flip=(e:{target:EventTarget})=>{if(own(e.target))return;turn()};
+ const flip=(e:{target:EventTarget})=>{if(own(e.target))return;if(flipped&&onNext){onNext();return}turn()};
  // Gold card (Astra, 2026-11-14): a Legendary card is gold all over, whatever the subject, with sparkles over the
  // whole card. The Subject stat's colored chip still tells the subject.
  const gold=tier>=5;
@@ -161,7 +191,7 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
     el.classList.add('lit');el.style.setProperty('--lx',`${((e.clientX-r.left)/r.width*100).toFixed(1)}%`);el.style.setProperty('--ly',`${((e.clientY-r.top)/r.height*100).toFixed(1)}%`)}}
    onPointerLeave={e=>{e.currentTarget.classList.remove('lit')}}
    aria-label={`${card.name}, ${card.subject}, ${rarity}, rarity score ${score}, reading difficulty ${card.lv}. Tap to flip.`}
-   onClick={flip} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&!own(e.target)){e.preventDefault();turn()}}}>
+   onClick={flip} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&!own(e.target)){e.preventDefault();flip(e)}}}>
    <div className="deck-inner">
     <div className="deck-face deck-front">
      {gold&&<><Glitter seed={card.no+':card'} gold count={22} whole/><Glitter seed={card.no+':card-tiny'} gold count={30} whole small/></>}
@@ -182,14 +212,15 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
        <div><span>article</span><a href={card.url} target="_blank" rel="noreferrer">{journal} ↗</a></div>
        <div><span>read time</span><b>{card.readMinutes?`${card.readMinutes} min`:'—'}</b></div>
        <label className="deck-read"><span>completion</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/>
-        <b className="deck-type-stat"><i className={'read-dot'+(read?' on':'')} aria-hidden="true">{read&&<Check/>}</i>{read?'Read':'Unread'}</b></label>
+        <b className="deck-type-stat"><i className={'read-dot'+(read?' on':'')} aria-hidden="true">{read&&<SunSeal id={card.no.replace(/\D/g,'')+'-stat'}/>}</i><em className="read-word">{read?'Read':'Unread'}</em></b></label>
       </div>
-      {/* Second row, one line (Astra, 2026-11-14): the date the paper came out, the card number in gold in the middle,
-          the date this card was minted */}
+      {/* Second row, one line (Astra, 2026-11-14): the date the paper came out, the card number in gold, the date this
+          card was minted, and the rarity score at the far right, so both rows have four stats that line up */}
       <div className="deck-stats deck-stats-years">
        <div><span>published</span><b>{card.published?shortDate(card.published):card.src.match(/\d{4}/)?.[0]||'—'}</b></div>
        <div className="deck-no-stat"><span>card</span><b className="deck-no">No. {cardNumber(card.no)}</b></div>
        <div><span>minted</span><b>{card.made?shortDate(card.made):'—'}</b></div>
+       <div><span>rarity score</span><b>{score}</b></div>
       </div>
      </div>
      <div className="deck-band"><span className="deck-rarity-wrap"><span className={'deck-rarity'+(tier>=3?' shiny':'')}>{rarity}</span></span><Stars n={card.lv}/></div>
@@ -197,24 +228,44 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
     <div className="deck-face deck-back">
      {gold&&<Glitter seed={card.no+':back'} gold count={16} whole/>}
      <div className="deck-rim" aria-hidden="true"/>
-     <div><h4>STRANGE HOOK</h4><p>{card.hook}</p></div>
-     <div><h4>WHAT THEY FOUND</h4><p>{card.found}</p></div>
-     <div><h4>WHY IT MATTERS</h4><p>{card.matters}</p></div>
+     {/* Every part of the back has its own fixed spot, like a printed card (Astra, 2026-11-14): the three sections
+         stack from the top, the four buttons always sit in the same place, and the footer keeps room for the
+         certification lines even on cards that have none yet. Sections are numbered like the paper's. */}
+     <div className="deck-back-text">
+      <div><h4><span className="deck-num">01</span>STRANGE HOOK</h4><p>{card.hook}</p></div>
+      <div><h4><span className="deck-num">02</span>WHAT THEY FOUND</h4><p>{card.found}</p></div>
+      <div><h4><span className="deck-num">03</span>WHY IT MATTERS</h4><p>{card.matters}</p></div>
+     </div>
      {/* Two buttons on the back (Astra, 2026-11-14): the longer write-up on the paper up top, and the original article. */}
      <div className="deck-back-actions">
       {onPick&&<button type="button" onClick={()=>onPick(card)}>Read the write-up ↑</button>}
       <a href={card.url} target="_blank" rel="noreferrer">Original article ↗</a>
+      {/* Two more (Astra, 2026-11-14): tell us something is wrong, and the paper's author claiming the card to check it.
+          Neither is wired up yet, so each says so instead of pretending to send. */}
+      <button type="button" aria-expanded={note==='report'} onClick={()=>setNote(n=>n==='report'?'':'report')}>Report a problem</button>
+      <button type="button" aria-expanded={note==='author'} onClick={()=>setNote(n=>n==='author'?'':'author')}>I wrote this paper</button>
+      {/* The note floats above the buttons, so nothing on the card moves */}
+      {note&&<p className="deck-back-note" role="status">{note==='report'
+       ?'Coming soon: tell Papermon what this card got wrong, and Paper Patty fixes it.'
+       :'Coming soon: authors can check their paper’s card, fix one thing and make it an Author’s Edition.'}</p>}
      </div>
      {/* Back footer (Astra, 2026-11-14): the day the card was made; on an author-approved card, the author's own
          signature or their lab's logo as a stamp (they send it with their answer; this one is a placeholder). */}
      <div className="deck-bfoot">
-      {/* Two dates (Astra, 2026-11-14): "Article publication date:" and "Card mint date:", the Papermon seal to the right
-          on gold cards. */}
-      <div className="deck-made">{card.author&&<b className="deck-approved">Approved by its author</b>}
-       {card.published&&<span><b>Article publication date:</b> {shortDate(card.published)}</span>}
-       {card.made&&<span><b>Card mint date:</b> {shortDate(card.made)}</span>}
-       {/* The rarity score lives on the back with a label (Astra, 2026-11-14: a bare number on the front was unclear) */}
-       <span><b>Rarity score:</b> {score}</span></div>
+      {/* Just the rarity score (Astra, 2026-11-14: the two dates are on the front already). Gold cards, which carry the
+          Papermon seal on the right, also say what the seal certifies, who certified it and when. An author's
+          certification only shows when the paper's own author checked the card. */}
+      <div className="deck-made">{card.author&&!gold&&<b className="deck-approved">Approved by its author</b>}
+       <span><b>Rarity score:</b> {score}</span>
+       {gold&&(card.author?<>
+        <span><b>Certification:</b> Author’s Edition</span>
+        <span><b>Author certifier:</b> {card.certifiedBy||'the paper’s author'}</span>
+        {card.certifiedOn&&<span><b>Author certification date:</b> {shortDate(card.certifiedOn)}</span>}
+       </>:<>
+        <span><b>Certification:</b> Authenticity</span>
+        <span><b>Certified by:</b> Papermon</span>
+        {card.made&&<span><b>Certification date:</b> {shortDate(card.made)}</span>}
+       </>)}</div>
       {gold&&<PapermonSeal id={card.no.replace(/\D/g,'')} author={!!card.author}/>}
      </div>
     </div>
@@ -237,15 +288,79 @@ function DeckTally(){
   <div className="tally-stats">
    <span><b>{cards.length}</b> {cards.length===1?'card':'cards'}</span>
    <span><b>{done.length}</b> read</span>
-   <span><b>{minutes}</b> {minutes===1?'minute':'minutes'} of reading</span>
+   <span><b>{minutes}</b> {minutes===1?'minute':'minutes'}</span>
   </div>
  </div>;
 }
 
+/**
+ * The deck in piles (Astra, 2026-11-14): two ways to sort. **Group by** makes the piles (one pile per subject, per
+ * difficulty, per rarity and so on; "None" lays every card out). **In order of** sorts the cards inside each pile, so
+ * the top card is the first one. No labels: the cards and the chosen buttons say it all. Tap the chosen "In order of"
+ * again to turn the order around. A pile looks like a stack of real cards; tap its top card to turn it over, tap the
+ * back to put it at the bottom of the pile and bring up the next card.
+ */
+type Group={key:string;label:string;of?:(c:Card,read:Record<string,1>)=>string|number};
+type Order={key:string;label:string;value:(c:Card)=>number|string;down?:boolean};
+const time=(d?:string)=>d?new Date(d+'T12:00:00').getTime():0;
+const GROUPS:Group[]=[
+ {key:'subject',label:'Subject',of:c=>c.subject},
+ {key:'stars',label:'Difficulty',of:c=>c.lv},
+ {key:'rarity',label:'Rarity',of:c=>rarityOf(c).tier},
+ {key:'done',label:'Completion',of:(c,read)=>read[c.no]?0:1},
+ {key:'article',label:'Article',of:c=>c.src.replace(/\s*\d{4}$/,'')},
+ {key:'published',label:'Published year',of:c=>-(parseInt((c.published||c.src).match(/\d{4}/)?.[0]||'0',10))},
+ {key:'none',label:'None'},
+];
+const ORDERS:Order[]=[
+ {key:'no',label:'Card No.',value:c=>parseInt(c.no.replace(/\D/g,''),10)||0},
+ {key:'published',label:'Most recent',value:c=>time(c.published),down:true},
+ {key:'minted',label:'Minted',value:c=>time(c.made),down:true},
+ {key:'time',label:'Read time',value:c=>c.readMinutes||0,down:true},
+ {key:'stars',label:'Difficulty',value:c=>c.lv,down:true},
+ {key:'rarity',label:'Rarity score',value:c=>rarityOf(c).score,down:true},
+];
+const cmp=(a:number|string,b:number|string)=>a<b?-1:a>b?1:0;
+function arrange(group:Group,order:Order,reverse:boolean,read:Record<string,1>):{key:string;cards:Card[]}[]{
+ const dir=(order.down?-1:1)*(reverse?-1:1),sorted=[...cards].sort((a,b)=>cmp(order.value(a),order.value(b))*dir);
+ if(!group.of)return [{key:'all',cards:sorted}];
+ const piles=new Map<string|number,Card[]>();
+ for(const c of sorted){const k=group.of(c,read);if(!piles.has(k))piles.set(k,[]);piles.get(k)!.push(c)}
+ return [...piles.entries()].sort((a,b)=>cmp(a[0],b[0])).map(([k,v])=>({key:String(k),cards:v}));
+}
+
+/** One pile: the top card in front and up to three cards peeking out behind it. */
+function Pile({pile,onPick}:{pile:Card[];onPick?:(c:Card)=>void}){
+ const [turned,setTurned]=useState(0);
+ const n=pile.length,at=n?turned%n:0,shown=[...pile.slice(at),...pile.slice(0,at)];
+ if(n===1)return <div className="deck-pile single"><DeckCard card={shown[0]} onPick={onPick}/></div>;
+ return <div className="deck-pile" style={{'--under':Math.min(3,n-1)} as CSSProperties}>
+  {shown.slice(1,4).reverse().map((c,i,arr)=><div key={c.no} className="pile-under" style={{'--d':arr.length-i} as CSSProperties} aria-hidden="true" inert><DeckCard card={c}/></div>)}
+  <div className="pile-top" key={shown[0].no}><DeckCard card={shown[0]} onPick={onPick} onNext={()=>setTurned(t=>t+1)}/></div>
+ </div>;
+}
+
 export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
+ const read=useReadMap();
+ const [groupKey,setGroup]=useState('subject'),[orderKey,setOrder]=useState('no'),[reverse,setReverse]=useState(false);
+ const group=GROUPS.find(g=>g.key===groupKey)||GROUPS[0],order=ORDERS.find(o=>o.key===orderKey)||ORDERS[0];
+ const piles=arrange(group,order,reverse,read);
+ const chooseOrder=(k:string)=>{if(k===orderKey)setReverse(r=>!r);else{setOrder(k);setReverse(false)}};
  return <section className="my-deck" aria-labelledby="my-deck-title">
   <h2 id="my-deck-title" className="sr-only">Your deck</h2>
-  <DeckTally/>
-  <div className="my-deck-grid">{cards.map(c=><DeckCard key={c.no} card={c} onPick={onPick}/>)}</div>
+  {/* One line (Astra, 2026-11-14: "fit that in one line"): the tally on the left, then Group by and In order of as
+      two drop-downs, and an arrow button that turns the order around */}
+  <div className="deck-bar">
+   <DeckTally/>
+   <label className="deck-pick"><span>Group by</span><select value={groupKey} onChange={e=>setGroup(e.target.value)}>
+    {GROUPS.map(g=><option key={g.key} value={g.key}>{g.label}</option>)}</select></label>
+   <label className="deck-pick"><span>In order of</span><select value={orderKey} onChange={e=>chooseOrder(e.target.value)}>
+    {ORDERS.map(o=><option key={o.key} value={o.key}>{o.label}</option>)}</select></label>
+   <button type="button" className="deck-dir" onClick={()=>setReverse(r=>!r)} aria-label="Turn the order around"
+    title="Turn the order around">{(order.down?!reverse:reverse)?'↓':'↑'}</button>
+  </div>
+  {group.of
+   ?<div className="my-deck-piles">{piles.map(p=><Pile key={p.key+':'+orderKey+':'+reverse} pile={p.cards} onPick={onPick}/>)}</div>
+   :<div className="my-deck-grid">{piles[0].cards.map(c=><DeckCard key={c.no} card={c} onPick={onPick}/>)}</div>}
  </section>;
 }
