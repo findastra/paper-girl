@@ -382,3 +382,17 @@ body:has(.deck-mode){background:#ffffff}
 .deck-mode footer{color:#6b6b6b}.deck-mode footer button{color:#2b2b2b}
 .deck-mode .af-title,.deck-mode .af-icon{color:#111}
 .cotd-nocard{border-color:#cbc7be;color:#6b6b6b}
+/* Softer white paper (Astra, 2026-11-14: "too bright ... light enough that the text has to be black, dark enough that
+   it doesn't hurt your eyes ... colorless, so I guess gray, or maybe more like brown"): a warm light gray-brown page,
+   panels a shade lighter, black text. */
+body:has(.deck-mode){background:#d9d4ca}
+.deck-mode{--n0:#d9d4ca;--n1:#e4dfd6;--n2:#d6d0c5;--n3:#c4bdb0;--n4:#aea698;--t3:#5c574f}
+.deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #3a301f22}
+.deck-mode .reel-drum{background:#ddd7cc;border-color:#b9b1a3}
+.deck-mode .type-pill{background:#ebe6dd;border-color:#b9b1a3}
+.deck-mode .subject-tag{background:#d6d0c5;border-color:#b9b1a3}
+.deck-mode .research-details{background:#ddd7cc;border-color:#c4bdb0}
+.deck-mode .original-link{border-top-color:#c4bdb0}
+.deck-mode .draw-bar{border-top-color:#c4bdb0}/* Small gray notes darker on the softer paper, so they stay easy to read (about 6:1) */
+.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
+.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#4f4a43}
