@@ -47,9 +47,11 @@ export function rarityOf(card:{lv:number;published?:string;author?:boolean;examp
 // goes in the more specific one (a genetics paper is Genetics, not Biology).
 const SUBJECT:Record<string,{icon:LucideIcon;color:string;covers:string}>={
  // Each subject always has the same symbol and color (Astra, 2026-11-14: "psychology, which is always a brain in pink").
+ // No subject color looks gold or bronze (Astra, 2026-11-14): Chemistry is now aqua, Engineering orange-red, Environment
+ // forest green, since Uncommon cards take their subject's color and gold is only for certified cards.
  Biology:{icon:Leaf,color:'#4f9a5e',covers:'living things: animals, plants, cells, evolution'},
  Psychology:{icon:Brain,color:'#d26a9a',covers:'the mind and behavior: thinking, memory, feelings, the brain at work'},
- Chemistry:{icon:FlaskConical,color:'#d08a2e',covers:'molecules, reactions and materials'},
+ Chemistry:{icon:FlaskConical,color:'#16a3c4',covers:'molecules, reactions and materials'},
  'Earth science':{icon:Globe2,color:'#3f8ccc',covers:'the planet itself: rocks, oceans, weather, earthquakes, fossils'},
  Physics:{icon:Atom,color:'#d4664a',covers:'forces, energy, light and motion'},
  Math:{icon:Sigma,color:'#2f9c95',covers:'numbers, patterns, models and chance'},
@@ -58,10 +60,10 @@ const SUBJECT:Record<string,{icon:LucideIcon;color:string;covers:string}>={
  Genetics:{icon:Dna,color:'#7a5ec8',covers:'genes, DNA, heredity and mutations'},
  Space:{icon:Telescope,color:'#34478f',covers:'planets, stars and spaceflight'},
  'Computer science':{icon:Cpu,color:'#56656f',covers:'computers, code, algorithms and AI'},
- Engineering:{icon:Cog,color:'#8a6a4a',covers:'building things: devices, robots, sensors'},
+ Engineering:{icon:Cog,color:'#e0532f',covers:'building things: devices, robots, sensors'},
  // Added 2026-11-14 (Astra: "yes, add both")
  'Social science':{icon:Users,color:'#8e4f8a',covers:'people and societies: economics, education, culture, language, the past'},
- Environment:{icon:TreePine,color:'#7a8a22',covers:'nature as a whole: ecosystems, climate, conservation, pollution'}};
+ Environment:{icon:TreePine,color:'#2f8a57',covers:'nature as a whole: ecosystems, climate, conservation, pollution'}};
 const FALLBACK={icon:CircleHelp,color:'#6b6470',covers:''};
 /** Every type, in order, with its symbol and color, for the draw bar's pills (Astra, 2026-11-14). */
 export const TYPES=Object.entries(SUBJECT).map(([name,t])=>({name,label:name.replace(/\b\w/g,c=>c.toUpperCase()),icon:t.icon,color:t.color,covers:t.covers}));
