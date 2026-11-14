@@ -12,7 +12,7 @@ import {formatArticleSummary,ARTICLE_SECTION_LABELS} from '@/lib/article-summary
 import {LibraryPanel} from '@/components/library-panel';
 import {MyDeck,DeckCard,cards as deckCards,subjectColor} from '@/components/my-deck-20261114';
 import {AstraFooter} from '@/components/astra-footer-20261114';
-import {DrawPicker,TYPE_ITEMS,LEVEL_ITEMS,yearRange} from '@/components/draw-bar-20261114';
+import {DrawPicker,TYPE_ITEMS,LEVEL_ITEMS,allowedGroups,groupOfYear,groupRange,weightedPick} from '@/components/draw-bar-20261114';
 import {HowToPlay} from '@/components/how-to-play-20261114';
 import {base,staticEdition} from '@/lib/edition';
 const seeds=seedData as Paper[];
@@ -58,15 +58,18 @@ export default function Home(){
  // Draw a card (Astra, 2026-11-14): pick a card of that type and difficulty from the library; when none exists yet,
  // look up a real paper of that type instead (Paper Patty will make its card later).
  function drawFromReels(){setSpinning(true);setTimeout(()=>setSpinning(false),650);
-  drawCard(TYPE_ITEMS[drawType].key,Number(LEVEL_ITEMS[drawLevel].key),yearRange(drawYear))}
- // Year bands (Astra, 2026-11-14): this year, then five-year steps back.
- function drawCard(type:string,level:number,years:{from:number;to:number}|null){
-  const inYears=(d?:string)=>!years||(!!d&&+d.slice(0,4)>=years.from&&+d.slice(0,4)<=years.to);
-  const pool=deckCards.filter(c=>(!type||c.subject===type)&&(!level||c.lv===level)&&inYears(c.published)&&c.pmcid!==paper.pmcid);
-  if(pool.length){const c=pool[Math.floor(Math.random()*pool.length)],s=seeds.find(x=>x.pmcid===c.pmcid);
+  drawCard(TYPE_ITEMS[drawType].key,Number(LEVEL_ITEMS[drawLevel].key),drawYear)}
+ // Age odds (Astra, 2026-11-14): pick an age group by its odds among the groups that have a matching card, then a
+ // card in it. With no matching card, a real paper from an age group picked by the same odds.
+ function drawCard(type:string,level:number,yearChoice:number){
+  const groups=allowedGroups(yearChoice);
+  const pool=deckCards.filter(c=>(!type||c.subject===type)&&(!level||c.lv===level)&&c.pmcid!==paper.pmcid);
+  const filled=groups.map(g=>({g,cards:pool.filter(c=>!!c.published&&groupOfYear(+c.published.slice(0,4))===g)})).filter(x=>x.cards.length);
+  if(filled.length){const {cards}=weightedPick(filled,x=>x.g.odds),c=cards[Math.floor(Math.random()*cards.length)],s=seeds.find(x=>x.pmcid===c.pmcid);
    if(s){setPaper({...s,...editorials[s.pmcid]});setDaily(false);setSourceOpen(false);setError('');setDrawStatus(`You drew ${c.name}.`);return}}
-  setDrawStatus(`No ${type||''} card${level?` at reading difficulty ${level}`:''}${years?` from ${years.from===years.to?years.from:`${years.from}–${years.to}`}`:''} in the library yet, so here is a real paper to read. Paper Patty will make its card.`.replace('No  card','No card'));
-  shuffle({...filters,topic:type||'Everything',...(years?{period:'custom',from:String(years.from),to:String(years.to)}:{period:'any'})}).catch(()=>{});
+  const g=weightedPick(groups,x=>x.odds),years=groupRange(g);
+  setDrawStatus(`No ${type||''} card${level?` at reading difficulty ${level}`:''}${yearChoice?` from ${yearChoice===1?'this year':'past years'}`:''} in the library yet, so here is a real paper from ${g.label} to read. Paper Patty will make its card.`.replace('No  card','No card'));
+  shuffle({...filters,topic:type||'Everything',period:'custom',from:String(years.from),to:String(years.to)}).catch(()=>{});
  }
  // The paper's sections can hold several paragraphs, split on a blank line.
  const paras=(t:string)=>t.split(/\n\s*\n/).map((x,i)=><p key={i}>{x}</p>);

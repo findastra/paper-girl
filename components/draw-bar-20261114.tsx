@@ -47,12 +47,25 @@ export const LEVEL_ITEMS:Item[]=[{key:'0',label:'Any difficulty',view:<span clas
  * rainbow, click the stars out of 5, and then click the draw"): a row of type circles (rainbow = any type), five stars
  * (click the same star again for any difficulty), and the face-down deck to draw from.
  */
-/** Published-year bands for drawing (Astra, 2026-11-14): this year, then five-year steps back to 50, then "50+ yrs"
- * with no upper limit on age. 0 = any year. */
-export const YEAR_BANDS:{label:string;ago:[number,number]}[]=[{label:'This year',ago:[0,0]},{label:'1–5 yrs',ago:[1,5]},
- ...Array.from({length:9},(_,i)=>({label:`${(i+1)*5}–${(i+2)*5} yrs`,ago:[(i+1)*5+1,(i+2)*5] as [number,number]})),
- {label:'50+ yrs',ago:[51,1000]}];
-export function yearRange(i:number){if(!i)return null;const y=new Date().getFullYear(),[a,b]=YEAR_BANDS[i-1].ago;return {from:Math.max(1600,y-b),to:y-a}}
+/**
+ * Draw odds by age (Astra, 2026-11-14: only "this year" or "a past year" to pick, and newer papers more likely,
+ * "like 30% this year, 20% last year"). The chance that a drawn card's paper comes from each age group. Picking
+ * "Past years" uses the same odds without this year. No limit on how old a paper can be.
+ */
+export const AGE_ODDS:{label:string;ago:[number,number];odds:number}[]=[
+ {label:'this year',ago:[0,0],odds:30},{label:'last year',ago:[1,1],odds:20},{label:'2–5 years ago',ago:[2,5],odds:20},
+ {label:'6–10 years ago',ago:[6,10],odds:15},{label:'11–20 years ago',ago:[11,20],odds:10},{label:'more than 20 years ago',ago:[21,10000],odds:5}];
+export type AgeGroup=typeof AGE_ODDS[number];
+/** The picker's choices: 1 = this year, 2 = past years; 0 = any year. */
+export const YEAR_CHOICES=['This year','Past years'];
+export function allowedGroups(choice:number){return choice===1?AGE_ODDS.slice(0,1):choice===2?AGE_ODDS.slice(1):AGE_ODDS}
+export function groupOfYear(year:number){const ago=new Date().getFullYear()-year;return AGE_ODDS.find(g=>ago>=g.ago[0]&&ago<=g.ago[1])}
+/** The search can look back to 1900. */
+export function groupRange(g:AgeGroup){const y=new Date().getFullYear();return {from:Math.max(1900,y-g.ago[1]),to:y-g.ago[0]}}
+export function weightedPick<T>(items:T[],weight:(t:T)=>number):T{
+ const total=items.reduce((n,t)=>n+weight(t),0);let r=Math.random()*total;
+ for(const t of items){r-=weight(t);if(r<0)return t}return items[items.length-1];
+}
 
 export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,status,children}:{busy:boolean;type:number;level:number;year:number;
  onType:(i:number)=>void;onLevel:(i:number)=>void;onYear:(i:number)=>void;onDraw:()=>void;status:string;children?:ReactNode}){
@@ -71,10 +84,11 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
     className={'pick-star'+(level>=n?' on':'')} disabled={busy} onClick={()=>onLevel(level===n?0:n)}>★</button>)}
    <span className="pick-any">{level?`reading difficulty ${level} of 5`:'any reading difficulty'}</span>
   </div>
-  {/* Published: tap a band, tap it again for any year */}
+  {/* Published: this year or past years; tap again for any year (newer papers are more likely, see AGE_ODDS) */}
   <div className="pick-years" role="radiogroup" aria-label="Published">
-   {YEAR_BANDS.map((b,i)=><button key={b.label} role="radio" aria-checked={year===i+1} className={'pick-year'+(year===i+1?' on':'')} disabled={busy}
-    onClick={()=>onYear(year===i+1?0:i+1)}>{b.label}</button>)}
+   {YEAR_CHOICES.map((label,i)=><button key={label} role="radio" aria-checked={year===i+1} className={'pick-year'+(year===i+1?' on':'')} disabled={busy}
+    onClick={()=>onYear(year===i+1?0:i+1)}>{label}</button>)}
+   <span className="pick-any">{year?'':'any year'}</span>
   </div></div>
   <div className="pick-actions">
    <button type="button" className={'pick-draw'+(busy?' busy':'')} disabled={busy} onClick={onDraw}><span className="pick-draw-icon" aria-hidden="true">✦</span>{busy?'Drawing…':'Draw a card'}</button>

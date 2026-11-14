@@ -4,6 +4,7 @@
 // (SCORE, TIERS in my-deck), so the two can never disagree. Rules: docs/card-plan-20261113.md.
 import type {CSSProperties} from 'react';
 import {SUBJECTS,SCORE,TIERS,RARITY} from '@/components/my-deck-20261114';
+import {AGE_ODDS} from '@/components/draw-bar-20261114';
 
 const LOOK:Record<number,string>={1:'plain gray band',2:'pale blue band',3:'polished silver band and frame',
  4:'rainbow frame and sparkles on the picture',5:'the whole card is gold'};
@@ -41,8 +42,14 @@ export function HowToPlay(){
    top of your deck.</p>
   <h3>Draw a card</h3>
   <p>Under the card of the day, pick a subject (the rainbow circle means any subject), a reading difficulty (tap a
-   star; tap it again for any) and how long ago it was published. Then press <b>Draw a card</b>. If the library has no
-   card like that yet, you get a real paper to read, and Paper Patty makes its card later.</p>
+   star; tap it again for any) and <b>This year</b> or <b>Past years</b> (tap again for any year). Then press
+   <b> Draw a card</b>. If the library has no card like that yet, you get a real paper to read, and Paper Patty makes
+   its card later.</p>
+  <p>Newer papers come up more often. When the year is left open, a drawn card’s paper is from:</p>
+  <table className="rc-points howto-odds"><thead><tr><th>Published</th><th>Chance</th></tr></thead><tbody>
+   {AGE_ODDS.map(g=><tr key={g.label}><td>{g.label.replace(/^./,c=>c.toUpperCase())}</td><td>{g.odds}%</td></tr>)}
+  </tbody></table>
+  <p><b>Past years</b> uses the same odds without this year.</p>
   <h3>Three ways to read</h3>
   <ul>
    <li><b>The card</b>: the idea in three short lines.</li>
