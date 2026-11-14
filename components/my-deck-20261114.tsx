@@ -17,10 +17,11 @@ export const cards=sample as Card[];
 export const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 /**
  * The Papermon rarity score (Astra, 2026-11-14: "our own type of rank for rarity ... a number score ... all the stuff
- * added up, weighted"). Points: 10 for each reading-difficulty star, 1 for every year since the paper came out (no
+ * added up, weighted"). Points: 20 for each reading-difficulty star, 1 for every year since the paper came out (no
  * limit, so a card gets rarer every year), 50 when the paper's author has checked the card. The total picks the tier.
+ * 20 per star (not 10) keeps the starter cards' gold and rainbow (Astra, 2026-11-14: "get that back").
  */
-export const SCORE={perStar:10,perYear:1,author:50};
+export const SCORE={perStar:20,perYear:1,author:50};
 export const TIERS=[{tier:1,min:0,max:29},{tier:2,min:30,max:49},{tier:3,min:50,max:69},{tier:4,min:70,max:89},{tier:5,min:90,max:null}];
 export function ageYears(published?:string,now=new Date()){
  if(!published)return 0;const p=new Date(published+'T12:00:00');let y=now.getFullYear()-p.getFullYear();
@@ -71,6 +72,9 @@ function Glitter({seed,gold,count=14,whole=false}:{seed:string;gold:boolean;coun
 }
 
 const fmtDate=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+const shortDate=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+/** The card number as Astra asked for it: four digits, "0001" (the data keeps "000,001", which read ticks use). */
+export const cardNumber=(no:string)=>String(parseInt(no.replace(/\D/g,''),10)||0).padStart(4,'0');
 
 // "Read it?" tick (Completion), kept in this browser per card. One shared list, so the deck's tally (minutes read)
 // updates the moment any card is ticked. Ticks saved under the old name are carried over once.
@@ -138,14 +142,15 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
        <label className="deck-read"><span>completion</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/>
         <b className="deck-type-stat"><i className={'read-dot'+(read?' on':'')} aria-hidden="true">{read&&<Check/>}</i>{read?'Read':'Unread'}</b></label>
       </div>
-      {/* Second row (Astra, 2026-11-14): the year the paper came out and the year this card was minted */}
+      {/* Second row, one line (Astra, 2026-11-14): the date the paper came out, the card number in gold in the middle,
+          the date this card was minted */}
       <div className="deck-stats deck-stats-years">
-       <div><span>published</span><b>{card.published?.slice(0,4)||card.src.match(/\d{4}/)?.[0]||'—'}</b></div>
-       <div><span>minted</span><b>{card.made?.slice(0,4)||'—'}</b></div>
+       <div><span>published</span><b>{card.published?shortDate(card.published):card.src.match(/\d{4}/)?.[0]||'—'}</b></div>
+       <div className="deck-no-stat"><span>card</span><b className="deck-no">No. {cardNumber(card.no)}</b></div>
+       <div><span>minted</span><b>{card.made?shortDate(card.made):'—'}</b></div>
       </div>
-      <span className="deck-no">No. {card.no}</span>
      </div>
-     <div className="deck-band"><span className="deck-rarity-wrap"><span className={'deck-rarity'+(tier>=3?' shiny':'')}>{rarity}</span><small className="deck-score">Rarity score {score}</small></span><Stars n={card.lv}/></div>
+     <div className="deck-band"><span className="deck-rarity-wrap"><span className={'deck-rarity'+(tier>=3?' shiny':'')}>{rarity}</span><small className="deck-score" title="Rarity score">{score}</small></span><Stars n={card.lv}/></div>
     </div>
     <div className="deck-face deck-back">
      {gold&&<Glitter seed={card.no+':back'} gold count={16} whole/>}

@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="16 21 160 160" role="img" aria-label="Papermon: three gold cards fanned out">
-  <!-- Papermon logo (Astra, 2026-11-14): the card fan, all three cards gold, no mark on them, black outline -->
+  <!-- Papermon logo (Astra, 2026-11-14): the card fan, all three cards gold, no mark on them, a clear see-through outline -->
   <defs>
     <linearGradient id="pm-g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8a5a10"/><stop offset=".45" stop-color="#e0ac45"/><stop offset="1" stop-color="#6e4a0a"/></linearGradient>
     <linearGradient id="pm-g2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a8761c"/><stop offset=".45" stop-color="#f3d27a"/><stop offset="1" stop-color="#8a5a10"/></linearGradient>
     <linearGradient id="pm-g3" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c48a24"/><stop offset=".38" stop-color="#fff3c4"/><stop offset=".55" stop-color="#f3d27a"/><stop offset="1" stop-color="#a8761c"/></linearGradient>
   </defs>
-  <g stroke="#000" stroke-width="6" stroke-linejoin="round">
+  <g stroke="#ffffff" stroke-opacity=".6" stroke-width="5" stroke-linejoin="round">
     <rect x="64" y="40" width="72" height="108" rx="10" fill="url(#pm-g1)" transform="rotate(-20 100 175)"/>
     <rect x="64" y="40" width="72" height="108" rx="10" fill="url(#pm-g2)" transform="rotate(-2 100 175)"/>
     <rect x="64" y="40" width="72" height="108" rx="10" fill="url(#pm-g3)" transform="rotate(16 100 175)"/>
