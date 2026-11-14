@@ -4,8 +4,8 @@
 // Front (Astra, 2026-11-14): the picture, always a perfect square; the name, a subject icon like a trading card's
 // type symbol, the level, the headline, the rarity and difficulty stars. No links on the front.
 // Back: the three sections, the "Read the paper" link, the source, the author status and the card number.
-// DRAFT: shows ten sample cards and only when the address has ?deck (for example /paper-girl/?deck), so the live site
-// is unchanged until real cards exist. Card rules: docs/card-plan-20261113.md.
+// Live since 2026-11-14 as the normal page (?classic shows the old one). For now everyone sees the same five starter
+// cards (lib/data/sample-deck-20261114.json) until Paper Patty makes cards per visitor. Card rules: docs/card-plan-20261113.md.
 import {useEffect,useState,type CSSProperties} from 'react';
 import {Atom,Brain,Check,CircleHelp,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
