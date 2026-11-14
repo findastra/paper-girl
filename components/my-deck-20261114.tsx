@@ -12,7 +12,7 @@ import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import '@/app/my-deck-20261114.css';
 
-export type Card={made?:string;lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+export type Card={made?:string;published?:string;lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
 const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
@@ -21,6 +21,8 @@ const SUBJECT:Record<string,{icon:LucideIcon;color:string}>={
  Biology:{icon:Leaf,color:'#4f9a5e'},Psychology:{icon:Brain,color:'#d26a9a'},Chemistry:{icon:FlaskConical,color:'#d08a2e'},
  'Earth science':{icon:Globe2,color:'#3f8ccc'},Physics:{icon:Atom,color:'#d4664a'},Math:{icon:Sigma,color:'#2f9c95'}};
 const FALLBACK={icon:CircleHelp,color:'#6b6470'};
+/** Every type, in order, with its symbol and color, for the draw bar's pills (Astra, 2026-11-14). */
+export const TYPES=Object.entries(SUBJECT).map(([name,t])=>({name,label:name.replace(/\b\w/g,c=>c.toUpperCase()),icon:t.icon,color:t.color}));
 /** The subject's color, so the page around a card can take it as its accent (Astra, 2026-11-14). */
 export function subjectColor(subject?:string){return (subject&&SUBJECT[subject]?.color)||'#d9a53f'}
 
@@ -33,13 +35,18 @@ function Stars({n}:{n:number}){
 function hash(s:string){let n=2166136261;for(const c of s)n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0}
 function Glitter({seed,gold,count=14,whole=false}:{seed:string;gold:boolean;count?:number;whole?:boolean}){
  const RAINBOW=[330,20,50,140,190,260],GOLD=['hsl(45 95% 72%)','hsl(40 90% 62%)','hsl(50 100% 88%)','hsl(35 85% 58%)'];
+ // Spread evenly over the whole square (Astra, 2026-11-14: "randomly across the card", not around one object): the
+ // picture is cut into a grid and each sparkle sits somewhere random inside its own cell.
+ const cols=Math.ceil(Math.sqrt(count)),rows=Math.ceil(count/cols);
  return <span className={'deck-glitter'+(gold?' gold':'')+(whole?' whole':'')} aria-hidden="true">{Array.from({length:count},(_,i)=>{
-  const k=hash(seed+':'+i);
-  const style={'--x':`${8+(k%84)}%`,'--y':`${8+((k>>>7)%84)}%`,'--s':`${3.2+((k>>>14)%40)/10}cqw`,'--d':`${((k>>>20)%30)/10}s`,
+  const k=hash(seed+':'+i),cx=i%cols,cy=Math.floor(i/cols);
+  const style={'--x':`${((cx+.15+((k%70)/100))/cols*100).toFixed(1)}%`,'--y':`${((cy+.15+(((k>>>7)%70)/100))/rows*100).toFixed(1)}%`,'--s':`${3.2+((k>>>14)%40)/10}cqw`,'--d':`${((k>>>20)%30)/10}s`,
    '--c':gold?GOLD[(k>>>24)%GOLD.length]:`hsl(${RAINBOW[(k>>>24)%RAINBOW.length]} 70% 78%)`} as CSSProperties;
   return <i key={i} style={style}/>;
  })}</span>;
 }
+
+const fmtDate=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
 
 // "Read it?" tick, kept in this browser per card.
 const READ_KEY='paper-girl:read:v1';
@@ -78,10 +85,10 @@ export function DeckCard({card}:{card:Card}){
      <div className="deck-top">
       <span className="deck-type" title={card.subject}><TypeIcon aria-hidden="true"/></span>
       <div className="deck-title"><p className="deck-name">{card.name}</p><span className="deck-no">No. {card.no}</span></div>
-      <span className="deck-lv" aria-label={`Level ${card.lv}`}><b>{card.lv}</b></span>
+      <span className="deck-lv" aria-label={`Level ${card.lv}`}>LV <b>{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
-      {(card.lv>=4||gold)&&<Glitter seed={card.no} gold={gold}/>}</div></div>
+      {(card.lv>=4||gold)&&<Glitter seed={card.no} gold={gold} count={20}/>}</div></div>
      <div className="deck-stats">
       <div><span>type</span><b className="deck-type-stat"><i aria-hidden="true"><TypeIcon/></i>{card.subject}</b></div>
       <div><span>paper</span><a href={card.url} target="_blank" rel="noreferrer">Open ↗</a></div>
@@ -99,7 +106,10 @@ export function DeckCard({card}:{card:Card}){
          signature or their lab's logo as a stamp (they send it with their answer; this one is a placeholder). */}
      <div className="deck-bfoot">
       {card.author&&<div className="deck-stamp" aria-label="Author's stamp"><span>✍</span><small>author’s<br/>stamp</small></div>}
-      <div className="deck-made">{card.author&&<b className="deck-approved">Approved by its author</b>}<span>Made {card.made?new Date(card.made+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):''}</span></div>
+      {/* Two dates (Astra, 2026-11-14): when the paper came out, and when this card was minted. */}
+      <div className="deck-made">{card.author&&<b className="deck-approved">Approved by its author</b>}
+       {card.published&&<span>Paper published {fmtDate(card.published)}</span>}
+       {card.made&&<span>Card minted {fmtDate(card.made)}</span>}</div>
      </div>
     </div>
    </div>
