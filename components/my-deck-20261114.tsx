@@ -12,7 +12,7 @@ import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import '@/app/my-deck-20261114.css';
 
-export type Card={made?:string;published?:string;readMinutes?:number;lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+export type Card={made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
 const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
@@ -128,7 +128,9 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
  </div>;
 }
 
-function OrderDeck(){
+// Order printed cards of your deck (Astra, 2026-11-14), shown next to the Draw deck. Printing is not set up yet, so it
+// says so instead of taking an order.
+export function OrderDeck(){
  const [open,setOpen]=useState(false);
  return <div className="order-deck"><button type="button" className="order-deck-button" aria-expanded={open} onClick={()=>setOpen(o=>!o)}>Order my deck</button>
   {open&&<p className="order-deck-note" role="status">Printed decks are coming soon. Your cards are saved here until then.</p>}</div>;
@@ -137,8 +139,6 @@ function OrderDeck(){
 export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
  return <section className="my-deck" aria-labelledby="my-deck-title">
   <h2 id="my-deck-title" className="sr-only">Your deck</h2>
-  {/* Order printed cards of your deck (Astra, 2026-11-14). Printing is not set up yet, so it says so instead of taking an order. */}
-  <OrderDeck/>
   <div className="my-deck-grid">{cards.map(c=><DeckCard key={c.no} card={c} onPick={onPick}/>)}</div>
  </section>;
 }

@@ -4,7 +4,7 @@
 // click to draw from. The Type wheel shows the same pills as a card's type chip: colored circle, symbol, name capitalized.
 import {useEffect,useRef,type ReactNode,type CSSProperties} from 'react';
 import {ChevronUp,ChevronDown} from 'lucide-react';
-import {TYPES} from '@/components/my-deck-20261114';
+import {TYPES,OrderDeck} from '@/components/my-deck-20261114';
 
 type Item={key:string;view:ReactNode;label:string};
 
@@ -62,9 +62,12 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status}:{busy:
    <span className="pick-any">{level?`${level} of 5`:'any difficulty'}</span>
   </div></div>
   <button className={'draw-deck'+(busy?' busy':'')} disabled={busy} onClick={onDraw} aria-label="Draw a card">
-   <span className="draw-deck-cards" aria-hidden="true"><span/><span/><span className="top"><b>?</b></span></span>
+   {/* A real card back on the deck (Astra, 2026-11-14): light card with the gold double rim, a gold star seal and the
+       name, like the back of a printed card */}
+   <span className="draw-deck-cards" aria-hidden="true"><span/><span/><span className="top card-back"><i className="cb-rim"/><b>✦</b><small>papergirl</small></span></span>
    <span className="draw-deck-label">{busy?'Drawing…':'Draw'}</span>
   </button>
+  <OrderDeck/>
   <span className="draw-status" role="status" aria-live="polite">{status}</span>
  </div>;
 }

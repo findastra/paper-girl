@@ -559,3 +559,44 @@ body:has(.deck-mode){background:#aba7ad}
 /* Logo and motto: shiny gold, no black outline, Times New Roman like the paper (Astra, 2026-11-14) */
 .deck-mode .brand,.deck-mode .brand>span,.deck-mode .site-motto,.deck-mode .site-motto em{-webkit-text-stroke:0!important;font-family:'Times New Roman',Times,Georgia,serif!important}
 .deck-mode .brand{letter-spacing:-.5px;font-size:34px}
+/* Paper sections (Astra, 2026-11-14): titles underlined in dark ink, all three bodies the same size */
+.deck-mode .paper-sheet .section-label{color:#1a1a1a!important;-webkit-text-fill-color:#1a1a1a;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;font-weight:700;letter-spacing:.06em!important}
+.deck-mode .paper-sheet .section-label>span{color:#1a1a1a!important}
+.deck-mode .paper-sheet .story-section p,.deck-mode .paper-sheet .hook p,.deck-mode .paper-sheet .significance p{font-size:17px!important;line-height:1.7;color:#1a1a1a}
+/* Facts under the paper */
+.paper-facts{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:4px 0 16px;font-size:15px}
+.paper-facts dt{font-weight:700;color:#2b2b2d}
+.paper-facts dd{margin:0;color:#111}
+/* The deck to draw from: back to the stacked size, with a real card back on top; "Draw" in the shiny gold */
+.draw-picker .draw-deck-cards{width:60px;height:84px}
+.deck-mode .draw-deck-cards span{background:#e9e7ea!important;background-image:none!important;border:1.5px solid #b8862e}
+.deck-mode .draw-deck-cards .card-back{display:grid;place-items:center;align-content:center;gap:2px;
+ background:radial-gradient(circle at 50% 40%,#ffffff,#e4e1e6 70%)!important}
+.card-back .cb-rim{position:absolute;inset:4px;border:1px solid #d9a53f;border-radius:5px;box-shadow:inset 0 0 0 2px #e9e7ea,inset 0 0 0 3px #d9a53f80}
+.card-back b{font-size:22px;line-height:1;background:linear-gradient(110deg,#7a520c,#c48a24 30%,#f3d27a 45%,#fff3c4 52%,#d9a53f 65%,#8a5a10);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.card-back small{font-family:'Times New Roman',Times,serif!important;font-size:9px;font-weight:700;color:#8a5a10;letter-spacing:.04em}
+.deck-mode .draw-deck-label{background:linear-gradient(110deg,#7a520c,#c48a24 25%,#f3d27a 40%,#fff3c4 50%,#d9a53f 62%,#8a5a10 85%);background-size:250% 100%;
+ -webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent!important;animation:deck-text-shine 5s ease-in-out infinite;font-family:'Times New Roman',Times,serif!important;font-size:17px;font-weight:700}
+/* Darker grays (Astra, 2026-11-14), still a hair low in green */
+body:has(.deck-mode){background:#8f8b91}
+.deck-mode{--n0:#8f8b91;--n1:#9f9ba1}
+.deck-mode .cotd-box{background:linear-gradient(#b8b4ba,#b8b4ba) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
+/* Cooler white paper so it never reads yellow */
+.deck-mode .paper-sheet{background-color:#f8fafd!important}
+/* Everything on the paper in black; its one accent, the side line, in the card's subject color (Astra, 2026-11-14) */
+.deck-mode .cotd-box .paper-copy .paper-sheet h1,.deck-mode .paper-sheet .story-section p,.deck-mode .paper-sheet .hook p,.deck-mode .paper-sheet .significance p,
+.deck-mode .paper-sheet .section-label,.deck-mode .paper-sheet .section-label>span{color:#000!important;-webkit-text-fill-color:#000}
+.deck-mode .paper-sheet .significance{border-left:3px solid var(--sub,#555)!important}
+/* Read the original paper, left of the read time, under the paper; the old link line is not needed here */
+.deck-mode .original-link{display:none!important}
+.facts-top{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin-bottom:4px}
+.facts-original{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;border:1.5px solid #b8862e;color:#111;font-weight:700;font-size:14px;background:#ffffff40}
+.facts-original:hover{background:#ffffff80}
+.facts-top span{font-size:15px;color:#111}.facts-top b{font-weight:700}
+/* Your deck panel the same gray as the card-of-the-day box */
+.deck-mode .my-deck{background:linear-gradient(#b8b4ba,#b8b4ba) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
+/* Order my deck sits beside the Draw deck */
+.draw-picker .order-deck{margin:0;align-items:center}
+.draw-picker .order-deck-button{font-size:14px;padding:7px 14px}
+.draw-picker .order-deck-note{max-width:180px;text-align:center;font-size:13px}/* "Draw" in a deeper shiny gold so it reads on the gray */
+.deck-mode .draw-deck-label{background:linear-gradient(110deg,#4a3104,#8a5a10 30%,#c48a24 45%,#e8b850 52%,#a8761c 65%,#4a3104)!important;background-size:250% 100%!important;-webkit-background-clip:text!important;background-clip:text!important}

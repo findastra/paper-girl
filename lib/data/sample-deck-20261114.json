@@ -20,7 +20,12 @@
   "pmcid": "PMC12604854",
   "made": "2026-11-14",
   "published": "2025-11-11",
-  "readMinutes": 33
+  "readMinutes": 33,
+  "paper": {
+   "hook": "A tiny loner spider may remember who it has met. Jumping spiders mostly live alone, yet they seem to keep track of the individuals around them.",
+   "found": "Jumping spiders told a familiar spider from a stranger. Seen through clear barriers, new spiders were approached, familiar ones were kept at a distance, and a different spider was approached again.",
+   "matters": "Big social smarts can fit in a very small brain. Brain size may be a poor shortcut for judging what an animal can remember about others."
+  }
  },
  {
   "lv": 2,
@@ -43,7 +48,12 @@
   "pmcid": "PMC12074634",
   "made": "2026-11-14",
   "published": "2025-05-13",
-  "readMinutes": 39
+  "readMinutes": 39,
+  "paper": {
+   "hook": "Baby bats babble, just like human babies. Greater sac-winged bat pups practice long strings of sounds before they use them as adults.",
+   "found": "Pups with more involved mothers practiced longer and sounded more grown-up. In 19 wild pups, more time with their mothers went with longer practice and a wider range of mature song sounds.",
+   "matters": "Learning to talk may lean on caring parents in many animals. Social contact may shape vocal learning outside humans too."
+  }
  },
  {
   "lv": 3,
@@ -66,7 +76,12 @@
   "pmcid": "PMC13553068",
   "made": "2026-11-14",
   "published": "2026-09-08",
-  "readMinutes": 22
+  "readMinutes": 22,
+  "paper": {
+   "hook": "Pika, called pests, may be a yak’s best friend. On the Qinghai–Tibetan Plateau, grassland with some pika fed yaks better than grassland with none.",
+   "found": "Yaks gained more weight where some pika lived, because pika clip a poisonous plant. In summer field experiments yaks gained up to 42% more weight, most at moderate pika numbers; too many pika became competitors.",
+   "matters": "Wiping out a “pest” can backfire on the animals we care about. Managing the balance between species may help livestock more than removing one of them."
+  }
  },
  {
   "lv": 4,
@@ -89,7 +104,12 @@
   "pmcid": "PMC13436957",
   "made": "2026-11-14",
   "published": "2026-08-04",
-  "readMinutes": 27
+  "readMinutes": 27,
+  "paper": {
+   "hook": "For some people, a gray number looks colored. In number–color synesthesia, digits automatically come with colors.",
+   "found": "Their pupils reacted to the color they experienced, though the screen stayed gray. In 16 people with synesthesia, pupils got smaller for numbers tied to brighter colors and larger for darker ones.",
+   "matters": "The colors are real enough that the body responds to them. Pupil measurements could add a check alongside people’s own descriptions of synesthesia."
+  }
  },
  {
   "lv": 5,
@@ -113,6 +133,11 @@
   "pmcid": "PMC11832168",
   "made": "2026-11-14",
   "published": "2025-02-17",
-  "readMinutes": 42
+  "readMinutes": 42,
+  "paper": {
+   "hook": "Babies just days old already notice sound patterns. Newborns’ brains responded to repeats in both speech sounds and voices.",
+   "found": "Their brains tracked repeats in syllables and in voices, even when the other kept changing. Researchers recorded brain activity while newborns heard carefully built streams of sounds.",
+   "matters": "We may be born with a pattern finder that helps us learn to talk. Language learning may start with a broad ability to spot patterns."
+  }
  }
 ]
