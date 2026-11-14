@@ -1,0 +1,17 @@
+{
+  "name": "papermon-card-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Papermon's card server: makes new cards with Claude and OpenAI, keeps the Card Catalog, collects friends' feedback.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node papermon-server-20261114.mjs",
+    "test": "node --test \"tests/*-test-*.mjs\""
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0"
+  }
+}

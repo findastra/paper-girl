@@ -10,7 +10,8 @@ import seedData from '@/lib/data/seeds.json';
 import editorialData from '@/lib/data/editorial-20261019.json';
 import {formatArticleSummary,ARTICLE_SECTION_LABELS} from '@/lib/article-summary-20261019';
 import {LibraryPanel} from '@/components/library-panel';
-import {MyDeck,DeckCard,cards as deckCards} from '@/components/my-deck-20261114';
+import {MyDeck,DeckCard,cards as deckCards,type Card} from '@/components/my-deck-20261114';
+import {SERVER,serverUp,drawOnServer,waitForCard,addDrawn,useDeckCards,paperOf} from '@/lib/card-server-20261114';
 import {GoldSurface} from '@/components/gold-surface-20261114';
 // The page's accent is always gold, whatever card is drawn (Astra, 2026-11-14), so the line beside "Why it matters"
 // and the other accents stay gold.
@@ -72,11 +73,40 @@ export default function Home(){
  useEffect(()=>{const context=(document as any).modelContext;if(!context?.registerTool)return;const life=new AbortController();try{Promise.resolve(context.registerTool({name:'discover_scientific_paper',title:'Discover a scientific paper',description:'Shuffle an unread scientific article and display its publisher explanation on Papermon.',inputSchema:{type:'object',properties:{subject:{type:'string',enum:Object.keys(subjects)},period:{type:'string',enum:['any','recent','older','custom']},from:{type:'string'},to:{type:'string'}},additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},async execute(input:any){if(!input||typeof input!=='object'||Array.isArray(input)||Object.entries(input).some(([k,v])=>!['subject','period','from','to'].includes(k)||typeof v!=='string'))throw new Error('Invalid filters.');const f={...actions.current.filters,...(input.subject?{topic:input.subject}:{}),...(input.period?{period:input.period}:{}),...(input.from?{from:input.from}:{}),...(input.to?{to:input.to}:{})};buildQuery(f);return actions.current.shuffle(f)}},{signal:life.signal})).catch(()=>{})}catch{}return()=>life.abort()},[]);
  const summary=formatArticleSummary(paper);const p=paper.summaryParagraphs;
  const topic=paper.discipline||paper.topic||'Science';const wordCount=summary.wordCount;
- const paperCard=showDeck?deckCards.find(c=>c.pmcid===paper.pmcid):undefined;
+ // Every card in this browser's deck: the starters plus cards drawn from the card server
+ const allCards=useDeckCards();
+ const paperCard=showDeck?allCards.find(c=>c.pmcid===paper.pmcid):undefined;
  // Draw a card (Astra, 2026-11-14): pick a card of that type and difficulty from the library; when none exists yet,
  // look up a real paper of that type instead (Paper Patty will make its card later).
  function drawFromReels(){setSpinning(true);setTimeout(()=>setSpinning(false),650);
-  drawCard(TYPE_ITEMS[drawType].key,Number(LEVEL_ITEMS[drawLevel].key),drawYear)}
+  const type=TYPE_ITEMS[drawType].key,level=Number(LEVEL_ITEMS[drawLevel].key);
+  drawFromServer(type,level).then(done=>{if(!done)drawCard(type,level,drawYear)})}
+ // The card server (Astra, 2026-11-14): when Papermon's server answers, a draw is a card from the Card Catalog that
+ // fits and isn't in this deck yet, or a brand-new card Claude writes and OpenAI draws for a fresh paper (about a
+ // minute, each step shown in the message line). Without the server, drawCard below works as before.
+ async function drawFromServer(type:string,level:number):Promise<boolean>{
+  if(!SERVER||!(await serverUp()))return false;
+  try{
+   let r=await drawOnServer({subject:type,lv:level});
+   if(r.limit){setDrawStatus(r.error||'That’s all your draws for today.');return true}
+   let fresh=false;
+   if(r.need==='paper'){
+    const g=weightedPick(allowedGroups(0),x=>x.odds),years=groupRange(g);
+    const found=await shuffle({...filters,topic:type||'Everything',period:'custom',from:String(years.from),to:String(years.to)});
+    fresh=true;setDrawStatus('Papermon is making a brand-new card for this paper…');
+    r=await drawOnServer({subject:type,lv:level,pmcid:found.pmcid});
+    if(r.job){setBusy(true);try{showServerCard(await waitForCard(r.job,step=>setDrawStatus(step)),true,true)}finally{setBusy(false)}return true}
+   }
+   if(r.card){showServerCard(r.card,fresh,false);return true}
+   if(r.reason==='budget'){setDrawStatus('Today’s new cards are all made, so here is a real paper to read. Its card can come tomorrow.');return true}
+   if(r.error){setDrawStatus(r.error);return true}
+  }catch(e){setDrawStatus(e instanceof Error?e.message:'The card server didn’t answer.');return true}
+  return false;
+ }
+ // Shows a card from the server: its paper goes on the sheet (unless the paper just found is already there)
+ function showServerCard(card:Card,keepPaper:boolean,isNew:boolean){addDrawn(card);
+  if(!keepPaper){const s=seeds.find(x=>x.pmcid===card.pmcid);setPaper(s?{...s,...editorials[s.pmcid]}:paperOf(card))}
+  setDaily(false);setSourceOpen(false);setError('');setDrawStatus(isNew?`A brand-new card! You drew ${card.name}, No. ${card.no}.`:`You drew ${card.name}.`)}
  // Age odds (Astra, 2026-11-14): pick an age group by its odds among the groups that have a matching card, then a
  // card in it. With no matching card, a real paper from an age group picked by the same odds.
  function drawCard(type:string,level:number,yearChoice:number){
@@ -126,7 +156,7 @@ export default function Home(){
  <div className="shuffle-row"><p>No paywalls here. Just one more “wait, really?”</p><button className="shuffle-button" disabled={busy} onClick={()=>{shuffle().catch(()=>{})}}>{busy?<LoaderCircle size={20} className="spin"/>:<Shuffle size={20}/>} {busy?'Finding a paper…':'Surprise me'} {!busy&&<Sparkles size={16}/>}</button></div><div role="status" aria-live="polite" className="status">{status}{reads>0&&!busy&&<span>{reads} new {reads===1?'discovery':'discoveries'} this session</span>}</div>{error&&<div className="error" role="alert"><Info size={17}/><p>{error}</p><button onClick={()=>setError('')} aria-label="Dismiss message"><X size={16}/></button></div>}</section>
  {/* Deck mode: "Where the science comes from" lives on the paper, in Article information (Astra, 2026-11-14) */}
  </div>
- <LibraryPanel revision={reads}/>{showDeck&&<GoldSurface/>}{showDeck&&<MyDeck onPick={c=>{const s=seeds.find(x=>x.pmcid===c.pmcid);if(!s)return;setPaper({...s,...editorials[s.pmcid]});setDaily(false);setSourceOpen(false);setError('');setDrawStatus('');(document.activeElement as HTMLElement|null)?.blur?.();setTimeout(()=>requestAnimationFrame(toPaper),60)}}/>}{!showDeck&&scienceFooter}
+ <LibraryPanel revision={reads}/>{showDeck&&<GoldSurface/>}{showDeck&&<MyDeck onPick={c=>{const s=seeds.find(x=>x.pmcid===c.pmcid);setPaper(s?{...s,...editorials[s.pmcid]}:paperOf(c));setDaily(false);setSourceOpen(false);setError('');setDrawStatus('');(document.activeElement as HTMLElement|null)?.blur?.();setTimeout(()=>requestAnimationFrame(toPaper),60)}}/>}{!showDeck&&scienceFooter}
  {showDeck&&<AstraFooter/>}
  </main></div>
 }

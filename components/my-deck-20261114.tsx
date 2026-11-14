@@ -10,13 +10,14 @@ import {useEffect,useState,type CSSProperties,type FormEvent} from 'react';
 import {Atom,Brain,Check,CircleHelp,ThumbsDown,ThumbsUp,TreePine,Users,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
+import {artSrc,sendVote,sendMessage,useDeckCards} from '@/lib/card-server-20261114';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import '@/app/my-deck-20261114.css';
 
 // certifiedBy / certifiedOn: who checked the card for its paper's authors and when (only on author-checked cards).
 // example: a gold card shown only to show the look of a certified card (Astra, 2026-11-14); it is labeled "Example" on
 // the front and its back says nobody has certified it yet, so it never claims a real author's check.
-export type Card={example?:boolean;cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;certifiedBy?:string;certifiedOn?:string;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+export type Card={source?:{title?:string;authors?:string;journal?:string;year?:number|null;doi?:string;license?:string};example?:boolean;cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;certifiedBy?:string;certifiedOn?:string;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
 export const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 /**
@@ -188,20 +189,21 @@ function loadRates():Record<string,1|-1>{try{return JSON.parse(localStorage.getI
 function useRate(no:string):[0|1|-1,(v:0|1|-1)=>void]{
  const [m,setM]=useState<Record<string,1|-1>>({});
  useEffect(()=>{const f=()=>setM(loadRates());f();window.addEventListener(RATE_EVENT,f);return()=>window.removeEventListener(RATE_EVENT,f)},[]);
- return [m[no]||0,v=>{const all=loadRates();if(v)all[no]=v;else delete all[no];try{localStorage.setItem(RATE_KEY,JSON.stringify(all))}catch{}window.dispatchEvent(new Event(RATE_EVENT))}];
+ return [m[no]||0,v=>{const all=loadRates();if(v)all[no]=v;else delete all[no];try{localStorage.setItem(RATE_KEY,JSON.stringify(all))}catch{}sendVote(no,v);window.dispatchEvent(new Event(RATE_EVENT))}];
 }
 
 /**
  * Report a problem / I wrote this paper (Astra, 2026-11-14: "a big thing that pops up on your page that lets you submit
- * something"). Papermon has no inbox yet, so Send keeps the message in this browser and says so plainly; nothing
- * pretends to have been sent.
+ * something"). Send goes to Astra's card server when the page can reach it (lib/card-server-20261114.ts); otherwise the
+ * message stays in this browser and the page says so plainly. Nothing pretends to have been sent.
  */
 const OUTBOX_KEY='papermon:outbox:v1';
 const PROBLEMS=['A fact is wrong','Hard to understand','The picture does not fit','Something else'];
 function CardForm({card,kind,onClose}:{card:Card;kind:''|'report'|'author';onClose:()=>void}){
- const [done,setDone]=useState(false),[problem,setProblem]=useState(PROBLEMS[0]);
- const close=()=>{setDone(false);onClose()};
- const send=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.currentTarget).entries());
+ const [done,setDone]=useState(false),[delivered,setDelivered]=useState(false),[problem,setProblem]=useState(PROBLEMS[0]);
+ const close=()=>{setDone(false);setDelivered(false);onClose()};
+ const send=async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=Object.fromEntries([...new FormData(e.currentTarget).entries()].map(([k,v])=>[k,String(v)]));
+  if(kind&&await sendMessage(kind,card.no,{...(kind==='report'?{problem}:{}),...f}).catch(()=>false)){setDelivered(true);setDone(true);return}
   try{const box=JSON.parse(localStorage.getItem(OUTBOX_KEY)||'[]');box.push({kind,card:card.no,name:card.name,problem:kind==='report'?problem:undefined,...f,at:new Date().toISOString()});
    localStorage.setItem(OUTBOX_KEY,JSON.stringify(box))}catch{}setDone(true)};
  const report=kind==='report';
@@ -209,7 +211,7 @@ function CardForm({card,kind,onClose}:{card:Card;kind:''|'report'|'author';onClo
   <DialogContent className="source-dialog card-form">
    <DialogTitle>{report?'Report a problem':'I wrote this paper'}</DialogTitle>
    <DialogDescription>{card.name} · No. {cardNumber(card.no)} · {card.headline}</DialogDescription>
-   {done?<div className="card-form-done"><p><b>Thank you.</b> Papermon can’t receive messages yet, so this is saved on this device for now.</p>
+   {done?<div className="card-form-done"><p><b>Thank you.</b> {delivered?'Sent to Papermon. Astra reads every one.':'Papermon can’t receive messages right now, so this is saved on this device for now.'}</p>
     <button type="button" className="card-form-send" onClick={close}>Close</button></div>
    :<form onSubmit={send}>
     {report?<>
@@ -273,7 +275,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
       <div className="deck-title"><p className="deck-name">{card.name}</p></div>
       <span className="deck-lv" aria-label={`Level ${card.lv}`}><small aria-hidden="true">LV</small><b aria-hidden="true">{card.lv}</b></span>
      </div>
-     <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
+     <div className="deck-frame"><div className="deck-window"><img src={artSrc(card.art)} alt="" loading="lazy"/>
       {(tier>=4||gold)&&<><Glitter seed={card.no} gold={gold} count={30}/><Glitter seed={card.no+':tiny'} gold={gold} count={42} small/></>}</div></div>
      {/* Stats (Astra, 2026-11-14): Subject, Article (the journal's name, linked), Read time (the full original
          article's, `readMinutes`) and Completion (a gold circle that fills in), centered in the space under the
@@ -355,7 +357,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
  * hover it for the name), how many are read, and the minutes of reading those read articles add up to.
  */
 function DeckTally(){
- const read=useReadMap();
+ const read=useReadMap(),cards=useDeckCards();
  const bySubject=Object.entries(cards.reduce<Record<string,number>>((m,c)=>{m[c.subject]=(m[c.subject]||0)+1;return m},{}));
  const done=cards.filter(c=>read[c.no]),minutes=done.reduce((n,c)=>n+(c.readMinutes||0),0);
  return <div className="deck-tally">
@@ -397,8 +399,8 @@ const ORDERS:Order[]=[
  {key:'rarity',label:'Rarity score',value:c=>rarityOf(c).score,down:true},
 ];
 const cmp=(a:number|string,b:number|string)=>a<b?-1:a>b?1:0;
-function arrange(group:Group,order:Order,reverse:boolean,read:Record<string,1>):{key:string;cards:Card[]}[]{
- const dir=(order.down?-1:1)*(reverse?-1:1),sorted=[...cards].sort((a,b)=>cmp(order.value(a),order.value(b))*dir);
+function arrange(group:Group,order:Order,reverse:boolean,read:Record<string,1>,list:Card[]):{key:string;cards:Card[]}[]{
+ const dir=(order.down?-1:1)*(reverse?-1:1),sorted=[...list].sort((a,b)=>cmp(order.value(a),order.value(b))*dir);
  if(!group.of)return [{key:'all',cards:sorted}];
  const piles=new Map<string|number,Card[]>();
  for(const c of sorted){const k=group.of(c,read);if(!piles.has(k))piles.set(k,[]);piles.get(k)!.push(c)}
@@ -420,7 +422,7 @@ export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
  const read=useReadMap();
  const [groupKey,setGroup]=useState('subject'),[orderKey,setOrder]=useState('no'),[reverse,setReverse]=useState(false);
  const group=GROUPS.find(g=>g.key===groupKey)||GROUPS[0],order=ORDERS.find(o=>o.key===orderKey)||ORDERS[0];
- const piles=arrange(group,order,reverse,read);
+ const all=useDeckCards(),piles=arrange(group,order,reverse,read,all);
  const chooseOrder=(k:string)=>{if(k===orderKey)setReverse(r=>!r);else{setOrder(k);setReverse(false)}};
  return <section className="my-deck" aria-labelledby="my-deck-title">
   <h2 id="my-deck-title" className="sr-only">Your deck</h2>
