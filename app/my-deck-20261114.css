@@ -1498,3 +1498,8 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
    More Information and the deck's drop-downs all use the same serif, size, weight and dark brown */
 .pick-types.labeled .pick-dot span,.pick-order,.pick-more,.deck-pick select{font-family:'Times New Roman',Times,Georgia,serif!important;font-size:13.5px!important;
  font-weight:700!important;letter-spacing:0!important;color:var(--btn-ink)!important;-webkit-text-fill-color:var(--btn-ink)!important;line-height:1.1!important}
+/* More room between the tagline and the panel (30 px), so "Read the write-up" can stop just below the tagline and show
+   the panel's whole gold edge */
+.deck-mode header{padding-bottom:24px!important}
+/* The footer line closer to the deck panel; the star sits midway between the line and the bottom of the page */
+.astra-footer{margin-top:2px!important;padding-bottom:19px!important}
