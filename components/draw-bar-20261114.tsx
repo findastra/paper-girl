@@ -95,13 +95,13 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
  // Redone 2026-11-14 (Astra did not like the little deck with "Draw" or the "Order my deck" pill): everything centered
  // under the card, type circles, then stars, then two matching buttons side by side: Draw a card (gold) and Order my deck.
  return <div className="draw-picker" aria-label="Draw a card"><div className="pick-left">
-  {/* Draw Card at the top of the section, right under the card (Astra, 2026-11-14). Plain words (Astra, 2026-11-14): "Draw Card 1/5" ... "Draw Card 5/5"; once all five are drawn the button goes
+  {/* The gold divider under the card, then Draw Card (Astra, 2026-11-14: "below the separator") */}
+  <div className="pick-divider pick-divider-top" aria-hidden="true"><i/><span>✦</span><i/></div>
+  {/* Draw Card at the top of the choices. Plain words (Astra, 2026-11-14): "Draw Card 1/5" ... "Draw Card 5/5"; once all five are drawn the button goes
        gray and counts down to the next draws */}
    <button type="button" className={'pick-draw'+(busy?' busy':'')+(out?' out':'')} disabled={busy||out} onClick={()=>{if(out)return;spendDraw();onDraw()}}>
     {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:<>Draw Card <span className="draw-count-paren">({DRAWS_PER_DAY-left+1}/{DRAWS_PER_DAY})</span></>}</button>
   <span className="draw-status" role="status" aria-live="polite">{status}</span>
-  {/* The same gold divider between the card and the choices (Astra, 2026-11-14) */}
-  <div className="pick-divider pick-divider-top" aria-hidden="true"><i/><span>✦</span><i/></div>
   <span className="pick-label pick-label-top">Subject</span>
   {/* Each circle with its subject's name to the right, in two columns (Astra, 2026-11-14) */}
   <div className="pick-types labeled" role="radiogroup" aria-label="Type">
