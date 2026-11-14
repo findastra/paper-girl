@@ -11,5 +11,7 @@ export default defineConfig({
   define: {'import.meta.env.VITE_PAPER_GIRL_STATIC': JSON.stringify('1')},
   resolve: {alias: {'@': fileURLToPath(new URL('.', import.meta.url))}},
   plugins: [react()],
-  build: {outDir: '../dist-static', emptyOutDir: true, rollupOptions: {output: {entryFileNames:'assets/paper-girl-20261019.js',chunkFileNames:'assets/[name]-20261019.js',assetFileNames:'assets/[name]-20261019[extname]'}}},
+  // [hash] changes whenever a file's content changes, so every release has new file names and browsers never keep
+  // showing an old copy (2026-11-14: visitors saw the previous release after a merge because the names never changed).
+  build: {outDir: '../dist-static', emptyOutDir: true, rollupOptions: {output: {entryFileNames:'assets/paper-girl-[hash]-20261019.js',chunkFileNames:'assets/[name]-[hash]-20261019.js',assetFileNames:'assets/[name]-[hash]-20261019[extname]'}}},
 });
