@@ -1,4 +1,5 @@
-# Publishes the static edition of Paper Girl to GitHub Pages on every push to main.
+# Publishes the static edition of Papermon to GitHub Pages on every push to main. The build uses relative
+# addresses (base ./), so the site works at any address, including after the repo rename to papermon.
 name: Deploy to GitHub Pages
 
 on:
@@ -25,6 +26,8 @@ jobs:
           node-version: 24
       - run: npm install --no-audit --no-fund
       - run: npm run build:static
+        env:
+          PAPER_GIRL_BASE: ./
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist-static
