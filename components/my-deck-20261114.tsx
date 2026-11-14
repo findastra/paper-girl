@@ -70,7 +70,7 @@ function DeckCard({card}:{card:Card}){
 
 export function MyDeck(){
  return <section className="my-deck" aria-labelledby="my-deck-title">
-  <div className="my-deck-head"><h2 id="my-deck-title">My deck</h2><span>{cards.length} cards, one of each rarity · tap a card to flip it · pictures are sketches until OpenAI draws them</span></div>
+  <div className="my-deck-head"><h2 id="my-deck-title">My deck</h2><span>{cards.length} cards, one of each rarity · tap a card to flip it</span></div>
   <div className="my-deck-grid">{cards.map(c=><DeckCard key={c.no} card={c}/>)}</div>
  </section>;
 }
