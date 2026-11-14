@@ -6,7 +6,7 @@
 //   node scripts/draw-card-art-20261114.mjs                    draw every card that has no OpenAI picture yet
 //   node scripts/draw-card-art-20261114.mjs --only pika --redo  draw one card again
 //
-// Needs PAPER_GIRL_OPENAI_API_KEY (Paper Patty's own key, never OPENAI_API_KEY). The key is read from the environment
+// Needs PAPERGIRL_PATTY_OPENAI_API_KEY (Paper Patty's own key, never OPENAI_API_KEY). The key is read from the environment
 // and never printed or written anywhere. Pictures land in public/art/cards/ as 720 px WebP; the card's `art` is updated.
 import {readFileSync, writeFileSync, mkdirSync} from 'node:fs';
 import sharp from 'sharp';
@@ -31,8 +31,8 @@ const cards = JSON.parse(readFileSync(DECK, 'utf8'));
 const todo = cards.filter(c => c.drawing && (!only || c.drawing.slug === only) && (redo || !String(c.art).startsWith('cards/')));
 if (!todo.length) { console.log('Nothing to draw.'); process.exit(0); }
 
-const key = process.env.PAPER_GIRL_OPENAI_API_KEY;
-if (!dry && !key) { console.error('PAPER_GIRL_OPENAI_API_KEY is not set. Nothing was drawn.'); process.exit(1); }
+const key = process.env.PAPERGIRL_PATTY_OPENAI_API_KEY;
+if (!dry && !key) { console.error('PAPERGIRL_PATTY_OPENAI_API_KEY is not set. Nothing was drawn.'); process.exit(1); }
 mkdirSync(OUT, {recursive: true});
 
 for (const card of todo) {
