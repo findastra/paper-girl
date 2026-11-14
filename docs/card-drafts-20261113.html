@@ -3,151 +3,164 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Paper Girl card drafts</title>
+<title>Paper Girl deck</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Draft for Astra, 2026-11-13 (third round): back to the trading-card layout. No frame and nothing around the
-   cards: each card is one clean rounded rectangle with everything inside it. Big picture window; moves and stats at
-   the bottom instead of paragraphs. Common cards are plain; rarer cards get prismatic (holographic) backgrounds.
-   One card per level, 1 to 5. Tap a card to flip it. Mirror Pool rules: one screen tall, 5x7 cards in cqw. */
-:root{--bg:#1d1720;--ink:#f4e9ed;--soft:#b9a3b2;--pink:#efa9c5}
+/* Draft for Astra, 2026-11-14 (fourth round): everyone's deck is a grid of their cards. Tap any card to flip it
+   back and forth. The front links to the original article. Front text is bigger. Five rarities: common, uncommon,
+   rare, holo rare, legendary (gold); the Author's Edition stays gold with its seal and drifting sparkles.
+   Mirror Pool rules: the page is one screen tall and only the grid scrolls; cards are 5x7 and sized in cqw. */
+:root{--bg:#1d1720;--panel:#251d29;--ink:#f4e9ed;--soft:#b9a3b2;--pink:#efa9c5;--line:#3e3142;
+  --t-small:clamp(12px,1.1vw,14px);--t-title:clamp(19px,2.2vw,26px)}
 *{box-sizing:border-box}
 html,body{height:100%;margin:0}
-body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:'DM Sans',Arial,sans-serif}
-.row{flex:1;min-height:0;display:flex;gap:clamp(14px,2vw,28px);overflow-x:auto;overflow-y:hidden;padding:clamp(14px,3vh,28px) clamp(16px,3vw,32px);scroll-snap-type:x mandatory}
-.slot{flex:0 0 auto;margin:auto 0;width:min(max(190px,calc((100vw - 64px - 140px)/6)),calc((100dvh - 150px)*5/7),440px);container-type:inline-size;display:flex;flex-direction:column;gap:8px;scroll-snap-align:center}
-@media (max-width:620px){.slot{width:min(82vw,calc((100dvh - 120px)*5/7))}}
-@media (max-height:460px){body{overflow:auto;height:auto}.row{flex:none}.slot{width:260px}}
-.label{font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:1.4px;color:var(--soft);text-align:center}
+body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:'DM Sans',Arial,sans-serif;
+  padding:0 max(0px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(0px,env(safe-area-inset-left))}
+header{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 16px;padding:clamp(10px,2vh,18px) clamp(16px,3vw,32px) clamp(8px,1.4vh,12px)}
+h1{margin:0;font-family:'Space Grotesk',sans-serif;font-size:var(--t-title);font-weight:600}
+h1 span{color:var(--pink)}
+.count{font-size:var(--t-small);color:var(--soft)}
+/* The one scrolling panel: the deck grid */
+.deck{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:clamp(8px,1.6vh,16px) clamp(16px,3vw,32px) 28px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(230px,22vw,300px),1fr));gap:clamp(16px,2vw,26px);align-content:start}
+@media (max-width:520px){.deck{grid-template-columns:1fr;justify-items:center}.deck .slot{width:min(86vw,360px)}}
+.slot{container-type:inline-size;width:100%}
 
 /* flip */
-.card{width:100%;aspect-ratio:5/7;perspective:1600px;cursor:pointer;border:0;padding:0;background:none;font:inherit;color:inherit;display:block}
+.card{position:relative;width:100%;aspect-ratio:5/7;perspective:1600px;cursor:pointer;outline:none}
 .card:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:3cqw}
 .inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
 .card.flipped .inner{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3cqw;overflow:hidden;box-shadow:0 2cqw 5cqw #0008;text-align:left;display:flex;flex-direction:column;padding:3.6cqw 4cqw;gap:2cqw;color:#2a1f2c}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3cqw;overflow:hidden;box-shadow:0 2cqw 5cqw #0008;display:flex;flex-direction:column;padding:4cqw 4.4cqw;gap:2.4cqw;color:#2a1f2c}
 .back{transform:rotateY(180deg)}
 @media (prefers-reduced-motion:reduce){.inner{transition:none}}
-
-/* Backgrounds by rarity. 1-2 plain; 3 soft prism; 4 holographic; 5 holographic with sparkle. */
-.lv1 .face{background:#f2ece8}
-.lv2 .face{background:linear-gradient(160deg,#eef3f7,#e3ecf3)}
-.lv3 .face{background:linear-gradient(135deg,#fde8ef,#efe3fb 30%,#e1f3f6 55%,#fbf0d9 80%,#fde8ef)}
-.lv4 .face,.lv5 .face{background:linear-gradient(125deg,#ffb3d6,#cfb0ff 16%,#9fdcff 32%,#b6ffd7 48%,#ffe99a 64%,#ffb3d6 80%,#cfb0ff);background-size:200% 200%;animation:prism 8s ease-in-out infinite alternate}
-.lv4 .face::before,.lv5 .face::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,#ffffff00 0 3cqw,#ffffff88 3cqw 3.8cqw,#ffffff00 3.8cqw 7cqw),linear-gradient(115deg,transparent 35%,#ffffffaa 48%,transparent 60%);background-size:auto,260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:sweep 5s ease-in-out infinite}
-@keyframes sweep{0%{background-position:0 0,130% 0}55%,100%{background-position:0 0,-70% 0}}
-.lv3 .face::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,#ffffff88 48%,transparent 58%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:sweep2 7s ease-in-out infinite}
-@keyframes sweep2{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
-.lv5 .face::after{content:"";position:absolute;inset:0;background-image:radial-gradient(#ffffff 0.35cqw,transparent 0.5cqw),radial-gradient(#fff8 0.25cqw,transparent 0.4cqw);background-size:9cqw 11cqw,6cqw 7cqw;background-position:1cqw 2cqw,4cqw 5cqw;opacity:.7;pointer-events:none;animation:twinkle 3s ease-in-out infinite alternate}
-@keyframes prism{from{background-position:0% 30%}to{background-position:100% 70%}}
-@keyframes twinkle{from{opacity:.35}to{opacity:.8}}
-@media (prefers-reduced-motion:reduce){.face,.face::before,.face::after{animation:none!important}}
 .face>*{position:relative;z-index:1}
-/* Author's Edition: a card its author revised. Rarest of all: gold foil and drifting gold sparkles over any level. */
+
+/* Rarity backgrounds */
+.lv1 .face{background:#f2ece8}
+.lv2 .face{background:linear-gradient(160deg,#eef3f7,#dde8f1)}
+.lv3 .face{background:linear-gradient(135deg,#fde8ef,#efe3fb 30%,#e1f3f6 55%,#fbf0d9 80%,#fde8ef)}
+.lv3 .face::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,#ffffff88 48%,transparent 58%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:sweep 7s ease-in-out infinite}
+.lv4 .face{background:linear-gradient(125deg,#ffb3d6,#cfb0ff 16%,#9fdcff 32%,#b6ffd7 48%,#ffe99a 64%,#ffb3d6 80%,#cfb0ff);background-size:200% 200%;animation:prism 8s ease-in-out infinite alternate}
+.lv4 .face::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,#ffffff00 0 3cqw,#ffffff88 3cqw 3.8cqw,#ffffff00 3.8cqw 7cqw);mix-blend-mode:overlay;pointer-events:none}
+/* Legendary = gold, with a rainbow holo sheen running through it */
+.lv5 .face{background:linear-gradient(135deg,#fff1c4,#eec766 22%,#fff6da 42%,#e2b04a 62%,#fbe3a0 82%,#d9a53f);background-size:200% 200%;animation:prism 8s ease-in-out infinite alternate}
+.lv5 .face::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,#ff9ccf00 0 4cqw,#ff9ccf55 4cqw 4.6cqw,#9fdcff55 4.6cqw 5.2cqw,#b6ffd755 5.2cqw 5.8cqw,#ff9ccf00 5.8cqw 10cqw);mix-blend-mode:soft-light;pointer-events:none}
+.lv5 .face::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,#ffffffbb 48%,transparent 58%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:sweep 5s ease-in-out infinite}
+/* Author's Edition: its author approved or revised it. Gold, a seal, drifting gold sparkles. */
 .author .face{background:linear-gradient(135deg,#fff3cf,#f7d98a 25%,#fff7e0 45%,#f0c86a 65%,#fff3cf 85%);background-size:200% 200%;animation:prism 7s ease-in-out infinite alternate}
-.author .face::after{content:"";position:absolute;inset:0;pointer-events:none;
-  background-image:radial-gradient(#fff 0.4cqw,transparent 0.6cqw),radial-gradient(#ffe08a 0.5cqw,transparent 0.75cqw),radial-gradient(#fff 0.3cqw,transparent 0.45cqw);
-  background-size:12cqw 14cqw,17cqw 19cqw,8cqw 9cqw;animation:drift 6s linear infinite}
+.author .face::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(#fff 0.4cqw,transparent 0.6cqw),radial-gradient(#ffe08a 0.5cqw,transparent 0.75cqw),radial-gradient(#fff 0.3cqw,transparent 0.45cqw);background-size:12cqw 14cqw,17cqw 19cqw,8cqw 9cqw;animation:drift 6s linear infinite}
+@keyframes prism{from{background-position:0% 30%}to{background-position:100% 70%}}
+@keyframes sweep{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
 @keyframes drift{from{background-position:0 0,3cqw 5cqw,6cqw 2cqw}to{background-position:0 -14cqw,3cqw -14cqw,6cqw -16cqw}}
-.author .face::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,#ffffffcc 48%,transparent 58%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:sweep2 4s ease-in-out infinite}
-.seal{position:absolute;right:6cqw;top:16cqw;z-index:2;width:17cqw;height:17cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d6,#e3b047 60%,#b9862a);color:#4a3210;display:grid;place-items:center;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2.2cqw;line-height:1.1;letter-spacing:.15cqw;box-shadow:0 .8cqw 2cqw #5a3c0e55;transform:rotate(-12deg)}
-.seal b{display:block;font-size:4.2cqw}
-.toast{align-self:center;max-width:100%;font-size:12px;line-height:1.35;color:#2a1f2c;background:#ffe9a8;border-radius:12px;padding:8px 12px;box-shadow:0 4px 14px #0006}
+@media (prefers-reduced-motion:reduce){.face,.face::before,.face::after{animation:none!important}}
 
-/* Front */
-.namebar{display:flex;align-items:center;gap:1.8cqw}
-.stage{font-size:2.4cqw;font-weight:700;letter-spacing:.3cqw;padding:.6cqw 1.6cqw;border-radius:1cqw;background:#2a1f2c14;white-space:nowrap}
-.name{flex:1;margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:5.8cqw;line-height:1;letter-spacing:-.2cqw}
-.lv{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:3cqw;white-space:nowrap}
-.lv b{font-size:5.8cqw}
-.icon{flex:none;width:6.6cqw;height:6.6cqw;border-radius:50%;display:grid;place-items:center;background:#e98fb9;color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:3.2cqw}
-.window{flex:0 0 auto;height:56%;border-radius:1.6cqw;overflow:hidden;background:#d9c6d1;box-shadow:0 .5cqw 1.6cqw #2a1f2c33}
+/* Front, bigger text */
+.namebar{display:flex;align-items:center;gap:2cqw}
+.stage{font-size:3.4cqw;font-weight:700;letter-spacing:.2cqw;padding:.8cqw 1.8cqw;border-radius:1.2cqw;background:#2a1f2c16;white-space:nowrap}
+.name{flex:1;margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:6.8cqw;line-height:1.02;letter-spacing:-.2cqw}
+.lv{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:4cqw;white-space:nowrap}
+.lv b{font-size:7cqw}
+.window{flex:0 0 auto;height:45%;border-radius:2cqw;overflow:hidden;background:#d9c6d1;box-shadow:0 .6cqw 1.8cqw #2a1f2c33}
 .window img{width:100%;height:100%;object-fit:cover;display:block}
-.info{margin-top:-.6cqw;font-size:2.4cqw;font-style:italic;text-align:center;opacity:.75}
-.moves{display:flex;flex-direction:column}
-.move{display:grid;grid-template-columns:11cqw 1fr auto;align-items:center;gap:1.6cqw;padding:1.3cqw 0;border-top:.25cqw solid #2a1f2c1f}
-.move:first-child{border-top:0}
-.cost{display:flex;gap:.8cqw}
-.cost i{width:3.8cqw;height:3.8cqw;border-radius:50%;background:#e98fb9;display:grid;place-items:center;font-style:normal;font-size:2.4cqw;color:#fff}
-.cost i.y{background:#f0bf4c}
-.move h3{margin:0;font-family:'Space Grotesk',sans-serif;font-size:4cqw;font-weight:700}
-.move .dmg{font-family:'Space Grotesk',sans-serif;font-size:5cqw;font-weight:700}
-.stats{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;border-top:.25cqw solid #2a1f2c1f;padding-top:1.4cqw}
-.stats span{font-size:2.2cqw;opacity:.7;display:block}
-.stats b{font-size:2.8cqw}
-.foot{display:flex;justify-content:space-between;align-items:center;font-size:2.2cqw;opacity:.75}
-.foot .mark{font-size:3cqw;opacity:1}
+.seal{position:absolute;right:6cqw;top:15cqw;z-index:2;width:18cqw;height:18cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d6,#e3b047 60%,#b9862a);color:#4a3210;display:grid;place-items:center;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2.6cqw;line-height:1.1;box-shadow:0 .8cqw 2cqw #5a3c0e55;transform:rotate(-12deg)}
+.seal b{display:block;font-size:4.6cqw}
+.move{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2cqw;padding:1.4cqw 0;border-top:.3cqw solid #2a1f2c22}
+.move:first-of-type{border-top:0}
+.cost{display:flex;gap:1cqw}
+.cost i{width:5cqw;height:5cqw;border-radius:50%;background:#e98fb9;display:grid;place-items:center;font-style:normal;font-size:3cqw;font-weight:700;color:#fff}
+.cost i.y{background:#e0a92e}
+.move h3{margin:0;font-family:'Space Grotesk',sans-serif;font-size:5.4cqw;font-weight:700;line-height:1.1}
+.move .dmg{font-family:'Space Grotesk',sans-serif;font-size:6.6cqw;font-weight:700}
+.stats{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;border-top:.3cqw solid #2a1f2c22;padding-top:1.6cqw}
+.stats span{font-size:3.6cqw;opacity:.75;display:block}
+.stats b{font-size:4.2cqw}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:2cqw;font-size:3.8cqw}
+.foot a{color:inherit;font-weight:700;text-decoration:none;background:#2a1f2c14;border-radius:9cqw;padding:1.2cqw 3cqw;white-space:nowrap}
+.foot a:hover,.foot a:focus-visible{background:#2a1f2c26}
+.foot .no{opacity:.8;white-space:nowrap}
 
-/* Back */
+/* Back: three sections in big text, double-line border tinted by rarity */
 .back{gap:3cqw;padding:9cqw 9cqw 7cqw;justify-content:space-between}
-/* The back's border (Astra, 2026-11-13): a double line just inside the edge, tinted by rarity. */
-.back .rim{position:absolute;inset:3cqw;border:.5cqw solid var(--rim,#2a1f2c55);border-radius:2cqw;box-shadow:inset 0 0 0 1.2cqw transparent,inset 0 0 0 1.45cqw var(--rim2,#2a1f2c22);pointer-events:none;z-index:2}
+.back .rim{position:absolute;inset:3cqw;border:.5cqw solid var(--rim,#2a1f2c55);border-radius:2cqw;box-shadow:inset 0 0 0 1.45cqw var(--rim2,#2a1f2c22);pointer-events:none;z-index:2}
 .lv2 .back{--rim:#5d7d95;--rim2:#5d7d9533}
 .lv3 .back{--rim:#b88a3c;--rim2:#b88a3c33}
-.lv4 .back,.lv5 .back{--rim:#8a63c9;--rim2:#8a63c944}
-.author .back{--rim:#b9862a;--rim2:#b9862a55}
-.back .sec h4{font-size:3.4cqw;letter-spacing:.35cqw;margin-bottom:1.2cqw}
-.back .sec p.t{font-size:6.2cqw;line-height:1.25;font-weight:500;margin:0}
-.back .foot{font-size:3.2cqw;opacity:.85}
-.back .foot a{color:inherit;font-weight:700}
-.back .kick{display:flex;justify-content:space-between;font-family:'Space Grotesk',sans-serif;font-size:2.5cqw;font-weight:700;letter-spacing:.35cqw;opacity:.75}
-.back .title{margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:4.8cqw;line-height:1.12}
-.back h4{margin:0;font-family:'Space Grotesk',sans-serif;font-size:2.4cqw;letter-spacing:.4cqw;color:#a24f78}
-.back p.t{margin:.4cqw 0 0;font-size:3.1cqw;line-height:1.36}
-.back .small{font-size:2.6cqw;line-height:1.35;opacity:.8}
-.back .links{margin-top:auto;display:flex;gap:2cqw}
-.back .links a{flex:1;text-align:center;font-size:2.8cqw;font-weight:600;color:inherit;background:#2a1f2c12;border-radius:9cqw;padding:2cqw 1cqw;text-decoration:none}
+.lv4 .back{--rim:#8a63c9;--rim2:#8a63c944}
+.lv5 .back,.author .back{--rim:#b9862a;--rim2:#b9862a55}
+.back h4{margin:0 0 1.2cqw;font-family:'Space Grotesk',sans-serif;font-size:3.6cqw;letter-spacing:.35cqw;color:#a24f78}
+.back p{margin:0;font-size:6.2cqw;line-height:1.25;font-weight:500}
+.back .bfoot{display:flex;justify-content:space-between;font-size:3.6cqw;opacity:.8}
+
+.toast{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;max-width:min(92vw,420px);font-size:14px;line-height:1.35;color:#2a1f2c;background:#ffe9a8;border-radius:14px;padding:10px 14px;box-shadow:0 6px 20px #0008;display:flex;gap:10px;align-items:center}
+.toast button{font:inherit;font-size:13px;border:0;background:#2a1f2c18;border-radius:10px;padding:6px 10px;min-height:32px;cursor:pointer}
 </style>
 </head>
 <body>
-<main class="row" id="row"></main>
+<header>
+<h1>My deck <span>· tap a card to flip it</span></h1>
+<span class="count" id="count"></span>
+</header>
+<main class="deck" id="deck"></main>
+<div class="toast" id="toast" role="status"><span>✨ Your card <b>Pattern Listener</b> was approved by its author.</span><button type="button" onclick="this.parentElement.remove()">OK</button></div>
 <script>
 'use strict';
-const P={name:'Pattern Listener',subject:'Psychology',initial:'Ψ',info:'Psychology · newborns · brain recordings (EEG)',
-  headline:'A newborn’s brain is already listening for the pattern.',
-  hook:'Babies only a few days old showed brain responses to repeating patterns in speech sounds and voices.',
-  found:'Newborns heard carefully built sound streams while their brain activity was recorded. Their brains tracked repeating syllable patterns even when the voice changed, and voice patterns even when the syllables changed.',
-  matters:'Learning language may start with a broad pattern detector we are born with.',
-  small:'Brain responses to artificial sounds don’t show that newborns understand words.',
-  // The back holds only these three, written short so they read at card size (Astra, 2026-11-13).
-  shortHook:'Babies just days old already notice sound patterns.',
-  shortFound:'Their brains tracked repeats in syllables and in voices, even when the other kept changing.',
-  shortMatters:'We may be born with a pattern finder that helps us learn to talk.',
-  journal:'eLife 2025',no:'000,128',set:'Brains & Babies',art:'../public/art/curious-brain-20261113.webp',alt:'A curious cartoon brain with a magnifying glass'};
-const LEVELS=[null,{n:'Curious',r:'Common',m:'●',stage:'BASIC',read:'1 min'},{n:'Reader',r:'Uncommon',m:'◆',stage:'BASIC',read:'2 min'},
-  {n:'College',r:'Rare',m:'★',stage:'STAGE 1',read:'3 min'},{n:'Grad',r:'Holo rare',m:'★',stage:'STAGE 1',read:'5 min'},{n:'PhD coffee',r:'Legendary',m:'✦',stage:'STAGE 2',read:'7 min'}];
+// Sample deck from Paper Girl's prepared papers. Names, moves and the short back lines are draft text by Claude;
+// Paper Patty writes these for real cards. Pictures are placeholders until OpenAI draws one per paper.
+const ART=['curious-brain','ecology-friends','cosmic-curiosity'];
+const STAGE={1:'BASIC',2:'BASIC',3:'STAGE 1',4:'STAGE 1',5:'STAGE 2'};
+const RAR={1:['Common','●'],2:['Uncommon','◆'],3:['Rare','★'],4:['Holo rare','★'],5:['Legendary','✦']};
+const READ={1:'1 min',2:'2 min',3:'3 min',4:'5 min',5:'7 min'};
+const CARDS=[
+ {lv:3,author:true,name:'Pattern Listener',icon:'Ψ',art:0,no:'000,128',url:'https://doi.org/10.7554/elife.101802',moves:['Pattern Sense','Voice Tracker'],weak:'small study',strong:'careful test',
+  hook:'Babies just days old already notice sound patterns.',found:'Their brains tracked repeats in syllables and in voices, even when the other kept changing.',matters:'We may be born with a pattern finder that helps us learn to talk.'},
+ {lv:1,name:'Tiny Gardener',icon:'🌱',art:1,no:'000,131',url:'https://doi.org/10.7554/elife.111340',moves:['Weed Clip','Yak Feast'],weak:'one season',strong:'field test',
+  hook:'Pika, called pests, may be a yak’s best friend.',found:'Yaks gained more weight where some pika lived, because pika clip a poisonous plant.',matters:'Wiping out a “pest” can backfire on the animals we care about.'},
+ {lv:2,name:'Babbling Bat',icon:'🦇',art:2,no:'000,140',url:'https://doi.org/10.7554/elife.99474',moves:['Pup Babble','Mom Coach'],weak:'few pups',strong:'long recordings',
+  hook:'Baby bats babble, just like human babies.',found:'Pups with more involved mothers practiced longer and sounded more grown-up.',matters:'Learning to talk may lean on caring parents in many animals.'},
+ {lv:4,name:'Color Number',icon:'Ψ',art:0,no:'000,152',url:'https://doi.org/10.7554/elife.110390',moves:['Gray Seven','Pupil Flash'],weak:'few people',strong:'eye measure',
+  hook:'For some people, a gray number looks colored.',found:'Their pupils reacted to the color they experienced, though the screen stayed gray.',matters:'The colors are real enough that the body responds to them.'},
+ {lv:5,name:'Footprint Comeback',icon:'🌍',art:1,no:'000,163',url:'https://doi.org/10.7554/elife.104205',moves:['Track Read','Life Rebound'],weak:'old rocks',strong:'many tracks',
+  hook:'Ancient footprints show life bouncing back after disaster.',found:'Two million years after the worst mass extinction, rivers held a rich community again.',matters:'Recovery after catastrophe can be faster than we thought.'},
+ {lv:2,name:'Shark Toolbox',icon:'🦈',art:2,no:'000,170',url:'https://doi.org/10.7554/elife.107406',moves:['Tooth Clue','Full Smile'],weak:'fossils only',strong:'whole jaws',
+  hook:'One shark tooth is a clue; the whole mouth tells the story.',found:'The mix of teeth across a jaw revealed where a shark lived.',matters:'Fossil hunters can read habitats from tooth sets, not single teeth.'},
+ {lv:3,name:'Neighbor Alarm',icon:'⚗',art:1,no:'000,177',url:'https://doi.org/10.7554/elife.89855',moves:['Scent Signal','Early Shield'],weak:'one crop',strong:'clear test',
+  hook:'A plant can hear its neighbor scream, by smell.',found:'An undamaged maize plant reacted to a chewed neighbor’s airborne chemicals.',matters:'Plants may warn each other before pests arrive.'},
+ {lv:1,name:'Spider Memory',icon:'🕷',art:0,no:'000,181',url:'https://doi.org/10.7554/elife.97146',moves:['Hello Again','Stranger Check'],weak:'lab only',strong:'repeat trials',
+  hook:'A tiny loner spider may remember who it has met.',found:'Jumping spiders told a familiar spider from a stranger.',matters:'Big social smarts can fit in a very small brain.'},
+ {lv:4,name:'Striped Farm',icon:'🌍',art:1,no:'000,190',url:'https://doi.org/10.7554/elife.104762',moves:['Strip Crop','Beetle Boost'],weak:'few farms',strong:'real fields',
+  hook:'Stripes of crops can bring more beetles to dinner.',found:'Fields with alternating crop strips held a richer mix of ground beetles.',matters:'Simple planting changes can help helpful insects.'},
+ {lv:3,name:'Poison Cocktail',icon:'⚗',art:2,no:'000,196',url:'https://doi.org/10.7554/elife.109003',moves:['Toxin Armor','Mix Overload'],weak:'lab plants',strong:'many toxins',
+  hook:'Even a poison expert can choke on the cocktail.',found:'Monarch caterpillars that handle one milkweed poison struggled with a mixture.',matters:'Handling one danger is not the same as handling many.'},
+];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const row=document.getElementById('row');
-// Cards 1-5 are the five levels; card 6 is the same level-3 card after its author revised it.
-for(let k=1;k<=6;k++){
-  const author=k===6, lv=author?3:k;
-  const L=author?{...LEVELS[3],r:"Author's Edition",m:'✍'}:LEVELS[lv];
-  const slot=document.createElement('div');slot.className='slot '+(author?'author':'lv'+lv);
-  slot.innerHTML=`${author?`<div class="toast">✨ Your card <b>${esc(P.name)}</b> was approved by its author.</div>`:''}<div class="label">${author?"AUTHOR'S EDITION · rarest":`LV ${lv} · ${L.r.toUpperCase()}`}</div>
-  <button class="card" aria-pressed="false" aria-label="${esc(P.name)}, level ${lv}, ${L.r}. Tap to flip."><div class="inner">
+const deck=document.getElementById('deck');
+for(const c of CARDS){
+  const [rar,mark]=c.author?["Author's Edition",'✍']:RAR[c.lv];
+  const slot=document.createElement('div');slot.className='slot '+(c.author?'author':'lv'+c.lv);
+  slot.innerHTML=`<div class="card" role="button" tabindex="0" aria-pressed="false" aria-label="${esc(c.name)}, ${rar}, level ${c.lv}. Tap to flip."><div class="inner">
    <div class="face front">
-    <div class="namebar"><span class="stage">${L.stage}</span><p class="name">${esc(P.name)}</p><span class="lv">LV <b>${lv}</b></span><span class="icon" aria-hidden="true">${P.initial}</span></div>
-    <div class="window"><img src="${P.art}" alt="${esc(P.alt)}"></div>${author?`<div class="seal" aria-label="Author's Edition"><span><b>✍</b>AUTHOR'S<br>EDITION</span></div>`:''}
-    <div class="info">${esc(P.info)}</div>
-    <div class="moves">
-     <div class="move"><span class="cost"><i>Ψ</i></span><h3>Pattern Sense</h3><span class="dmg">${20+lv*10}</span></div>
-     <div class="move"><span class="cost"><i>Ψ</i><i class="y">★</i></span><h3>Voice Tracker</h3><span class="dmg">${40+lv*20}</span></div>
-    </div>
-    <div class="stats"><div><span>weakness</span><b>small study</b></div><div><span>strength</span><b>careful test</b></div><div><span>read</span><b>${L.read}</b></div></div>
-    <div class="foot"><span>${esc(P.journal)} · ${esc(P.set)}</span><span><span class="mark">${L.m}</span> ${P.no}</span></div>
+    <div class="namebar"><span class="stage">${STAGE[c.lv]}</span><p class="name">${esc(c.name)}</p><span class="lv">LV <b>${c.lv}</b></span></div>
+    <div class="window"><img src="../public/art/${ART[c.art]}-20261113.webp" alt="" loading="lazy"></div>
+    ${c.author?`<div class="seal" aria-hidden="true"><span><b>✍</b>AUTHOR'S<br>EDITION</span></div>`:''}
+    <div class="move"><span class="cost"><i>${c.icon}</i></span><h3>${esc(c.moves[0])}</h3><span class="dmg">${20+c.lv*10}</span></div>
+    <div class="move"><span class="cost"><i>${c.icon}</i><i class="y">★</i></span><h3>${esc(c.moves[1])}</h3><span class="dmg">${40+c.lv*20}</span></div>
+    <div class="stats"><div><span>weakness</span><b>${esc(c.weak)}</b></div><div><span>strength</span><b>${esc(c.strong)}</b></div><div><span>read</span><b>${READ[c.lv]}</b></div></div>
+    <div class="foot"><a href="${c.url}" target="_blank" rel="noreferrer">Read the paper ↗</a><span class="no">${mark} ${c.no}</span></div>
    </div>
    <div class="face back">
     <div class="rim" aria-hidden="true"></div>
-    <div class="sec"><h4>STRANGE HOOK</h4><p class="t">${esc(P.shortHook)}</p></div>
-    <div class="sec"><h4>WHAT THEY FOUND</h4><p class="t">${esc(P.shortFound)}</p></div>
-    <div class="sec"><h4>WHY IT MATTERS</h4><p class="t">${esc(P.shortMatters)}</p></div>
-    <div class="foot"><a href="#" onclick="event.stopPropagation()">Read the paper ↗</a><span>${author?'✍ ':''}No. ${P.no}</span></div>
-   </div>
-  </div></button>`;
+    <div><h4>STRANGE HOOK</h4><p>${esc(c.hook)}</p></div>
+    <div><h4>WHAT THEY FOUND</h4><p>${esc(c.found)}</p></div>
+    <div><h4>WHY IT MATTERS</h4><p>${esc(c.matters)}</p></div>
+    <div class="bfoot"><span>${esc(rar)}</span><span>No. ${c.no}</span></div>
+   </div></div></div>`;
   const card=slot.querySelector('.card');
-  card.addEventListener('click',()=>{const on=card.classList.toggle('flipped');card.setAttribute('aria-pressed',String(on))});
-  row.append(slot);
+  const flip=()=>{const on=card.classList.toggle('flipped');card.setAttribute('aria-pressed',String(on))};
+  card.addEventListener('click',e=>{if(e.target.closest('a'))return;flip()});
+  card.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('a')){e.preventDefault();flip()}});
+  deck.append(slot);
 }
+document.getElementById('count').textContent=`${CARDS.length} cards`;
 </script>
 </body>
 </html>
