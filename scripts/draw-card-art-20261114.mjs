@@ -16,12 +16,12 @@ const DECK = new URL('../lib/data/sample-deck-20261114.json', import.meta.url);
 const OUT = new URL('../public/art/cards/', import.meta.url);
 // The 1024 px originals stay out of the published site, next to the repo's other sources.
 const ORIGINALS = new URL('../art-originals/cards/', import.meta.url);
+// Astra's pick, 2026-11-14: style E, retro Saturday-morning cartoon, with the subject's real setting from its paper as
+// the background (`drawing.scene`). Drafts of all five styles: docs/art-styles-20261114.html.
 const STYLE = [
-  'Style: a cute hand-drawn cartoon illustration like the pictures in a friendly children\'s science book.',
-  'Soft warm colors on a plain cream background, clean confident outlines, gentle shading, a happy little face where it fits.',
-  'Only this one subject, centered, filling most of the square, scientifically recognizable.',
-  'No stars, sparkles, flowers, planets, glitter, hearts or extra objects. No text, letters or numbers except any the subject itself is.',
-  'Cute and simple, not girly.',
+  'Style: retro 1990s Saturday-morning cartoon cel with a hand-painted gouache background, warm grainy colors, bouncy rubber-hose energy.',
+  'One clear main subject, cartoonish and cute but not girly, filling most of the square, scientifically recognizable.',
+  'No text, letters, logos, stars, sparkles or hearts (except numbers that are the subject itself).',
 ].join(' ');
 // gpt-image-1 is gone from the API (2026-11-14); PAPER_PATTY_IMAGE_MODEL picks another without editing this file.
 const MODEL = process.env.PAPER_PATTY_IMAGE_MODEL || 'gpt-image-2';
@@ -40,9 +40,9 @@ if (!dry && !key) { console.error('PAPERGIRL_PATTY_OPENAI_API_KEY is not set. No
 mkdirSync(OUT, {recursive: true}); mkdirSync(ORIGINALS, {recursive: true});
 
 for (const card of todo) {
-  const prompt = `${card.drawing.subject}. ${STYLE}`;
+  const prompt = `${card.drawing.subject}. ${card.drawing.scene || ''} ${STYLE}`.replace(/\s+/g, ' ');
   if (dry) { console.log(`\n[${card.drawing.slug}] ${prompt}`); continue; }
-  const name = `${card.drawing.slug}-${today}`;
+  const name = `${card.drawing.slug}-e-${today}`;
   const pngPath = fileURLToPath(new URL(`${name}.png`, ORIGINALS)), webpPath = fileURLToPath(new URL(`${name}.webp`, OUT));
   // A picture already drawn today is reused (never paid for twice), unless --redo.
   if (existsSync(pngPath) && !redo) {

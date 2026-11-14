@@ -4,7 +4,7 @@
   "name": "Spider Memory",
   "subject": "Biology",
   "src": "eLife 2025",
-  "art": "cards/jumping-spider-20261114.webp",
+  "art": "cards/jumping-spider-e-20261114.webp",
   "no": "000,181",
   "url": "https://doi.org/10.7554/elife.97146",
   "headline": "A tiny spider may remember who it has met.",
@@ -13,7 +13,9 @@
   "matters": "Big social smarts can fit in a very small brain.",
   "drawing": {
    "slug": "jumping-spider",
-   "subject": "a cute jumping spider (Salticidae) with its two huge shiny front eyes, fuzzy round body and short legs, looking up curiously as if it recognizes a friend"
+   "subject": "a cute jumping spider (Salticidae) with its two huge shiny front eyes, fuzzy round body and short legs, looking up curiously as if it recognizes a friend",
+   "scene": "Background: the sunny edge of a garden leaf and a stone wall where jumping spiders hunt, softly out of focus.",
+   "style": "e"
   }
  },
  {
@@ -21,7 +23,7 @@
   "name": "Babbling Bat",
   "subject": "Biology",
   "src": "eLife 2025",
-  "art": "cards/bat-pup-20261114.webp",
+  "art": "cards/bat-pup-e-20261114.webp",
   "no": "000,140",
   "url": "https://doi.org/10.7554/elife.99474",
   "headline": "Baby bats may benefit from more than a song playlist.",
@@ -30,7 +32,9 @@
   "matters": "Learning to talk may lean on caring parents in many animals.",
   "drawing": {
    "slug": "bat-pup",
-   "subject": "a cute baby bat pup hanging upside down from a branch, mouth open mid-babble, with two or three small curved sound lines coming from its mouth"
+   "subject": "a cute baby bat pup hanging upside down from a branch, mouth open mid-babble, with two or three small curved sound lines coming from its mouth",
+   "scene": "Background: the inside of a cave roost at dusk with its mother and other bats hanging in soft shadow behind.",
+   "style": "e"
   }
  },
  {
@@ -38,7 +42,7 @@
   "name": "Tiny Gardener",
   "subject": "Biology",
   "src": "eLife 2026",
-  "art": "cards/pika-20261114.webp",
+  "art": "cards/pika-e-20261114.webp",
   "no": "000,131",
   "url": "https://doi.org/10.7554/elife.111340",
   "headline": "A yak’s best friend might be a tiny gardener.",
@@ -47,7 +51,9 @@
   "matters": "Wiping out a “pest” can backfire on the animals we care about.",
   "drawing": {
    "slug": "pika",
-   "subject": "a cute pika (a small round-eared mountain mammal, like a tiny tailless rabbit) holding a clipped sprig of a poisonous purple-flowered plant in its mouth"
+   "subject": "a cute pika (a small round-eared mountain mammal, like a tiny tailless rabbit) holding a clipped sprig of a poisonous purple-flowered plant in its mouth",
+   "scene": "Background: a high grassy alpine meadow of the Qinghai-Tibetan Plateau with rocks, short grass and a yak grazing far away.",
+   "style": "e"
   }
  },
  {
@@ -55,7 +61,7 @@
   "name": "Color Number",
   "subject": "Psychology",
   "src": "eLife 2026",
-  "art": "cards/colored-seven-20261114.webp",
+  "art": "cards/colored-seven-e-20261114.webp",
   "no": "000,152",
   "url": "https://doi.org/10.7554/elife.110390",
   "headline": "A gray number can make an eye react to color.",
@@ -64,7 +70,9 @@
   "matters": "The colors are real enough that the body responds to them.",
   "drawing": {
    "slug": "colored-seven",
-   "subject": "a cute gray number 7 character that glows warm orange around its edges, showing how a person with synesthesia sees a color in a gray number, with one big round curious eye beside it whose pupil is wide"
+   "subject": "a cute gray number 7 character that glows warm orange around its edges, showing how a person with synesthesia sees a color in a gray number, with one big round curious eye beside it whose pupil is wide",
+   "scene": "Background: a calm lab table with a computer screen showing gray numbers, like a perception experiment.",
+   "style": "e"
   }
  },
  {
@@ -73,7 +81,7 @@
   "name": "Pattern Listener",
   "subject": "Psychology",
   "src": "eLife 2025",
-  "art": "cards/newborn-eeg-20261114.webp",
+  "art": "cards/newborn-eeg-e-20261114.webp",
   "no": "000,128",
   "url": "https://doi.org/10.7554/elife.101802",
   "headline": "A newborn’s brain is already listening for the pattern.",
@@ -82,7 +90,9 @@
   "matters": "We may be born with a pattern finder that helps us learn to talk.",
   "drawing": {
    "slug": "newborn-eeg",
-   "subject": "a cute sleeping newborn baby wearing a soft blue EEG cap with small round electrodes, with gentle sound waves reaching its ear"
+   "subject": "a cute sleeping newborn baby wearing a soft blue EEG cap with small round electrodes, with gentle sound waves reaching its ear",
+   "scene": "Background: a cozy hospital nursery with a crib and a soft monitor showing brain-wave lines.",
+   "style": "e"
   }
  }
 ]
