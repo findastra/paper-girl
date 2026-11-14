@@ -776,3 +776,9 @@ body:has(.deck-mode){background:#8f8b91}
 .rc-t4{background:linear-gradient(90deg,#ffd1e6,#e0ccff,#c7ecff,#d6ffe9,#fff2c2)}
 .rc-t5{background:linear-gradient(90deg,#e8bb52,#fff1c4 50%,#d29a32)}
 .rc-examples{margin:0;padding-left:18px;font-size:14px;line-height:1.5}
+
+/* How to play: the draw odds table sits in the same style as the rarity chart */
+.howto-odds{width:100%;border-collapse:collapse;font-size:14px;margin:4px 0 8px}
+.howto-odds th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.7;padding:4px 8px;border-bottom:1px solid #00000033}
+.howto-odds td{padding:5px 8px;border-bottom:1px solid #00000014}
+.howto-odds td:last-child{font-variant-numeric:tabular-nums;font-weight:700}
