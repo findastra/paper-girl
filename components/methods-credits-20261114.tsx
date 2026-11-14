@@ -39,7 +39,7 @@ export function MethodsCredits(){
   <ul>
    <li><b>Game design:</b> Astra.</li>
    <li><b>The science:</b> each paper’s authors and journal, used under their CC BY licenses (see the card’s
-    bibliography and More information).</li>
+    bibliography and More Information).</li>
    <li><b>Paper search:</b> Europe PMC.</li>
    <li><b>Writing:</b> Claude (Anthropic). <b>Card pictures:</b> OpenAI’s image model.</li>
    <li><b>Fonts:</b> Luckiest Guy, Caveat, DM Sans and Space Grotesk, from Google Fonts.</li>

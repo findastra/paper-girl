@@ -1481,3 +1481,13 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 .pick-actions .pick-divider{margin-top:14px!important}
 /* The four buttons each start with a little icon, like the printer on Order my deck */
 .pick-order svg,.pick-more svg{flex:none;width:16px;height:16px}
+
+/* "Why it matters": the line beside it is the gold divider stood upright (Astra, 2026-11-14): a 2 px gold line that
+   fades in from the top, the gold star in the middle, and fades out at the bottom, like the dividers by the card */
+.deck-mode .paper-sheet .matters-body{position:relative;padding-left:24px!important;border-left:0!important}
+.deck-mode .paper-sheet .matters-body::before{left:8px!important;width:2px!important;border-radius:2px;box-shadow:none!important;
+ -webkit-mask:linear-gradient(180deg,transparent,#000 35%,#000 calc(50% - 15px),transparent calc(50% - 14px),transparent calc(50% + 14px),#000 calc(50% + 15px),#000 65%,transparent);
+ mask:linear-gradient(180deg,transparent,#000 35%,#000 calc(50% - 15px),transparent calc(50% - 14px),transparent calc(50% + 14px),#000 calc(50% + 15px),#000 65%,transparent)}
+.deck-mode .paper-sheet .matters-body::after{content:"✦";position:absolute;left:0;top:50%;width:18px;transform:translateY(-50%);text-align:center;font-size:18px;line-height:1;
+ font-family:'DM Sans',Arial,sans-serif;background:var(--sheen);background-size:var(--gold-size);background-position:var(--gold-pos,0 0);background-repeat:no-repeat;
+ -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 .5px #9a6814)}

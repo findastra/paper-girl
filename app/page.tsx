@@ -114,10 +114,10 @@ export default function Home(){
   <div className="cotd-below">
   <DrawPicker busy={busy} type={drawType} level={drawLevel} year={drawYear} onType={setDrawType} onLevel={setDrawLevel} onYear={setDrawYear} onDraw={drawFromReels} status={error||drawStatus}>
    {/* Every link is a button here, under the draw buttons, not on the paper (Astra, 2026-11-14) */}
-   {popup(<><CircleHelp size={16} aria-hidden="true"/>How to play</>,'How to play Papermon',<HowToPlay/>,'Collect real science, one card at a time.')}
+   {popup(<><CircleHelp size={16} aria-hidden="true"/>Rules</>,'Rules',<HowToPlay/>,'Collect real science, one card at a time.')}
    {/* Was "Where the science comes from" (Astra, 2026-11-14: "game design methodology and credits or something") */}
-   {popup(<><BookOpen size={16} aria-hidden="true"/>Methods & credits</>,'Methods & credits',<MethodsCredits/>,'How Papermon turns real research into cards.')}
-   {popup(<><Info size={16} aria-hidden="true"/>More information</>,'More about this paper',moreInfo)}
+   {popup(<><BookOpen size={16} aria-hidden="true"/>Methods & Credits</>,'Methods & Credits',<MethodsCredits/>,'How Papermon turns real research into cards.')}
+   {popup(<><Info size={16} aria-hidden="true"/>More Information</>,'More about this paper',moreInfo)}
   </DrawPicker></div></aside>}
  <aside className="art-panel"><div className="window-chrome"><span aria-hidden="true"><i/><i/><i/></span><span>curiosity.exe</span><Sparkles size={13}/></div><div className="art-image"><img src={base+'art/'+artworks[art].file} width={1024} height={1024} alt={artworks[art].alt}/></div><div className="art-caption"><span>{captions[caption]}</span><button onClick={remix} aria-label="Remix cartoon" title="Remix cartoon"><Shuffle size={17}/></button></div><span className="art-note">a little illustration, just for fun</span><div className="margin-note"><Sparkles size={20}/><p>Stay curious,<br/><em>sweet thing.</em></p></div></aside></article>
  <section className="controls" aria-label="Pick your next paper"><div className="controls-heading"><h2>Your next rabbit hole</h2><button className="date-toggle" aria-expanded={advanced} aria-controls="year-controls" onClick={()=>setAdvanced(!advanced)}><SlidersHorizontal size={14}/>{filters.period==='any'?'Any year':filters.period==='recent'?'Past year':filters.period==='older'?'5+ years ago':`${filters.from}–${filters.to}`} {advanced?<Minus size={13}/>:<Plus size={13}/>}</button></div><div className="subject-row">{subjectsUI.map(({name,icon:Icon})=><button key={name} className={filters.topic===name?'subject active':'subject'} aria-pressed={filters.topic===name} onClick={()=>change({topic:name})} disabled={busy}><Icon size={15}/>{name}</button>)}</div>

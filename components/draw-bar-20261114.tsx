@@ -129,7 +129,7 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
    <span className="draw-status" role="status" aria-live="polite">{status}</span>
    {/* Some space, then a fancy gold divider, then the other buttons (Astra, 2026-11-14) */}
    <div className="pick-divider" aria-hidden="true"><i/><span>✦</span><i/></div>
-   <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>setOrdering(o=>!o)}><Printer size={16} aria-hidden="true"/>Order my deck</button>
+   <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>setOrdering(o=>!o)}><Printer size={16} aria-hidden="true"/>Order My Deck</button>
    {children}
    {ordering&&<p className="pick-order-note" role="status">Printed decks are coming soon. Your cards are saved here until then.</p>}
   </div>

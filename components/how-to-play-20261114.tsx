@@ -71,7 +71,7 @@ export function HowToPlay(){
    cards. Tap a card to flip it; its back has buttons for the longer write-up and the original article. The line at
    the top counts your cards by subject, how many you have read, and your minutes of reading.</p>
   <h3>Every day</h3>
-  <p>A new card of the day appears every morning. <b>Order my deck</b> will let you order your cards printed
+  <p>A new card of the day appears every morning. <b>Order My Deck</b> will let you order your cards printed
    (coming soon).</p>
  </div>;
 }
