@@ -128,9 +128,17 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
  </div>;
 }
 
+function OrderDeck(){
+ const [open,setOpen]=useState(false);
+ return <div className="order-deck"><button type="button" className="order-deck-button" aria-expanded={open} onClick={()=>setOpen(o=>!o)}>Order my deck</button>
+  {open&&<p className="order-deck-note" role="status">Printed decks are coming soon. Your cards are saved here until then.</p>}</div>;
+}
+
 export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
  return <section className="my-deck" aria-labelledby="my-deck-title">
-  <div className="my-deck-head"><h2 id="my-deck-title">Your deck</h2></div>
+  <h2 id="my-deck-title" className="sr-only">Your deck</h2>
+  {/* Order printed cards of your deck (Astra, 2026-11-14). Printing is not set up yet, so it says so instead of taking an order. */}
+  <OrderDeck/>
   <div className="my-deck-grid">{cards.map(c=><DeckCard key={c.no} card={c} onPick={onPick}/>)}</div>
  </section>;
 }

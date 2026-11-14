@@ -42,6 +42,33 @@ export const TYPE_ITEMS:Item[]=[{key:'',label:'Any type',view:<span className="t
 export const LEVEL_ITEMS:Item[]=[{key:'0',label:'Any difficulty',view:<span className="reel-text">Any</span>},
  ...[1,2,3,4,5].map(n=>({key:String(n),label:`${n} of 5`,view:<span className="reel-stars">{'★'.repeat(n)}</span>}))];
 
+/**
+ * The compact picker under the motto (Astra, 2026-11-14: "I don't like the scroll wheel anymore. Click a color or
+ * rainbow, click the stars out of 5, and then click the draw"): a row of type circles (rainbow = any type), five stars
+ * (click the same star again for any difficulty), and the face-down deck to draw from.
+ */
+export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status}:{busy:boolean;type:number;level:number;
+ onType:(i:number)=>void;onLevel:(i:number)=>void;onDraw:()=>void;status:string}){
+ // Types and stars on the left, the deck on the right (Astra, 2026-11-14)
+ return <div className="draw-picker" aria-label="Draw a card"><div className="pick-left">
+  <div className="pick-types" role="radiogroup" aria-label="Type">
+   <button role="radio" aria-checked={type===0} title="Random type" aria-label="Random type" className={'pick-dot any'+(type===0?' on':'')} disabled={busy} onClick={()=>onType(0)}><i aria-hidden="true">?</i></button>
+   {TYPES.map((t,i)=>{const Icon=t.icon;return <button key={t.name} role="radio" aria-checked={type===i+1} title={t.label} aria-label={t.label}
+    className={'pick-dot'+(type===i+1?' on':'')} style={{'--tc':t.color} as CSSProperties} disabled={busy} onClick={()=>onType(i+1)}><i aria-hidden="true"><Icon/></i></button>})}
+  </div>
+  <div className="pick-stars" role="radiogroup" aria-label="Difficulty">
+   {[1,2,3,4,5].map(n=><button key={n} role="radio" aria-checked={level===n} aria-label={`Difficulty ${n} of 5`} title={`Difficulty ${n}`}
+    className={'pick-star'+(level>=n?' on':'')} disabled={busy} onClick={()=>onLevel(level===n?0:n)}>★</button>)}
+   <span className="pick-any">{level?`${level} of 5`:'any difficulty'}</span>
+  </div></div>
+  <button className={'draw-deck'+(busy?' busy':'')} disabled={busy} onClick={onDraw} aria-label="Draw a card">
+   <span className="draw-deck-cards" aria-hidden="true"><span/><span/><span className="top"><b>?</b></span></span>
+   <span className="draw-deck-label">{busy?'Drawing…':'Draw'}</span>
+  </button>
+  <span className="draw-status" role="status" aria-live="polite">{status}</span>
+ </div>;
+}
+
 export function DrawBar({busy,spinning,type,level,onType,onLevel,onDraw,status}:{busy:boolean;spinning:boolean;
  type:number;level:number;onType:(i:number)=>void;onLevel:(i:number)=>void;onDraw:()=>void;status:string}){
  return <section className="draw-bar" aria-label="Draw a card">
