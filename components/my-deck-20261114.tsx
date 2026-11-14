@@ -24,14 +24,19 @@ export const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'H
  * 20 per star (not 10) keeps the starter cards' gold and rainbow (Astra, 2026-11-14: "get that back").
  */
 export const SCORE={perStar:20,perYear:1,author:50};
-export const TIERS=[{tier:1,min:0,max:29},{tier:2,min:30,max:49},{tier:3,min:50,max:69},{tier:4,min:70,max:89},{tier:5,min:90,max:null}];
+// Four reading-difficulty levels only (Astra, 2026-11-14). A card turns gold (Legendary) only when the paper's own author
+// certifies it, at any level and any score; otherwise the score picks one of the four tiers below.
+export const MAX_STARS=4,GOLD_TIER=5;
+export const TIERS=[{tier:1,min:0,max:29},{tier:2,min:30,max:49},{tier:3,min:50,max:69},{tier:4,min:70,max:null}];
 export function ageYears(published?:string,now=new Date()){
  if(!published)return 0;const p=new Date(published+'T12:00:00');let y=now.getFullYear()-p.getFullYear();
  if(now.getMonth()<p.getMonth()||(now.getMonth()===p.getMonth()&&now.getDate()<p.getDate()))y--;return Math.max(0,y);
 }
+/** The tier for a score: gold only when certified by the paper's author, otherwise by the score (TIERS). */
+export function tierOf(score:number,certified:boolean){return certified?GOLD_TIER:[...TIERS].reverse().find(t=>score>=t.min)!.tier}
 export function rarityOf(card:{lv:number;published?:string;author?:boolean}){
  const age=ageYears(card.published),score=card.lv*SCORE.perStar+age*SCORE.perYear+(card.author?SCORE.author:0);
- const tier=[...TIERS].reverse().find(t=>score>=t.min)!.tier;return {score,tier,age};
+ return {score,tier:tierOf(score,!!card.author),age};
 }
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
 // covers: what belongs in each subject, so every paper has one obvious home (Astra, 2026-11-14). A paper that fits two
@@ -60,9 +65,10 @@ export const TYPES=Object.entries(SUBJECT).map(([name,t])=>({name,label:name.rep
 export function subjectColor(subject?:string){return (subject&&SUBJECT[subject]?.color)||'#d9a53f'}
 
 function Stars({n}:{n:number}){
+ // 1 to MAX_STARS (4)
  // Only the filled stars: 1 to 5 (Astra, 2026-11-14: "I don't want to see the non-filled stars"). The stars are the
  // READING difficulty: how hard the original paper is to understand (Astra, 2026-11-14).
- return <span className="deck-stars" aria-label={`Reading difficulty ${n} of 5`}><em>Reading difficulty</em><span className="deck-star-row">{Array.from({length:n},(_,i)=><i key={i} className="on" aria-hidden="true">★</i>)}</span></span>;
+ return <span className="deck-stars" aria-label={`Reading difficulty ${n} of ${MAX_STARS}`}><em>Reading difficulty</em><span className="deck-star-row">{Array.from({length:n},(_,i)=><i key={i} className="on" aria-hidden="true">★</i>)}</span></span>;
 }
 
 // Sparkles from Astra's portfolio (findastra.github.io, the twinkles over her portrait): four-point stars that grow,

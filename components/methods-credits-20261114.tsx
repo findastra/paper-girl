@@ -3,7 +3,7 @@
 // methodology and credits"): where the papers come from, how a card is made, what each number on a card means, the
 // honest limits, and who made what. The rarity numbers come from SCORE and TIERS, the journals from lib/science, the
 // draws from DRAWS_PER_DAY, so this stays true when they change.
-import {SCORE,TIERS,RARITY} from '@/components/my-deck-20261114';
+import {SCORE,TIERS,RARITY,MAX_STARS,GOLD_TIER} from '@/components/my-deck-20261114';
 import {DRAWS_PER_DAY} from '@/components/draw-bar-20261114';
 import {journals} from '@/lib/science';
 
@@ -23,10 +23,11 @@ export function MethodsCredits(){
   <h3>What the numbers mean</h3>
   <ul>
    <li><b>Read time:</b> how long the full original article takes to read, counting its words at 230 words a minute.</li>
-   <li><b>Reading difficulty</b> (1–5 stars, also the card’s LV): how hard the original paper is to read.</li>
+   <li><b>Reading difficulty</b> (1–{MAX_STARS} stars, also the card’s LV): how hard the original paper is to read.</li>
    <li><b>Rarity score:</b> {SCORE.perStar} points for each star, {SCORE.perYear} for every year since the paper came
     out, and {SCORE.author} when the paper’s own author has checked the card.{' '}
-    {TIERS.map((t,i)=>`${t.min}${t.max===null?'+':`–${t.max}`} ${RARITY[t.tier]}${i<TIERS.length-1?', ':'.'}`).join('')}</li>
+    {TIERS.map((t,i)=>`${t.min}${t.max===null?'+':`–${t.max}`} ${RARITY[t.tier]}${i<TIERS.length-1?', ':'.'}`).join('')}{' '}
+    A card is {RARITY[GOLD_TIER]} (gold all over) only when the paper’s author has certified it, at any level.</li>
    <li><b>Card No.:</b> the order cards are minted in. <b>Minted</b> is the day the card was made.</li>
    <li><b>Draws:</b> {DRAWS_PER_DAY} a day for each reader, because every new card is written and checked.</li>
   </ul>

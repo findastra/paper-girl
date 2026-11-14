@@ -3,34 +3,35 @@
 // objective is to read as many papers as you can. The rarity chart is built from the same numbers the cards use
 // (SCORE, TIERS in my-deck), so the two can never disagree. Rules: docs/card-plan-20261113.md.
 import type {CSSProperties} from 'react';
-import {SUBJECTS,SCORE,TIERS,RARITY} from '@/components/my-deck-20261114';
+import {SUBJECTS,SCORE,TIERS,RARITY,MAX_STARS,GOLD_TIER,tierOf} from '@/components/my-deck-20261114';
 import {AGE_ODDS} from '@/components/draw-bar-20261114';
 
 const LOOK:Record<number,string>={1:'a white card',2:'a copper card',3:'a silver card',
  4:'a rainbow card with sparkles on the picture',5:'a gold card with sparkles all over'};
 const range=(t:typeof TIERS[number])=>t.max===null?`${t.min}+`:`${t.min}–${t.max}`;
 // Worked out from SCORE, so the examples follow any change to the weights.
-const EXAMPLES=[{what:'A 2-star paper from 10 years ago',stars:2,age:10},{what:'A 1-star paper from 56 years ago',stars:1,age:56},
+const EXAMPLES=[{what:'A 2-star paper from 10 years ago',stars:2,age:10},{what:'A 4-star paper from 20 years ago',stars:4,age:20},
  {what:'A 2-star paper from last year, checked by its author',stars:2,age:1,author:true}].map(e=>{
  const score=e.stars*SCORE.perStar+e.age*SCORE.perYear+(e.author?SCORE.author:0);
- return {what:e.what,score,sum:`${e.stars} × ${SCORE.perStar} + ${e.age}${e.author?` + ${SCORE.author}`:''} = ${score}`}});
-const tierOf=(s:number)=>[...TIERS].reverse().find(t=>s>=t.min)!.tier;
+ return {what:e.what,score,author:!!e.author,sum:`${e.stars} × ${SCORE.perStar} + ${e.age}${e.author?` + ${SCORE.author}`:''} = ${score}`}});
 
 /** The rarity chart: what earns points, the score ranges as a colored scale, and worked examples. */
 export function RarityChart(){
  return <div className="rarity-chart">
   <table className="rc-points"><thead><tr><th>What the card has</th><th>Points</th></tr></thead><tbody>
-   <tr><td>Each reading-difficulty star (how hard the original article is)</td><td>{SCORE.perStar} per star, up to {SCORE.perStar*5}</td></tr>
+   <tr><td>Each reading-difficulty star (how hard the original article is)</td><td>{SCORE.perStar} per star, up to {SCORE.perStar*MAX_STARS} ({MAX_STARS} stars)</td></tr>
    <tr><td>Each year since the paper came out</td><td>{SCORE.perYear} per year, no limit</td></tr>
    <tr><td>Checked by the paper’s own author</td><td>{SCORE.author}</td></tr>
   </tbody></table>
   <div className="rc-scale" role="img" aria-label={TIERS.map(t=>`${range(t)} ${RARITY[t.tier]}`).join(', ')}>
    {TIERS.map(t=><div key={t.tier} className={'rc-seg rc-t'+t.tier}><b>{RARITY[t.tier]}</b><span>{range(t)}</span></div>)}
+   <div className={'rc-seg rc-t'+GOLD_TIER}><b>{RARITY[GOLD_TIER]}</b><span>certified</span></div>
   </div>
   <table className="rc-tiers"><thead><tr><th>Score</th><th>Rarity</th><th>How it looks</th></tr></thead><tbody>
    {TIERS.map(t=><tr key={t.tier}><td>{range(t)}</td><td><b>{RARITY[t.tier]}</b></td><td>{LOOK[t.tier]}</td></tr>)}
+   <tr><td>Any score</td><td><b>{RARITY[GOLD_TIER]}</b></td><td>{LOOK[GOLD_TIER]}, only when the paper’s own author has certified the card, at any level</td></tr>
   </tbody></table>
-  <ul className="rc-examples">{EXAMPLES.map(e=><li key={e.what}>{e.what}: {e.sum}, <b>{RARITY[tierOf(e.score)]}</b>.</li>)}</ul>
+  <ul className="rc-examples">{EXAMPLES.map(e=><li key={e.what}>{e.what}: {e.sum}, <b>{RARITY[tierOf(e.score,e.author)]}</b>.</li>)}</ul>
  </div>;
 }
 
@@ -42,14 +43,14 @@ export function HowToPlay(){
    added to the minutes at the top of your deck.</p>
   <h3>Draw a card</h3>
   <p>Under the card of the day, pick a subject (the rainbow circle means any subject), a reading difficulty (tap a
-   star; tap it again for any) and <b>This year</b>, <b>Past years</b> or <b>Any year</b>. Then press
+   star, or the shuffle arrows for any). Then press
    <b> Draw card</b>. If the library has no card like that yet, you get a real paper to read, and Paper Patty makes
    its card later. You get <b>5 draws a day</b>; they come back every morning.</p>
-  <p>Newer papers come up more often. When the year is left open, a drawn card’s paper is from:</p>
+  <p>You don’t pick the year: Papermon does, and newer papers come up more often. A drawn card’s paper is from:</p>
   <table className="rc-points howto-odds"><thead><tr><th>Published</th><th>Chance</th></tr></thead><tbody>
    {AGE_ODDS.map(g=><tr key={g.label}><td>{g.label.replace(/^./,c=>c.toUpperCase())}</td><td>{g.odds}%</td></tr>)}
   </tbody></table>
-  <p><b>Past years</b> uses the same odds without this year.</p>
+  
   <h3>Three ways to read</h3>
   <ul>
    <li><b>The card</b>: the idea in three short lines.</li>

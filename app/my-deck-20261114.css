@@ -1467,3 +1467,17 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 :root{--pill-w:160px}
 /* The two tagline lines a little closer together (Astra, 2026-11-14) */
 .pm-tagline,.pm-tagline span{line-height:.95!important}
+
+/* ---------------- Same height, not width (Astra, 2026-11-14) ---------------- */
+/* Every pill is 32 px tall; widths fit their words again. The subject choices and the four buttons stay two to a row. */
+.pick-row .pick-years{display:flex!important;flex-wrap:nowrap!important;gap:6px!important}
+.pick-year{width:auto!important;height:var(--pill-h)!important;padding:0 10px!important;font-size:12px!important;font-variant-numeric:tabular-nums}
+.deck-bar .tally-sub{width:auto!important;padding:0 10px 0 4px!important}
+.deck-pick select{width:auto!important;min-width:0!important}
+/* Draw Card back at the bottom of the choices: full width, bigger than the rest, then the divider */
+.pick-actions .pick-draw{grid-column:1/-1;width:100%!important;height:52px!important;min-height:0!important;font-size:19px!important;border-radius:999px!important}
+.pick-actions .draw-status{grid-column:1/-1;text-align:center;font-size:13px;margin:0}
+.pick-actions .draw-status:empty{display:none}
+.pick-actions .pick-divider{margin-top:14px!important}
+/* The four buttons each start with a little icon, like the printer on Order my deck */
+.pick-order svg,.pick-more svg{flex:none;width:16px;height:16px}
