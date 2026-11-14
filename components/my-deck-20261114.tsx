@@ -7,7 +7,7 @@
 // Live since 2026-11-14 as the normal page (?classic shows the old one). For now everyone sees the same five starter
 // cards (lib/data/sample-deck-20261114.json) until Paper Patty makes cards per visitor. Card rules: docs/card-plan-20261113.md.
 import {useEffect,useState,type CSSProperties} from 'react';
-import {Atom,Brain,CircleHelp,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
+import {Atom,Brain,CircleHelp,ThumbsDown,ThumbsUp,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import '@/app/my-deck-20261114.css';
@@ -161,6 +161,16 @@ export function useReadMap(){
 }
 function useRead(no:string):[boolean,(v:boolean)=>void]{const m=useReadMap();return [!!m[no],v=>saveRead(no,v)]}
 
+// Thumbs up or down on a card (Astra, 2026-11-14: "you would immediately just rank it"), kept in this browser per card
+// like the read ticks, until Papermon has a server to collect them.
+const RATE_KEY='papermon:rate:v1',RATE_EVENT='papermon-rate';
+function loadRates():Record<string,1|-1>{try{return JSON.parse(localStorage.getItem(RATE_KEY)||'{}')}catch{return {}}}
+function useRate(no:string):[0|1|-1,(v:0|1|-1)=>void]{
+ const [m,setM]=useState<Record<string,1|-1>>({});
+ useEffect(()=>{const f=()=>setM(loadRates());f();window.addEventListener(RATE_EVENT,f);return()=>window.removeEventListener(RATE_EVENT,f)},[]);
+ return [m[no]||0,v=>{const all=loadRates();if(v)all[no]=v;else delete all[no];try{localStorage.setItem(RATE_KEY,JSON.stringify(all))}catch{}window.dispatchEvent(new Event(RATE_EVENT))}];
+}
+
 /** Every subject with its symbol, name and color, for places that list them (the How to play rules). */
 export const SUBJECTS=Object.entries(SUBJECT).map(([name,t])=>({name,icon:t.icon,color:t.color}));
 
@@ -172,6 +182,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
  const [sweep,setSweep]=useState(0);
  const [read,setRead]=useRead(card.no);
  const [note,setNote]=useState<''|'report'|'author'>('');
+ const [rate,setRate]=useRate(card.no);
  const turn=()=>{setFlipped(f=>!f);setSweep(s=>s===1?2:1)};
  // Rarity comes from the rarity score (difficulty, age and the author's check, weighted); the stars still show how
  // hard the paper is to read.
@@ -237,6 +248,11 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
       <div><h4><span className="deck-num">03</span>WHY IT MATTERS</h4><p>{card.matters}</p></div>
      </div>
      {/* Two buttons on the back (Astra, 2026-11-14): the longer write-up on the paper up top, and the original article. */}
+     {/* Thumbs up or down, above the buttons (Astra, 2026-11-14): a quick rating; Report a problem is still there for more */}
+     <div className="deck-rate" role="group" aria-label="Rate this card"><span>Good card?</span>
+      <button type="button" aria-pressed={rate===1} aria-label="Thumbs up" className={rate===1?'on':''} onClick={()=>setRate(rate===1?0:1)}><ThumbsUp aria-hidden="true"/></button>
+      <button type="button" aria-pressed={rate===-1} aria-label="Thumbs down" className={rate===-1?'on':''} onClick={()=>setRate(rate===-1?0:-1)}><ThumbsDown aria-hidden="true"/></button>
+     </div>
      <div className="deck-back-actions">
       {onPick&&<button type="button" onClick={()=>onPick(card)}>Read the write-up ↑</button>}
       <a href={card.url} target="_blank" rel="noreferrer">Original article ↗</a>
