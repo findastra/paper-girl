@@ -10,7 +10,11 @@
   "headline": "A tiny spider may remember who it has met.",
   "hook": "A tiny loner spider may remember who it has met.",
   "found": "Jumping spiders told a familiar spider from a stranger.",
-  "matters": "Big social smarts can fit in a very small brain."
+  "matters": "Big social smarts can fit in a very small brain.",
+  "drawing": {
+   "slug": "jumping-spider",
+   "subject": "a cute jumping spider (Salticidae) with its two huge shiny front eyes, fuzzy round body and short legs, looking up curiously as if it recognizes a friend"
+  }
  },
  {
   "lv": 2,
@@ -23,7 +27,11 @@
   "headline": "Baby bats may benefit from more than a song playlist.",
   "hook": "Baby bats babble, just like human babies.",
   "found": "Pups with more involved mothers practiced longer and sounded more grown-up.",
-  "matters": "Learning to talk may lean on caring parents in many animals."
+  "matters": "Learning to talk may lean on caring parents in many animals.",
+  "drawing": {
+   "slug": "bat-pup",
+   "subject": "a cute baby bat pup hanging upside down from a branch, mouth open mid-babble, with two or three small curved sound lines coming from its mouth"
+  }
  },
  {
   "lv": 3,
@@ -36,7 +44,11 @@
   "headline": "A yak’s best friend might be a tiny gardener.",
   "hook": "Pika, called pests, may be a yak’s best friend.",
   "found": "Yaks gained more weight where some pika lived, because pika clip a poisonous plant.",
-  "matters": "Wiping out a “pest” can backfire on the animals we care about."
+  "matters": "Wiping out a “pest” can backfire on the animals we care about.",
+  "drawing": {
+   "slug": "pika",
+   "subject": "a cute pika (a small round-eared mountain mammal, like a tiny tailless rabbit) holding a clipped sprig of a poisonous purple-flowered plant in its mouth"
+  }
  },
  {
   "lv": 4,
@@ -49,7 +61,11 @@
   "headline": "A gray number can make an eye react to color.",
   "hook": "For some people, a gray number looks colored.",
   "found": "Their pupils reacted to the color they experienced, though the screen stayed gray.",
-  "matters": "The colors are real enough that the body responds to them."
+  "matters": "The colors are real enough that the body responds to them.",
+  "drawing": {
+   "slug": "colored-seven",
+   "subject": "a cute gray number 7 character that glows warm orange around its edges, showing how a person with synesthesia sees a color in a gray number, with one big round curious eye beside it whose pupil is wide"
+  }
  },
  {
   "lv": 5,
@@ -63,6 +79,10 @@
   "headline": "A newborn’s brain is already listening for the pattern.",
   "hook": "Babies just days old already notice sound patterns.",
   "found": "Their brains tracked repeats in syllables and in voices, even when the other kept changing.",
-  "matters": "We may be born with a pattern finder that helps us learn to talk."
+  "matters": "We may be born with a pattern finder that helps us learn to talk.",
+  "drawing": {
+   "slug": "newborn-eeg",
+   "subject": "a cute sleeping newborn baby wearing a soft blue EEG cap with small round electrodes, with gentle sound waves reaching its ear"
+  }
  }
 ]

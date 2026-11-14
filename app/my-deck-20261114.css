@@ -21,6 +21,12 @@
 .lv5 .deck-face,.author .deck-face{background:linear-gradient(135deg,#fff1c4,#eec766 22%,#fff6da 42%,#e2b04a 62%,#fbe3a0 82%,#d9a53f);background-size:200% 200%;animation:deck-prism 8s ease-in-out infinite alternate;--rc:#8a5a10}
 .lv3 .deck-face::before,.lv4 .deck-face::before,.lv5 .deck-face::before,.author .deck-face::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 36%,#ffffffb0 48%,transparent 60%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:deck-sweep 5s ease-in-out infinite}
 .lv3 .deck-face::before{animation-duration:7s;opacity:.7}
+/* Very subtle shimmer on the rainbow (holo) and gold cards: tiny glints that slowly twinkle (Astra, 2026-11-14). */
+.lv4 .deck-face::after,.lv5 .deck-face::after,.author .deck-face::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;mix-blend-mode:screen;
+ background-image:radial-gradient(circle,#ffffffe0 0 .22cqw,transparent .5cqw),radial-gradient(circle,#ffffffb0 0 .16cqw,transparent .4cqw),radial-gradient(circle,#fff6d0c0 0 .18cqw,transparent .45cqw);
+ background-size:13cqw 17cqw,19cqw 11cqw,23cqw 29cqw;background-position:2cqw 3cqw,9cqw 6cqw,5cqw 14cqw;opacity:.35;animation:deck-glint 3.6s ease-in-out infinite alternate}
+.lv5 .deck-face::after,.author .deck-face::after{animation-delay:-1.8s}
+@keyframes deck-glint{0%{opacity:.18;background-position:2cqw 3cqw,9cqw 6cqw,5cqw 14cqw}100%{opacity:.5;background-position:3cqw 2cqw,8cqw 7cqw,6cqw 13cqw}}
 @keyframes deck-prism{from{background-position:0% 30%}to{background-position:100% 70%}}
 @keyframes deck-sweep{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
 /* Front: top bar, a perfectly square picture (Astra, 2026-11-14), the headline, the rarity band. No links. */
