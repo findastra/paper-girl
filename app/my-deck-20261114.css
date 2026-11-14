@@ -26,10 +26,13 @@
 .lv5,.author{--rc:#8a5a10;--frame:linear-gradient(135deg,#fff1c4,#e8bb52 30%,#fff6da 50%,#d29a32 70%,#fbe3a0)}
 
 .deck-front{padding:3.4cqw 3.4cqw 0;gap:2.2cqw}
-.deck-top{display:flex;align-items:center;gap:2cqw;padding:0 .6cqw}
+/* Name centered at the top, type icon on the left, level on the right */
+.deck-top{display:grid;grid-template-columns:9cqw 1fr 9cqw;align-items:center;gap:1.4cqw;padding:0 .6cqw}
+.deck-top .deck-lv{justify-self:end}
 .deck-type{flex:none;width:7.4cqw;height:7.4cqw;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--sc);box-shadow:0 .4cqw 1cqw #2a1f2c40,inset 0 0 0 .5cqw #ffffff55}
 .deck-type svg{width:4.4cqw;height:4.4cqw;stroke-width:2.4}
-.deck-name{flex:1;min-width:0;margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:6.6cqw;line-height:1.02;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Names are about three words now, so they may take two centered lines */
+.deck-name{min-width:0;margin:0;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:5.4cqw;line-height:1.05;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .deck-lv{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:4cqw;white-space:nowrap}
 .deck-lv b{font-size:7cqw}
 
@@ -42,27 +45,45 @@
 .lv4 .deck-window::before,.lv5 .deck-window::before,.author .deck-window::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:color-dodge;opacity:.42;
  background:linear-gradient(115deg,#ff8fc8 0%,#ffe27a 18%,#8dffc4 36%,#7fd3ff 54%,#c49bff 72%,#ff8fc8 90%);background-size:300% 300%;animation:deck-holo 6s ease-in-out infinite alternate}
 .lv5 .deck-window::before,.author .deck-window::before{background:linear-gradient(115deg,#fff3c2 0%,#e2a93a 25%,#fffbe6 45%,#c98a22 65%,#ffe7a0 85%);mix-blend-mode:soft-light;opacity:.75}
-.lv4 .deck-window::after,.lv5 .deck-window::after,.author .deck-window::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
- background-image:
-  radial-gradient(circle,#ffffff 0 .35cqw,transparent .6cqw),
-  radial-gradient(circle,#ff9fd6 0 .45cqw,transparent .75cqw),
-  radial-gradient(circle,#8fe8ff 0 .4cqw,transparent .7cqw),
-  radial-gradient(circle,#fff08a 0 .38cqw,transparent .65cqw),
-  radial-gradient(circle,#b9ffcf 0 .3cqw,transparent .55cqw),
-  radial-gradient(circle,#ffffff 0 .25cqw,transparent .45cqw);
- background-size:7cqw 9cqw,11cqw 8cqw,9cqw 13cqw,13cqw 10cqw,6cqw 7cqw,5cqw 6cqw;
- background-position:1cqw 2cqw,5cqw 4cqw,3cqw 7cqw,8cqw 1cqw,2cqw 5cqw,4cqw 3cqw;
- animation:deck-flakes 2.4s steps(2,jump-none) infinite alternate}
-.lv5 .deck-window::after,.author .deck-window::after{background-image:
-  radial-gradient(circle,#ffffff 0 .35cqw,transparent .6cqw),radial-gradient(circle,#ffe08a 0 .45cqw,transparent .75cqw),
-  radial-gradient(circle,#fff6d6 0 .4cqw,transparent .7cqw),radial-gradient(circle,#f2c14e 0 .38cqw,transparent .65cqw),
-  radial-gradient(circle,#ffffff 0 .3cqw,transparent .55cqw),radial-gradient(circle,#ffd36a 0 .25cqw,transparent .45cqw)}
 @keyframes deck-holo{from{background-position:0% 40%}to{background-position:100% 60%}}
-@keyframes deck-flakes{0%{opacity:.55;background-position:1cqw 2cqw,5cqw 4cqw,3cqw 7cqw,8cqw 1cqw,2cqw 5cqw,4cqw 3cqw}
- 100%{opacity:.95;background-position:1.6cqw 1.4cqw,4.2cqw 4.8cqw,3.8cqw 6.2cqw,7.2cqw 1.8cqw,2.8cqw 4.4cqw,4.6cqw 2.4cqw}}
+/* Sparkles: the same four-point twinkle as on Astra's portfolio portrait (findastra.github.io cyber.css). Rainbow ones
+   drift round the hues like hers; gold ones stay gold. */
+.deck-glitter{position:absolute;inset:0;pointer-events:none;z-index:2;animation:deck-rainbow-drift 14s linear infinite}
+.deck-glitter.gold{animation:none}
+.deck-glitter i{position:absolute;left:var(--x);top:var(--y);width:var(--s);aspect-ratio:1;translate:-50% -50%;background:var(--c);
+ clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 .6cqw #fff8);
+ animation:deck-twinkle 2.6s ease-in-out var(--d) infinite}
+/* Gold card: the whole card is gold, whatever the subject, with a slow sheen and sparkles over all of it */
+.gold-card .deck-face{background:linear-gradient(135deg,#fff3cc,#efc65e 20%,#fff8e0 38%,#dcae48 56%,#fbe6a6 74%,#cf9c38);background-size:220% 220%;animation:deck-prism 9s ease-in-out infinite alternate}
+.gold-card .deck-face::before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 36%,#ffffffb0 48%,transparent 60%);background-size:260% 100%;mix-blend-mode:overlay;animation:deck-sweep 5s ease-in-out infinite}
+.gold-card .deck-band{background:#ffffff40;border-top-color:#b8862e80}
+.gold-card .deck-type{box-shadow:0 0 0 .6cqw #fff3cc,0 .4cqw 1cqw #2a1f2c40}
+.deck-glitter.whole{z-index:2}
+.deck-glitter.whole i{filter:drop-shadow(0 0 .8cqw #fff6)}
+/* The type symbol: a colored circle with the subject's icon, the subject's name in black beside it */
+.deck-type-stat{display:inline-flex!important;align-items:center;justify-content:center;gap:1.2cqw;color:#1c1a1e}
+.deck-type-stat i{display:grid;place-items:center;width:6.2cqw;height:6.2cqw;border-radius:50%;background:var(--sc);color:#fff;flex:none;box-shadow:inset 0 0 0 .45cqw #ffffff60,0 .3cqw .8cqw #2a1f2c40}
+.deck-type-stat i svg{width:3.8cqw;height:3.8cqw;stroke-width:2.6}
+@keyframes deck-sweep{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
+@keyframes deck-prism{from{background-position:0% 30%}to{background-position:100% 70%}}
+@keyframes deck-twinkle{0%,100%{transform:scale(.35) rotate(0deg);opacity:.35}50%{transform:scale(1.15) rotate(45deg);opacity:1}}
+@keyframes deck-rainbow-drift{0%,100%{filter:hue-rotate(-70deg)}50%{filter:hue-rotate(70deg)}}
+
+/* A sheen that sweeps across the card while it flips, like light catching a real card as it turns. */
+.deck-face::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;opacity:0;
+ background:linear-gradient(105deg,transparent 30%,#ffffffb8 46%,#fff5d6 50%,#ffffff70 54%,transparent 70%);background-size:300% 100%;background-position:120% 0;mix-blend-mode:soft-light}
+.deck-card.sweep1 .deck-face::after{animation:deck-flip-sheen-a .65s ease-out}
+.deck-card.sweep2 .deck-face::after{animation:deck-flip-sheen-b .65s ease-out}
+@keyframes deck-flip-sheen-a{0%{opacity:0;background-position:120% 0}25%{opacity:1}100%{opacity:0;background-position:-20% 0}}
+@keyframes deck-flip-sheen-b{0%{opacity:0;background-position:120% 0}25%{opacity:1}100%{opacity:0;background-position:-20% 0}}
 
 /* Stats: only real facts about the paper; the last one opens it */
-.deck-stats{display:grid;grid-template-columns:1.1fr .7fr 1fr .8fr;text-align:center;gap:1cqw;align-items:end}
+.deck-stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:1cqw;align-items:end}
+.deck-read{display:grid;justify-items:center;cursor:pointer}
+.deck-read input{position:absolute;opacity:0;width:1px;height:1px}
+.deck-read b::before{content:"";display:inline-block;width:3.6cqw;height:3.6cqw;margin-right:1.2cqw;vertical-align:-.5cqw;border-radius:.8cqw;border:.5cqw solid currentColor;background:transparent}
+.deck-read input:checked+b::before{background:var(--sc);border-color:var(--sc);box-shadow:inset 0 0 0 .7cqw #fff}
+.deck-read input:focus-visible+b{outline:2px solid #efa9c5;outline-offset:2px;border-radius:4px}
 .deck-stats span{display:block;font-size:3.2cqw;text-transform:uppercase;letter-spacing:.25cqw;opacity:.65}
 .deck-stats b{display:block;font-size:4.2cqw;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .deck-stats a{display:block;font-size:4.2cqw;font-weight:700;color:inherit;white-space:nowrap;text-decoration:underline;text-underline-offset:.8cqw}

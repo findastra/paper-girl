@@ -1,7 +1,7 @@
 [
  {
   "lv": 1,
-  "name": "Spider Memory",
+  "name": "Discerning Solitary Salticid",
   "subject": "Biology",
   "src": "eLife 2025",
   "art": "cards/jumping-spider-e-20261114.webp",
@@ -20,7 +20,7 @@
  },
  {
   "lv": 2,
-  "name": "Babbling Bat",
+  "name": "Babbling Sac-winged Pup",
   "subject": "Biology",
   "src": "eLife 2025",
   "art": "cards/bat-pup-e-20261114.webp",
@@ -39,7 +39,7 @@
  },
  {
   "lv": 3,
-  "name": "Tiny Gardener",
+  "name": "Facilitative Weed-clipping Pika",
   "subject": "Biology",
   "src": "eLife 2026",
   "art": "cards/pika-e-20261114.webp",
@@ -58,7 +58,7 @@
  },
  {
   "lv": 4,
-  "name": "Color Number",
+  "name": "Synesthetic Pupillary Seven",
   "subject": "Psychology",
   "src": "eLife 2026",
   "art": "cards/colored-seven-e-20261114.webp",
@@ -78,7 +78,7 @@
  {
   "lv": 5,
   "author": true,
-  "name": "Pattern Listener",
+  "name": "Statistical Neonatal Listener",
   "subject": "Psychology",
   "src": "eLife 2025",
   "art": "cards/newborn-eeg-e-20261114.webp",
