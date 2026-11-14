@@ -15,7 +15,7 @@
 html,body{height:100%;margin:0}
 body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:'DM Sans',Arial,sans-serif}
 .row{flex:1;min-height:0;display:flex;gap:clamp(14px,2vw,28px);overflow-x:auto;overflow-y:hidden;padding:clamp(14px,3vh,28px) clamp(16px,3vw,32px);scroll-snap-type:x mandatory}
-.slot{flex:0 0 auto;margin:auto 0;width:min(max(220px,calc((100vw - 64px - 112px)/5)),calc((100dvh - 110px)*5/7),440px);container-type:inline-size;display:flex;flex-direction:column;gap:8px;scroll-snap-align:center}
+.slot{flex:0 0 auto;margin:auto 0;width:min(max(190px,calc((100vw - 64px - 140px)/6)),calc((100dvh - 150px)*5/7),440px);container-type:inline-size;display:flex;flex-direction:column;gap:8px;scroll-snap-align:center}
 @media (max-width:620px){.slot{width:min(82vw,calc((100dvh - 120px)*5/7))}}
 @media (max-height:460px){body{overflow:auto;height:auto}.row{flex:none}.slot{width:260px}}
 .label{font-family:'Space Grotesk',sans-serif;font-size:12px;letter-spacing:1.4px;color:var(--soft);text-align:center}
@@ -43,6 +43,16 @@ body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background
 @keyframes twinkle{from{opacity:.35}to{opacity:.8}}
 @media (prefers-reduced-motion:reduce){.face,.face::before,.face::after{animation:none!important}}
 .face>*{position:relative;z-index:1}
+/* Author's Edition: a card its author revised. Rarest of all: gold foil and drifting gold sparkles over any level. */
+.author .face{background:linear-gradient(135deg,#fff3cf,#f7d98a 25%,#fff7e0 45%,#f0c86a 65%,#fff3cf 85%);background-size:200% 200%;animation:prism 7s ease-in-out infinite alternate}
+.author .face::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(#fff 0.4cqw,transparent 0.6cqw),radial-gradient(#ffe08a 0.5cqw,transparent 0.75cqw),radial-gradient(#fff 0.3cqw,transparent 0.45cqw);
+  background-size:12cqw 14cqw,17cqw 19cqw,8cqw 9cqw;animation:drift 6s linear infinite}
+@keyframes drift{from{background-position:0 0,3cqw 5cqw,6cqw 2cqw}to{background-position:0 -14cqw,3cqw -14cqw,6cqw -16cqw}}
+.author .face::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,#ffffffcc 48%,transparent 58%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:sweep2 4s ease-in-out infinite}
+.seal{position:absolute;right:6cqw;top:16cqw;z-index:2;width:17cqw;height:17cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d6,#e3b047 60%,#b9862a);color:#4a3210;display:grid;place-items:center;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2.2cqw;line-height:1.1;letter-spacing:.15cqw;box-shadow:0 .8cqw 2cqw #5a3c0e55;transform:rotate(-12deg)}
+.seal b{display:block;font-size:4.2cqw}
+.toast{align-self:center;max-width:100%;font-size:12px;line-height:1.35;color:#2a1f2c;background:#ffe9a8;border-radius:12px;padding:8px 12px;box-shadow:0 4px 14px #0006}
 
 /* Front */
 .namebar{display:flex;align-items:center;gap:1.8cqw}
@@ -69,7 +79,11 @@ body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background
 .foot .mark{font-size:3cqw;opacity:1}
 
 /* Back */
-.back{gap:2.2cqw;padding:5cqw 5.4cqw}
+.back{gap:3cqw;padding:7cqw 7cqw 5cqw;justify-content:space-between}
+.back .sec h4{font-size:3.4cqw;letter-spacing:.35cqw;margin-bottom:1.2cqw}
+.back .sec p.t{font-size:6.2cqw;line-height:1.25;font-weight:500;margin:0}
+.back .foot{font-size:3.2cqw;opacity:.85}
+.back .foot a{color:inherit;font-weight:700}
 .back .kick{display:flex;justify-content:space-between;font-family:'Space Grotesk',sans-serif;font-size:2.5cqw;font-weight:700;letter-spacing:.35cqw;opacity:.75}
 .back .title{margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:4.8cqw;line-height:1.12}
 .back h4{margin:0;font-family:'Space Grotesk',sans-serif;font-size:2.4cqw;letter-spacing:.4cqw;color:#a24f78}
@@ -89,19 +103,25 @@ const P={name:'Pattern Listener',subject:'Psychology',initial:'Ψ',info:'Psychol
   found:'Newborns heard carefully built sound streams while their brain activity was recorded. Their brains tracked repeating syllable patterns even when the voice changed, and voice patterns even when the syllables changed.',
   matters:'Learning language may start with a broad pattern detector we are born with.',
   small:'Brain responses to artificial sounds don’t show that newborns understand words.',
+  // The back holds only these three, written short so they read at card size (Astra, 2026-11-13).
+  shortHook:'Babies just days old already notice sound patterns.',
+  shortFound:'Their brains tracked repeats in syllables and in voices, even when the other kept changing.',
+  shortMatters:'We may be born with a pattern finder that helps us learn to talk.',
   journal:'eLife 2025',no:'000,128',set:'Brains & Babies',art:'../public/art/curious-brain-20261113.webp',alt:'A curious cartoon brain with a magnifying glass'};
 const LEVELS=[null,{n:'Curious',r:'Common',m:'●',stage:'BASIC',read:'1 min'},{n:'Reader',r:'Uncommon',m:'◆',stage:'BASIC',read:'2 min'},
   {n:'College',r:'Rare',m:'★',stage:'STAGE 1',read:'3 min'},{n:'Grad',r:'Holo rare',m:'★',stage:'STAGE 1',read:'5 min'},{n:'PhD coffee',r:'Legendary',m:'✦',stage:'STAGE 2',read:'7 min'}];
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const row=document.getElementById('row');
-for(let lv=1;lv<=5;lv++){
-  const L=LEVELS[lv];
-  const slot=document.createElement('div');slot.className='slot lv'+lv;
-  slot.innerHTML=`<div class="label">LV ${lv} · ${L.r.toUpperCase()}</div>
+// Cards 1-5 are the five levels; card 6 is the same level-3 card after its author revised it.
+for(let k=1;k<=6;k++){
+  const author=k===6, lv=author?3:k;
+  const L=author?{...LEVELS[3],r:"Author's Edition",m:'✍'}:LEVELS[lv];
+  const slot=document.createElement('div');slot.className='slot '+(author?'author':'lv'+lv);
+  slot.innerHTML=`${author?`<div class="toast">✨ Your card <b>${esc(P.name)}</b> was approved by its author.</div>`:''}<div class="label">${author?"AUTHOR'S EDITION · rarest":`LV ${lv} · ${L.r.toUpperCase()}`}</div>
   <button class="card" aria-pressed="false" aria-label="${esc(P.name)}, level ${lv}, ${L.r}. Tap to flip."><div class="inner">
    <div class="face front">
     <div class="namebar"><span class="stage">${L.stage}</span><p class="name">${esc(P.name)}</p><span class="lv">LV <b>${lv}</b></span><span class="icon" aria-hidden="true">${P.initial}</span></div>
-    <div class="window"><img src="${P.art}" alt="${esc(P.alt)}"></div>
+    <div class="window"><img src="${P.art}" alt="${esc(P.alt)}"></div>${author?`<div class="seal" aria-label="Author's Edition"><span><b>✍</b>AUTHOR'S<br>EDITION</span></div>`:''}
     <div class="info">${esc(P.info)}</div>
     <div class="moves">
      <div class="move"><span class="cost"><i>Ψ</i></span><h3>Pattern Sense</h3><span class="dmg">${20+lv*10}</span></div>
@@ -111,14 +131,10 @@ for(let lv=1;lv<=5;lv++){
     <div class="foot"><span>${esc(P.journal)} · ${esc(P.set)}</span><span><span class="mark">${L.m}</span> ${P.no}</span></div>
    </div>
    <div class="face back">
-    <div class="kick"><span>${L.m} ${L.r.toUpperCase()}</span><span>LV ${lv} · ${L.n.toUpperCase()}</span></div>
-    <p class="title">${esc(P.headline)}</p>
-    <div><h4>STRANGE HOOK</h4><p class="t">${esc(P.hook)}</p></div>
-    <div><h4>WHAT THEY FOUND</h4><p class="t">${esc(P.found)}</p></div>
-    <div><h4>WHY IT MATTERS</h4><p class="t">${esc(P.matters)}</p></div>
-    <p class="small">Small print: ${esc(P.small)}</p>
-    <div class="links"><a href="#" onclick="event.stopPropagation()">Read the paper ↗</a><a href="#" onclick="event.stopPropagation()">More on Paper Girl ↗</a></div>
-    <div class="foot"><span>Words: Paper Patty · Art: OpenAI</span><span>No. ${P.no}</span></div>
+    <div class="sec"><h4>STRANGE HOOK</h4><p class="t">${esc(P.shortHook)}</p></div>
+    <div class="sec"><h4>WHAT THEY FOUND</h4><p class="t">${esc(P.shortFound)}</p></div>
+    <div class="sec"><h4>WHY IT MATTERS</h4><p class="t">${esc(P.shortMatters)}</p></div>
+    <div class="foot"><a href="#" onclick="event.stopPropagation()">Read the paper ↗</a><span>${author?'✍ ':''}No. ${P.no}</span></div>
    </div>
   </div></button>`;
   const card=slot.querySelector('.card');
