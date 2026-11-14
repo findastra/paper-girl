@@ -172,13 +172,15 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
       {(tier>=4||gold)&&<><Glitter seed={card.no} gold={gold} count={30}/><Glitter seed={card.no+':tiny'} gold={gold} count={42} small/></>}</div></div>
-     {/* Stats (Astra, 2026-11-14): Subject, Article (the journal's name, linked) and Completion (a gold circle that
-         fills in), centered in the space under the picture, with the card number centered under them. */}
+     {/* Stats (Astra, 2026-11-14): Subject, Article (the journal's name, linked), Read time (the full original
+         article's, `readMinutes`) and Completion (a gold circle that fills in), centered in the space under the
+         picture, with the card number centered under them. Still two rows: four stats on top, three below. */}
      <div className="deck-lower">
-      <div className="deck-stats">
+      <div className="deck-stats deck-stats-top">
        {/* Just the word: the subject's circle is already in the top corner (Astra, 2026-11-14) */}
        <div><span>subject</span><b>{card.subject}</b></div>
        <div><span>article</span><a href={card.url} target="_blank" rel="noreferrer">{journal} ↗</a></div>
+       <div><span>read time</span><b>{card.readMinutes?`${card.readMinutes} min`:'—'}</b></div>
        <label className="deck-read"><span>completion</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/>
         <b className="deck-type-stat"><i className={'read-dot'+(read?' on':'')} aria-hidden="true">{read&&<Check/>}</i>{read?'Read':'Unread'}</b></label>
       </div>

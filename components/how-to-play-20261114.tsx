@@ -38,8 +38,8 @@ export function HowToPlay(){
  return <div className="source-dialog-copy howto">
   <h3>The goal</h3>
   <p>Read as many papers as you can. Every card is a real, published study. When you finish the original article, tick
-   <b> Completion</b> on the card: the circle turns gold, and that article’s reading time is added to the minutes at the
-   top of your deck.</p>
+   <b> Completion</b> on the card: the circle turns gold, and that article’s <b>Read time</b> (also on the card) is
+   added to the minutes at the top of your deck.</p>
   <h3>Draw a card</h3>
   <p>Under the card of the day, pick a subject (the rainbow circle means any subject), a reading difficulty (tap a
    star; tap it again for any) and <b>This year</b> or <b>Past years</b> (tap again for any year). Then press
