@@ -1507,3 +1507,30 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 .deck-rate-off{visibility:hidden}
 /* The button area is always two rows tall, so the first buttons sit in the same place on every card */
 .deck-back-actions{min-height:17.3cqw;align-content:start}
+/* The message line in the motto spot: long messages a little smaller so they stay a few lines */
+.pick-motto{text-align:center;max-width:330px;align-self:center}
+.pick-motto.long{font-size:22px!important;line-height:1.15!important}
+/* Draw Card back at the top, below the divider; the lower divider keeps its 24 px above */
+.pick-actions .pick-divider{margin-top:10px!important}
+/* "Next draw in 3:07:45" and "(1/5)" in the same font and size as "Draw Card" */
+.pick-wait,.draw-count-paren{font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;opacity:1!important;margin-left:.25em}
+
+/* ---------------- Footer and the gold card's band in the page's gold (Astra, 2026-11-14) ---------------- */
+/* The footer line: the page's gold, fading out at both ends */
+.deck-mode .af-row::before{height:1.5px!important;background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
+ -webkit-mask:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent);mask:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent)}
+/* The two sparkles: cut from the page's gold */
+.deck-mode .af-sparkle{background:var(--sheen);background-size:var(--gold-size);background-position:var(--gold-pos,0 0);background-repeat:no-repeat;
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5 L14.7 9.3 L22.5 12 L14.7 14.7 L12 22.5 L9.3 14.7 L1.5 12 L9.3 9.3 Z'/%3E%3C/svg%3E") center/contain no-repeat;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.5 L14.7 9.3 L22.5 12 L14.7 14.7 L12 22.5 L9.3 14.7 L1.5 12 L9.3 9.3 Z'/%3E%3C/svg%3E") center/contain no-repeat}
+.deck-mode .af-sparkle path{fill:transparent!important}
+/* The star's rim: the old drawn rim hides; a cutout of the page's gold in the outline's shape takes its place */
+.deck-mode .af-star-rim{visibility:hidden}
+.af-star-gold{display:none}
+.deck-mode .af-star-gold{display:block;position:absolute;inset:-2px;pointer-events:none;background:var(--sheen);background-size:var(--gold-size);background-position:var(--gold-pos,0 0);background-repeat:no-repeat;
+ -webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+/* The gold card's band: the same gold shifted half a step, so it reads as its own strip like the silver card's band,
+   with a fine gold line between it and the card */
+:root{--sheen-offset:repeating-linear-gradient(135deg,#ecc775 0px,#dcae48 43px,#fbe6a6 173px,#cf9c38 290px,#fff3cc 360px,#efc65e 504px,#fff8e0 634px,#ecc775 720px)}
+.gold-card .deck-band{background:var(--sheen-offset)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
+ border-top:.35cqw solid #b8862e!important;box-shadow:inset 0 .4cqw .8cqw #5a3c0626}

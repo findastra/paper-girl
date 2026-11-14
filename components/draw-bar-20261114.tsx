@@ -97,11 +97,16 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
  // Order printed cards of your deck. Printing is not set up yet, so it says so instead of taking an order.
  const [ordering,setOrdering]=useState(false);
  const left=useDrawsLeft(),out=left<=0,wait=useUntilTomorrow(out);
+ const message=ordering?'Printed decks are coming soon. Your cards are saved here until then.':status;
  // Redone 2026-11-14 (Astra did not like the little deck with "Draw" or the "Order my deck" pill): everything centered
  // under the card, type circles, then stars, then two matching buttons side by side: Draw a card (gold) and Order my deck.
  return <div className="draw-picker" aria-label="Draw a card"><div className="pick-left">
   {/* The gold divider under the card, then Draw Card (Astra, 2026-11-14: "below the separator") */}
   <div className="pick-divider pick-divider-top" aria-hidden="true"><i/><span>✦</span><i/></div>
+  {/* Draw Card at the top of the choices, right below the divider (Astra, 2026-11-14, final). Plain words (Astra, 2026-11-14): "Draw Card 1/5" ... "Draw Card 5/5"; once all five are drawn the button goes
+       gray and counts down to the next draws */}
+  <button type="button" className={'pick-draw'+(busy?' busy':'')+(out?' out':'')} disabled={busy||out} onClick={()=>{if(out)return;setOrdering(false);spendDraw();onDraw()}}>
+    {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:<>Draw Card <span className="draw-count-paren">({DRAWS_PER_DAY-left+1}/{DRAWS_PER_DAY})</span></>}</button>
   <span className="pick-label pick-label-top">Subject</span>
   {/* Each circle with its subject's name to the right, in two columns (Astra, 2026-11-14) */}
   <div className="pick-types labeled" role="radiogroup" aria-label="Type">
@@ -122,19 +127,15 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
   </div>
   </div>
   <div className="pick-actions">
-   {/* Draw Card back at the bottom of the choices, before the divider (Astra, 2026-11-14). Plain words (Astra, 2026-11-14): "Draw Card 1/5" ... "Draw Card 5/5"; once all five are drawn the button goes
-       gray and counts down to the next draws */}
-   <button type="button" className={'pick-draw'+(busy?' busy':'')+(out?' out':'')} disabled={busy||out} onClick={()=>{if(out)return;spendDraw();onDraw()}}>
-    {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:<>Draw Card <span className="draw-count-paren">({DRAWS_PER_DAY-left+1}/{DRAWS_PER_DAY})</span></>}</button>
-   <span className="draw-status" role="status" aria-live="polite">{status}</span>
    {/* Some space, then a fancy gold divider, then the other buttons (Astra, 2026-11-14) */}
    <div className="pick-divider" aria-hidden="true"><i/><span>✦</span><i/></div>
    <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>setOrdering(o=>!o)}><Printer size={16} aria-hidden="true"/>Order My Deck</button>
    {children}
-   {ordering&&<p className="pick-order-note" role="status">Printed decks are coming soon. Your cards are saved here until then.</p>}
   </div>
-  {/* The motto, moved here from the header (Astra, 2026-11-14): centered under the buttons, gold handwriting */}
-  <p className="pick-motto">Every card, one idea wiser.</p>
+  {/* The message line (Astra, 2026-11-14): the motto's spot under the buttons, in its gold handwriting, shows what just
+      happened: the card you drew, or "Printed decks are coming soon" after Order My Deck. With nothing to say it shows
+      the motto. */}
+  <p className={'pick-motto'+(message.length>70?' long':'')} role="status" aria-live="polite">{message||'Every card, one idea wiser.'}</p>
  </div>;
 }
 
