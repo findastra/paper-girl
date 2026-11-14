@@ -1584,3 +1584,11 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 .pick-dot.any i{background:conic-gradient(#d26a9a,#16a3c4,#4f9a5e,#3f8ccc,#8d6bc8,#d26a9a) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important}
 /* A date on the card back never breaks in the middle */
 .deck-made .deck-date{font-style:normal;white-space:nowrap}
+
+/* ---------------- Fits a phone (2026-11-14) ----------------
+   Two 160 px pills plus their gap are as wide as the card on a computer; on a phone the column is narrower, so the pills
+   share whatever width there is (still 160 px each on a computer) and the single column never grows past the screen. */
+.pick-types.labeled,.pick-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%;max-width:330px}
+.pick-types.labeled .pick-dot,.pick-order,.pick-more{width:100%!important;min-width:0}
+.pick-types.labeled .pick-dot span{overflow:hidden;text-overflow:ellipsis}
+@media(max-width:720px){.deck-mode .paper-card{grid-template-columns:minmax(0,1fr)!important}.deck-mode .cotd-card,.deck-mode .paper-copy{min-width:0;max-width:100%}}
