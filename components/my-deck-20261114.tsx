@@ -315,14 +315,16 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
       <a href={card.url} target="_blank" rel="noreferrer">Original article ↗</a>
       {/* Two more (Astra, 2026-11-14), each opening a form in a big pop-up. Neither shows on a card its author has
           already verified: there is nothing left to report or claim. */}
-      {!card.author&&<>
+      {/* Gone on a verified gold card, and on the gold example, which shows how a verified card looks */}
+      {!card.author&&!card.example&&<>
        <button type="button" onClick={()=>setForm('report')}>Report a problem</button>
        <button type="button" onClick={()=>setForm('author')}>I wrote this paper</button>
       </>}
      </div>
      {/* Thumbs up or down, under the four buttons (Astra, 2026-11-14: leaves room for long sentences); a quick rating,
          and Report a problem is still there for more */}
-     <div className="deck-rate" role="group" aria-label="Rate this card"><span>Good card?</span>
+     {/* Not on a verified gold card or the gold example: the spot stays, empty (Astra, 2026-11-14) */}
+     <div className={'deck-rate'+(card.author||card.example?' deck-rate-off':'')} role="group" aria-label="Rate this card" aria-hidden={card.author||card.example?true:undefined}><span>Good card?</span>
       <button type="button" aria-pressed={rate===1} aria-label="Thumbs up" className={rate===1?'on':''} onClick={()=>setRate(rate===1?0:1)}><ThumbsUp aria-hidden="true"/></button>
       <button type="button" aria-pressed={rate===-1} aria-label="Thumbs down" className={rate===-1?'on':''} onClick={()=>setRate(rate===-1?0:-1)}><ThumbsDown aria-hidden="true"/></button>
      </div>

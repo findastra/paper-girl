@@ -1503,3 +1503,7 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 .deck-mode header{padding-bottom:24px!important}
 /* The footer line closer to the deck panel; the star sits midway between the line and the bottom of the page */
 .astra-footer{margin-top:2px!important;padding-bottom:19px!important}
+/* A verified gold card (and the gold example) has no thumbs: the row keeps its space so nothing else moves */
+.deck-rate-off{visibility:hidden}
+/* The button area is always two rows tall, so the first buttons sit in the same place on every card */
+.deck-back-actions{min-height:17.3cqw;align-content:start}
