@@ -47,10 +47,12 @@ export const LEVEL_ITEMS:Item[]=[{key:'0',label:'Any difficulty',view:<span clas
  * rainbow, click the stars out of 5, and then click the draw"): a row of type circles (rainbow = any type), five stars
  * (click the same star again for any difficulty), and the face-down deck to draw from.
  */
-/** Published-year bands for drawing (Astra, 2026-11-14): this year, then five-year steps back. 0 = any year. */
-export const YEAR_BANDS=[{label:'This year',ago:[0,0]},{label:'1–5 yrs',ago:[1,5]},{label:'5–10 yrs',ago:[6,10]},
- {label:'10–15 yrs',ago:[11,15]},{label:'15–20 yrs',ago:[16,20]},{label:'20+ yrs',ago:[21,80]}] as const;
-export function yearRange(i:number){if(!i)return null;const y=new Date().getFullYear(),[a,b]=YEAR_BANDS[i-1].ago;return {from:y-b,to:y-a}}
+/** Published-year bands for drawing (Astra, 2026-11-14): this year, then five-year steps back to 50, then "50+ yrs"
+ * with no upper limit on age. 0 = any year. */
+export const YEAR_BANDS:{label:string;ago:[number,number]}[]=[{label:'This year',ago:[0,0]},{label:'1–5 yrs',ago:[1,5]},
+ ...Array.from({length:9},(_,i)=>({label:`${(i+1)*5}–${(i+2)*5} yrs`,ago:[(i+1)*5+1,(i+2)*5] as [number,number]})),
+ {label:'50+ yrs',ago:[51,1000]}];
+export function yearRange(i:number){if(!i)return null;const y=new Date().getFullYear(),[a,b]=YEAR_BANDS[i-1].ago;return {from:Math.max(1600,y-b),to:y-a}}
 
 export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,status,children}:{busy:boolean;type:number;level:number;year:number;
  onType:(i:number)=>void;onLevel:(i:number)=>void;onYear:(i:number)=>void;onDraw:()=>void;status:string;children?:ReactNode}){

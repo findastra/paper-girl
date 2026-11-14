@@ -752,3 +752,27 @@ body:has(.deck-mode){background:#8f8b91}
 .howto-subjects li{display:flex;align-items:center;gap:8px}
 .howto-subjects i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sc);color:#fff;flex:none}
 .howto-subjects i svg{width:14px;height:14px;stroke-width:2.6}
+
+/* ---------------- Logo and rarity score (Astra, 2026-11-14) ---------------- */
+/* The logo: three gold cards fanned out, before the word Papermon */
+.deck-mode .brand{display:inline-flex;align-items:center;gap:0}
+.brand-logo{height:1.1em;width:auto;flex:none;margin-right:.14em;filter:drop-shadow(0 2px 3px #0004)}
+@media(max-width:520px){.brand-logo{height:1em}}
+/* The rarity score under the rarity word on the card band */
+.deck-rarity-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:.5cqw;min-width:0}
+.deck-score{font-size:2.5cqw;font-weight:700;letter-spacing:.15cqw;text-transform:uppercase;line-height:1;color:#1c1a1e;opacity:.8;white-space:nowrap}
+/* The rarity chart in How to play */
+.rarity-chart{display:flex;flex-direction:column;gap:12px;margin:8px 0 14px}
+.rarity-chart table{width:100%;border-collapse:collapse;font-size:14px}
+.rarity-chart th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.7;padding:4px 8px;border-bottom:1px solid #00000033}
+.rarity-chart td{padding:6px 8px;border-bottom:1px solid #00000014;vertical-align:top;line-height:1.4}
+.rc-scale{display:flex;border-radius:10px;overflow:hidden;border:1px solid #00000033}
+.rc-seg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;gap:2px;color:#111;text-align:center}
+.rc-seg b{font-size:13px;line-height:1.15}
+.rc-seg span{font-size:12px;font-variant-numeric:tabular-nums}
+.rc-t1{background:#d8d6d2}
+.rc-t2{background:linear-gradient(90deg,#cfe2ee,#e4f0f7)}
+.rc-t3{background:linear-gradient(100deg,#c9ccd2,#f7f8fa 50%,#aeb2ba)}
+.rc-t4{background:linear-gradient(90deg,#ffd1e6,#e0ccff,#c7ecff,#d6ffe9,#fff2c2)}
+.rc-t5{background:linear-gradient(90deg,#e8bb52,#fff1c4 50%,#d29a32)}
+.rc-examples{margin:0;padding-left:18px;font-size:14px;line-height:1.5}

@@ -14,7 +14,22 @@ import '@/app/my-deck-20261114.css';
 
 export type Card={cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
-const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
+export const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
+/**
+ * The Papermon rarity score (Astra, 2026-11-14: "our own type of rank for rarity ... a number score ... all the stuff
+ * added up, weighted"). Points: 10 for each reading-difficulty star, 1 for every year since the paper came out (no
+ * limit, so a card gets rarer every year), 50 when the paper's author has checked the card. The total picks the tier.
+ */
+export const SCORE={perStar:10,perYear:1,author:50};
+export const TIERS=[{tier:1,min:0,max:29},{tier:2,min:30,max:49},{tier:3,min:50,max:69},{tier:4,min:70,max:89},{tier:5,min:90,max:null}];
+export function ageYears(published?:string,now=new Date()){
+ if(!published)return 0;const p=new Date(published+'T12:00:00');let y=now.getFullYear()-p.getFullYear();
+ if(now.getMonth()<p.getMonth()||(now.getMonth()===p.getMonth()&&now.getDate()<p.getDate()))y--;return Math.max(0,y);
+}
+export function rarityOf(card:{lv:number;published?:string;author?:boolean}){
+ const age=ageYears(card.published),score=card.lv*SCORE.perStar+age*SCORE.perYear+(card.author?SCORE.author:0);
+ const tier=[...TIERS].reverse().find(t=>score>=t.min)!.tier;return {score,tier,age};
+}
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
 const SUBJECT:Record<string,{icon:LucideIcon;color:string}>={
  // Each subject always has the same symbol and color (Astra, 2026-11-14: "psychology, which is always a brain in pink").
@@ -85,23 +100,24 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
  const [sweep,setSweep]=useState(0);
  const [read,setRead]=useRead(card.no);
  const turn=()=>{setFlipped(f=>!f);setSweep(s=>s===1?2:1)};
- // An author-approved card is Legendary (Astra, 2026-11-14); the stars still show how hard the paper is.
- const rarity=card.author?'Legendary':RARITY[card.lv];
+ // Rarity comes from the rarity score (difficulty, age and the author's check, weighted); the stars still show how
+ // hard the paper is to read.
+ const {score,tier}=rarityOf(card),rarity=RARITY[tier];
  const type=SUBJECT[card.subject]||FALLBACK;const TypeIcon=type.icon;
  const own=(t:EventTarget)=>!!(t as HTMLElement).closest('a,label,input,button');
  // A click always flips the card (Astra, 2026-11-14). In My deck its back has a button that opens the write-up up top.
  const flip=(e:{target:EventTarget})=>{if(own(e.target))return;turn()};
- // Gold card (Astra, 2026-11-14): Legendary or verified by its author = the whole card is gold, whatever the subject,
- // with sparkles over the whole card. The Type stat's colored chip still tells the subject.
- const gold=card.lv>=5||!!card.author;
+ // Gold card (Astra, 2026-11-14): a Legendary card is gold all over, whatever the subject, with sparkles over the
+ // whole card. The Subject stat's colored chip still tells the subject.
+ const gold=tier>=5;
  const journal=card.src.replace(/\s*\d{4}$/,'');
- return <div className={'deck-slot '+(card.author?'author':'lv'+card.lv)+(gold?' gold-card':'')} style={{'--sc':type.color} as CSSProperties}>
+ return <div className={'deck-slot lv'+tier+(card.author?' author':'')+(gold?' gold-card':'')} style={{'--sc':type.color} as CSSProperties}>
   <div className={'deck-card'+(flipped?' flipped':'')+(sweep?` sweep${sweep}`:'')} role="button" tabIndex={0} aria-pressed={flipped}
    // The sheen sits where the mouse is, like light on a real card (Astra, 2026-11-14); it drifts on its own otherwise.
    onPointerMove={e=>{if(e.pointerType!=='mouse')return;const r=e.currentTarget.getBoundingClientRect(),el=e.currentTarget;
     el.classList.add('lit');el.style.setProperty('--lx',`${((e.clientX-r.left)/r.width*100).toFixed(1)}%`);el.style.setProperty('--ly',`${((e.clientY-r.top)/r.height*100).toFixed(1)}%`)}}
    onPointerLeave={e=>{e.currentTarget.classList.remove('lit')}}
-   aria-label={`${card.name}, ${card.subject}, ${rarity}, level ${card.lv}. Tap to flip.`}
+   aria-label={`${card.name}, ${card.subject}, ${rarity}, rarity score ${score}, reading difficulty ${card.lv}. Tap to flip.`}
    onClick={flip} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&!own(e.target)){e.preventDefault();turn()}}}>
    <div className="deck-inner">
     <div className="deck-face deck-front">
@@ -112,7 +128,7 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
       <span className="deck-lv" aria-label={`Level ${card.lv}`}>LV <b>{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
-      {(card.lv>=4||gold)&&<Glitter seed={card.no} gold={gold} count={30}/>}</div></div>
+      {(tier>=4||gold)&&<Glitter seed={card.no} gold={gold} count={30}/>}</div></div>
      {/* Stats (Astra, 2026-11-14): Subject, Article (the journal's name, linked) and Completion (a gold circle that
          fills in), centered in the space under the picture, with the card number centered under them. */}
      <div className="deck-lower">
@@ -129,7 +145,7 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
       </div>
       <span className="deck-no">No. {card.no}</span>
      </div>
-     <div className="deck-band"><span className={'deck-rarity'+(gold||card.lv>=3?' shiny':'')}>{rarity}</span><Stars n={card.lv}/></div>
+     <div className="deck-band"><span className="deck-rarity-wrap"><span className={'deck-rarity'+(tier>=3?' shiny':'')}>{rarity}</span><small className="deck-score">Rarity score {score}</small></span><Stars n={card.lv}/></div>
     </div>
     <div className="deck-face deck-back">
      {gold&&<Glitter seed={card.no+':back'} gold count={16} whole/>}
