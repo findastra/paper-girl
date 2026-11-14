@@ -7,19 +7,22 @@
 // DRAFT: shows ten sample cards and only when the address has ?deck (for example /paper-girl/?deck), so the live site
 // is unchanged until real cards exist. Card rules: docs/card-plan-20261113.md.
 import {useEffect,useState,type CSSProperties} from 'react';
-import {Atom,Brain,Check,CircleHelp,FlaskConical,Globe2,Leaf,Sigma,type LucideIcon} from 'lucide-react';
+import {Atom,Brain,Check,CircleHelp,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import '@/app/my-deck-20261114.css';
 
-export type Card={made?:string;published?:string;lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+export type Card={made?:string;published?:string;readMinutes?:number;lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
 const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
 const SUBJECT:Record<string,{icon:LucideIcon;color:string}>={
  // Each subject always has the same symbol and color (Astra, 2026-11-14: "psychology, which is always a brain in pink").
  Biology:{icon:Leaf,color:'#4f9a5e'},Psychology:{icon:Brain,color:'#d26a9a'},Chemistry:{icon:FlaskConical,color:'#d08a2e'},
- 'Earth science':{icon:Globe2,color:'#3f8ccc'},Physics:{icon:Atom,color:'#d4664a'},Math:{icon:Sigma,color:'#2f9c95'}};
+ 'Earth science':{icon:Globe2,color:'#3f8ccc'},Physics:{icon:Atom,color:'#d4664a'},Math:{icon:Sigma,color:'#2f9c95'},
+ // Added 2026-11-14 (Astra: "it seems like we're missing subjects")
+ Medicine:{icon:HeartPulse,color:'#c94a4a'},Genetics:{icon:Dna,color:'#7a5ec8'},Space:{icon:Telescope,color:'#34478f'},
+ 'Computer science':{icon:Cpu,color:'#56656f'},Engineering:{icon:Cog,color:'#8a6a4a'}};
 const FALLBACK={icon:CircleHelp,color:'#6b6470'};
 /** Every type, in order, with its symbol and color, for the draw bar's pills (Astra, 2026-11-14). */
 export const TYPES=Object.entries(SUBJECT).map(([name,t])=>({name,label:name.replace(/\b\w/g,c=>c.toUpperCase()),icon:t.icon,color:t.color}));
@@ -27,7 +30,8 @@ export const TYPES=Object.entries(SUBJECT).map(([name,t])=>({name,label:name.rep
 export function subjectColor(subject?:string){return (subject&&SUBJECT[subject]?.color)||'#d9a53f'}
 
 function Stars({n}:{n:number}){
- return <span className="deck-stars" aria-label={`Difficulty ${n} of 5`}><em>Difficulty</em>{[1,2,3,4,5].map(i=><i key={i} className={i<=n?'on':''} aria-hidden="true">★</i>)}</span>;
+ // Only the filled stars: 1 to 5 (Astra, 2026-11-14: "I don't want to see the non-filled stars").
+ return <span className="deck-stars" aria-label={`Difficulty ${n} of 5`}><em>Difficulty</em>{Array.from({length:n},(_,i)=><i key={i} className="on" aria-hidden="true">★</i>)}</span>;
 }
 
 // Sparkles from Astra's portfolio (findastra.github.io, the twinkles over her portrait): four-point stars that grow,
@@ -60,7 +64,7 @@ function useRead(no:string):[boolean,(v:boolean)=>void]{
  return [read,(v:boolean)=>{setRead(v);try{const m=JSON.parse(localStorage.getItem(READ_KEY)||'{}');if(v)m[no]=1;else delete m[no];localStorage.setItem(READ_KEY,JSON.stringify(m))}catch{}}];
 }
 
-export function DeckCard({card}:{card:Card}){
+export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
  const [flipped,setFlipped]=useState(false);
  // The sheen that sweeps across the card while it turns, like light on a real card; flips toggle between two
  // identical animations so each flip plays it again.
@@ -71,7 +75,8 @@ export function DeckCard({card}:{card:Card}){
  const rarity=card.author?'Legendary':RARITY[card.lv];
  const type=SUBJECT[card.subject]||FALLBACK;const TypeIcon=type.icon;
  const own=(t:EventTarget)=>!!(t as HTMLElement).closest('a,label,input');
- const flip=(e:{target:EventTarget})=>{if(own(e.target))return;turn()};
+ // In My deck a click opens the card up top with its full write-up (onPick); in the top box a click flips it.
+ const flip=(e:{target:EventTarget})=>{if(own(e.target))return;if(onPick)onPick(card);else turn()};
  // Gold card (Astra, 2026-11-14): Legendary or verified by its author = the whole card is gold, whatever the subject,
  // with sparkles over the whole card. The Type stat's colored chip still tells the subject.
  const gold=card.lv>=5||!!card.author;
@@ -123,9 +128,9 @@ export function DeckCard({card}:{card:Card}){
  </div>;
 }
 
-export function MyDeck(){
+export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
  return <section className="my-deck" aria-labelledby="my-deck-title">
-  <div className="my-deck-head"><h2 id="my-deck-title">My deck</h2><span>{cards.length} cards, one of each rarity · tap a card to flip it</span></div>
-  <div className="my-deck-grid">{cards.map(c=><DeckCard key={c.no} card={c}/>)}</div>
+  <div className="my-deck-head"><h2 id="my-deck-title">Your deck</h2></div>
+  <div className="my-deck-grid">{cards.map(c=><DeckCard key={c.no} card={c} onPick={onPick}/>)}</div>
  </section>;
 }

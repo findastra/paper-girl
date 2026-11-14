@@ -19,7 +19,8 @@
   },
   "pmcid": "PMC12604854",
   "made": "2026-11-14",
-  "published": "2025-11-11"
+  "published": "2025-11-11",
+  "readMinutes": 33
  },
  {
   "lv": 2,
@@ -41,7 +42,8 @@
   },
   "pmcid": "PMC12074634",
   "made": "2026-11-14",
-  "published": "2025-05-13"
+  "published": "2025-05-13",
+  "readMinutes": 39
  },
  {
   "lv": 3,
@@ -63,7 +65,8 @@
   },
   "pmcid": "PMC13553068",
   "made": "2026-11-14",
-  "published": "2026-09-08"
+  "published": "2026-09-08",
+  "readMinutes": 22
  },
  {
   "lv": 4,
@@ -85,7 +88,8 @@
   },
   "pmcid": "PMC13436957",
   "made": "2026-11-14",
-  "published": "2026-08-04"
+  "published": "2026-08-04",
+  "readMinutes": 27
  },
  {
   "lv": 5,
@@ -108,6 +112,7 @@
   },
   "pmcid": "PMC11832168",
   "made": "2026-11-14",
-  "published": "2025-02-17"
+  "published": "2025-02-17",
+  "readMinutes": 42
  }
 ]

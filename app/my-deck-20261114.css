@@ -287,3 +287,98 @@ body:has(.deck-mode){background:#2e2f33}
 .deck-type-stat i.read-dot{background:transparent;border:.6cqw solid color-mix(in srgb,var(--sc) 80%,#000);box-shadow:none;box-sizing:border-box}
 .deck-type-stat i.read-dot.on{background:var(--sc);border-color:var(--sc);box-shadow:inset 0 0 0 .45cqw #ffffff60,0 .3cqw .8cqw #2a1f2c40}
 .deck-read input:focus-visible+b i.read-dot{outline:2px solid #efa9c5;outline-offset:2px}
+/* Card-of-the-day box (Astra, 2026-11-14): one even gold border all the way around, no colored top line, and gold
+   instead of the subject's color for its own accents. Only the type pills and the card keep their subject colors. */
+.deck-mode .cotd-box{--accent:#d9a53f!important;border:2px solid transparent;background:linear-gradient(var(--n1),var(--n1)) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
+.deck-mode .cotd-box::before{display:none}
+.deck-mode .cotd-box .section-label{color:#e8c46a}
+/* Stars: only the filled ones */
+.reel-stars{font-size:18px;letter-spacing:2px;color:#e8c46a}
+/* The draw deck: three face-down cards stacked, gold edged; the top one lifts on hover and slides off when drawing */
+.draw-deck{display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:none;cursor:pointer;padding:0 6px;color:var(--t1,#f5f5f3);align-self:flex-end}
+.draw-deck:disabled{cursor:wait}
+.draw-deck-cards{position:relative;width:74px;height:104px}
+.draw-deck-cards span{position:absolute;inset:0;border-radius:8px;border:2px solid #d9a53f;
+ background:repeating-linear-gradient(45deg,#3c3d43 0 6px,#45464c 6px 12px);box-shadow:0 3px 8px #0006}
+.draw-deck-cards span:nth-child(1){transform:translate(6px,6px) rotate(4deg)}
+.draw-deck-cards span:nth-child(2){transform:translate(3px,3px) rotate(2deg)}
+.draw-deck-cards .top{display:grid;place-items:center;transition:transform .25s ease}
+.draw-deck-cards .top b{font-size:34px;line-height:1;background:linear-gradient(110deg,#a8761c,#f3d27a 40%,#fff3c4 50%,#d9a53f 60%,#a8761c);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:deck-text-shine 6s ease-in-out infinite}
+.draw-deck:hover .top,.draw-deck:focus-visible .top{transform:translateY(-8px) rotate(-3deg)}
+.draw-deck.busy .top{animation:deck-draw .6s ease-in}
+@keyframes deck-draw{to{transform:translate(40px,-30px) rotate(18deg);opacity:0}}
+.draw-deck-label{font-size:17px;font-weight:700;letter-spacing:.05em;color:#e8c46a}
+.draw-deck:focus-visible{outline:2px solid #e8c46a;outline-offset:4px;border-radius:10px}
+@media(max-width:760px){.draw-deck{align-self:center}}
+/* "More about this paper": the extra facts the card leaves out, under a line, in one place (Astra, 2026-11-14).
+   The old scattered notes (small print, attribution line, "OPEN ACCESS" link) are hidden in deck mode. */
+.deck-mode .reality-check,.deck-mode .attribution,.deck-mode .research-details,.deck-mode .original-link{display:none!important}
+.cotd-more{border-top:1px solid #d9a53f80;margin:6px 0 22px;padding-top:18px}
+.cotd-more h3{margin:0 0 12px;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#e8c46a}
+.cotd-more dl{display:grid;grid-template-columns:minmax(110px,160px) 1fr;gap:10px 16px;margin:0}
+.cotd-more dt{font-weight:700;color:var(--t3,#b2b2ae);font-size:14px}
+.cotd-more dd{margin:0;color:var(--t2,#dcdcd8);font-size:15px;line-height:1.5}
+.cotd-more dd a{color:#e8c46a;text-decoration:underline;text-underline-offset:3px}
+.cotd-original{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:9px 16px;border-radius:999px;border:1px solid #d9a53f;color:#f3e3b5;font-weight:700}
+.cotd-original:hover{background:#d9a53f22}
+@media(max-width:520px){.cotd-more dl{grid-template-columns:1fr;gap:2px}.cotd-more dd{margin-bottom:8px}}
+.my-deck .deck-card{cursor:pointer}
+/* Footer all gold on this site (Astra, 2026-11-14): gold line and sparkles, and the star picture warmed to gold */
+.deck-mode .af-row::before{background:linear-gradient(90deg,transparent,#d9a53f 20%,#f3d27a 50%,#d9a53f 80%,transparent)}
+.deck-mode .af-star img{filter:sepia(1) saturate(2.4) hue-rotate(-8deg) brightness(1.05)}
+.deck-mode .af-title,.deck-mode .af-icon{color:#f3e3b5}
+/* No "Made for curious minds. Always free." line */
+.deck-mode footer>span{display:none}
+.deck-mode footer{justify-content:center;border-top:0;margin-top:10px}
+/* Your deck is a panel like the card-of-the-day box: the same gold border, just cards inside */
+.deck-mode .my-deck{margin-top:26px;border:2px solid transparent;border-radius:18px;padding:18px 24px 26px;
+ background:linear-gradient(var(--n1),var(--n1)) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box;box-shadow:0 18px 50px #0007}
+.deck-mode .my-deck-head{align-items:flex-start;margin-bottom:14px}
+.deck-mode .my-deck-head h2{font-size:15px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;animation:none;background:none;color:#e8c46a;-webkit-text-fill-color:#e8c46a}
+@media(max-width:520px){.deck-mode .my-deck{padding:16px 12px 20px}}
+/* The write-up inside the box goes back to the original Paper Girl layout, which read more easily (Astra, 2026-11-14):
+   DM Sans text, a Space Grotesk headline, the original sizes and spacing, the small print, the attribution line and
+   the "Read the original paper" link. Colors stay gray and gold. The cards keep Times New Roman. */
+.deck-mode .cotd-box .paper-copy,.deck-mode .cotd-box .paper-copy :where(p,span,b,em,strong,a,button,div,h2,summary){font-family:'DM Sans',Arial,sans-serif!important}
+.deck-mode .cotd-box .paper-copy h1{font-family:'Space Grotesk',sans-serif!important;font-weight:500;letter-spacing:-1.35px}
+.deck-mode .cotd-box .paper-copy .section-label>span{font-family:'Space Grotesk',sans-serif!important}
+.deck-mode .reality-check{display:flex!important}
+.deck-mode .attribution{display:block!important}
+.deck-mode .original-link{display:flex!important}
+.deck-mode .research-details{display:block!important}
+/* Footer star: her picture unchanged; only the rim (the overlay) and the sparkles are gold */
+.deck-mode .af-star img{filter:none!important}
+.af-star{position:relative}
+.af-star-rim{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+
+/* ---------------- White paper theme (Astra, 2026-11-14: "text being in black and the page being in white,
+   because this is white paper") ----------------
+   White page and panels, black text, gold borders and gold accents. Overrides the gray tokens above. */
+body:has(.deck-mode){background:#ffffff}
+.deck-mode{--n0:#ffffff;--n1:#ffffff;--n2:#f3f2ef;--n3:#e2dfd8;--n4:#cbc7be;--t1:#111111;--t2:#2b2b2b;--t3:#6b6b6b;color:#111}
+.deck-mode .brand{color:#111}
+.deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #00000014}
+.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .my-deck-head h2,.cotd-more h3{color:#9a6b12!important;-webkit-text-fill-color:#9a6b12}
+.deck-mode .section-label>span{color:#8a8a8a}
+.deck-mode .significance{border-left-color:#d9a53f}
+.deck-mode .story-section p{color:#2b2b2b}.deck-mode .hook p{color:#111}
+.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg{color:#6b6b6b}.deck-mode .reality-check strong{color:#2b2b2b}
+.deck-mode .attribution{color:#6b6b6b}.deck-mode .attribution button{color:#2b2b2b}
+.deck-mode .research-details{background:#f7f5f0;border-color:#e2dfd8}.deck-mode .research-details p{color:#2b2b2b}.deck-mode .research-details a,.deck-mode .research-details summary{color:#9a6b12}
+.deck-mode .original-link{color:#111;border-top-color:#e2dfd8}.deck-mode .original-link>span{color:#8a8a8a}
+.deck-mode .subject-tag{background:#f3f2ef;border-color:#d6d2c8;color:#2b2b2b}
+.deck-mode .paper-meta,.deck-mode .read-time{color:#6b6b6b}
+.deck-mode .draw-bar{border-top-color:#e2dfd8}
+.deck-mode .reel-drum{background:#f7f6f3;border-color:#d6d2c8;box-shadow:inset 0 10px 14px -10px #0002,inset 0 -10px 14px -10px #0002}
+.deck-mode .reel-name{color:#6b6b6b}.deck-mode .reel-text{color:#111}.deck-mode .reel-arrow{color:#8a8a8a}.deck-mode .reel-arrow:hover{color:#111}
+.deck-mode .type-pill{background:#ffffff;border-color:#d6d2c8;color:#111}
+.deck-mode .reel-stars{color:#b8861e}
+.deck-mode .draw-deck-cards span{background:repeating-linear-gradient(45deg,#2b2b2e 0 6px,#38383c 6px 12px)}
+.deck-mode .draw-deck-label{color:#9a6b12}
+.deck-mode .draw-status{color:#6b6b6b}
+.deck-mode .cotd-motto,.deck-mode .cotd-motto p{color:#2b2b2b}
+.deck-mode .cotd-motto em{background:linear-gradient(110deg,#8a5a10,#c48a24 40%,#e8b850 50%,#8a5a10);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.deck-mode .brand>span{background:linear-gradient(110deg,#8a5a10,#c48a24 40%,#e8b850 50%,#8a5a10);background-size:250% 100%;-webkit-background-clip:text;background-clip:text}
+.deck-mode footer{color:#6b6b6b}.deck-mode footer button{color:#2b2b2b}
+.deck-mode .af-title,.deck-mode .af-icon{color:#111}
+.cotd-nocard{border-color:#cbc7be;color:#6b6b6b}
