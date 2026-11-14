@@ -124,7 +124,7 @@
    on the right, and "Your next rabbit hole" inside the same box. */
 body:has(.deck-mode){background:#2e2f33}
 /* Accents follow the card's subject color (set on .cotd-box); gold stays the brand. */
-.deck-mode{--accent:#d9a53f;--n0:#2e2f33;--n1:#38393e;--n2:#43444a;--n3:#53545b;--n4:#65666e;--t1:#f5f5f3;--t2:#dcdcd8;--t3:#b2b2ae;
+.deck-mode{--accent:#d9a53f;--n0:#2e2f33;--n1:#3f4046;--n2:#43444a;--n3:#53545b;--n4:#65666e;--t1:#f5f5f3;--t2:#dcdcd8;--t3:#b2b2ae;
  --gold:linear-gradient(110deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c);
  --rainbow:linear-gradient(90deg,#ff8fc8,#ffd27a,#9dffc9,#7fd3ff,#c49bff,#ff8fc8);color:var(--t1)}
 .deck-mode .header-note,.deck-mode .art-panel,.deck-mode .shuffle-row>p,.deck-mode .status>span,.deck-mode .library{display:none!important}
@@ -210,3 +210,16 @@ body:has(.deck-mode){background:#2e2f33}
 .af-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:6px;color:var(--t1,#f3f3f1)}
 .af-icon svg{width:22px;height:22px}.af-icon:hover{opacity:.8}
 @media(max-width:520px){.af-row{flex-wrap:nowrap;gap:8px;padding:18px 4px 0}.af-sparkle{width:12px;height:12px}.af-star{width:40px;height:40px}}
+/* 2026-11-14 (Astra): no "Card of the day" date row and no "Today's paper" link above the box */
+.deck-mode .above-card,.deck-mode .daily-link{display:none!important}
+.deck-mode main{padding-top:6px}
+/* The card number sits at the top, under the name, big enough to read */
+.deck-title{min-width:0;display:flex;flex-direction:column;align-items:center;gap:0}
+.deck-no{font-size:3.6cqw;font-weight:700;letter-spacing:.2cqw;opacity:.7;white-space:nowrap}
+/* Back footer: the author's stamp (on approved cards) and the day the card was made */
+.deck-back .deck-bfoot{flex-direction:row;align-items:center;justify-content:flex-start;gap:3cqw}
+.deck-made{display:flex;flex-direction:column;gap:.6cqw;font-size:3.8cqw}
+.deck-made span{opacity:.75}
+.deck-stamp{flex:none;width:15cqw;height:15cqw;border-radius:50%;border:.6cqw double var(--rc);color:var(--rc);display:grid;place-items:center;align-content:center;text-align:center;transform:rotate(-10deg);line-height:1}
+.deck-stamp span{font-size:5cqw}
+.deck-stamp small{font-size:2.4cqw;font-weight:700;text-transform:uppercase;letter-spacing:.15cqw}

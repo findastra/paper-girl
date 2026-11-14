@@ -12,7 +12,7 @@ import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import '@/app/my-deck-20261114.css';
 
-export type Card={lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+export type Card={made?:string;lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
 const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
@@ -77,7 +77,7 @@ export function DeckCard({card}:{card:Card}){
      {gold&&<Glitter seed={card.no+':card'} gold count={22} whole/>}
      <div className="deck-top">
       <span className="deck-type" title={card.subject}><TypeIcon aria-hidden="true"/></span>
-      <p className="deck-name">{card.name}</p>
+      <div className="deck-title"><p className="deck-name">{card.name}</p><span className="deck-no">No. {card.no}</span></div>
       <span className="deck-lv" aria-label={`Level ${card.lv}`}><b>{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
@@ -87,7 +87,7 @@ export function DeckCard({card}:{card:Card}){
       <div><span>paper</span><a href={card.url} target="_blank" rel="noreferrer">Open ↗</a></div>
       <label className="deck-read"><span>read paper</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/><b>{read?'Read':'Not yet'}</b></label>
      </div>
-     <div className="deck-band"><span className="deck-rarity">{rarity}<small>No. {card.no}</small></span><Stars n={card.lv}/></div>
+     <div className="deck-band"><span className="deck-rarity">{rarity}</span><Stars n={card.lv}/></div>
     </div>
     <div className="deck-face deck-back">
      {gold&&<Glitter seed={card.no+':back'} gold count={16} whole/>}
@@ -95,7 +95,12 @@ export function DeckCard({card}:{card:Card}){
      <div><h4>STRANGE HOOK</h4><p>{card.hook}</p></div>
      <div><h4>WHAT THEY FOUND</h4><p>{card.found}</p></div>
      <div><h4>WHY IT MATTERS</h4><p>{card.matters}</p></div>
-     {card.author&&<div className="deck-bfoot"><span className="deck-approved">✍ Approved by its author</span></div>}
+     {/* Back footer (Astra, 2026-11-14): the day the card was made; on an author-approved card, the author's own
+         signature or their lab's logo as a stamp (they send it with their answer; this one is a placeholder). */}
+     <div className="deck-bfoot">
+      {card.author&&<div className="deck-stamp" aria-label="Author's stamp"><span>✍</span><small>author’s<br/>stamp</small></div>}
+      <div className="deck-made">{card.author&&<b className="deck-approved">Approved by its author</b>}<span>Made {card.made?new Date(card.made+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}):''}</span></div>
+     </div>
     </div>
    </div>
   </div>
