@@ -34,7 +34,8 @@ export function MethodsCredits(){
   <h3>Honest limits</h3>
   <p>One study is one piece of evidence. The cards and the write-up keep each study’s real scope but leave detail out;
    the original article is always the full story. Subjects are matched from titles and summaries, and today’s journals
-   are mostly life science, so some subjects have few papers so far.</p>
+   are mostly life science, so some subjects have few papers so far. No card has been certified by an author yet; the
+   gold Statistical Neonatal Listener is marked Example and only shows how a certified card looks.</p>
   <h3>Credits</h3>
   <ul>
    <li><b>Game design:</b> Astra.</li>

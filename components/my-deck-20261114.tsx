@@ -14,7 +14,9 @@ import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/u
 import '@/app/my-deck-20261114.css';
 
 // certifiedBy / certifiedOn: who checked the card for its paper's authors and when (only on author-checked cards).
-export type Card={cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;certifiedBy?:string;certifiedOn?:string;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+// example: a gold card shown only to show the look of a certified card (Astra, 2026-11-14); it is labeled "Example" on
+// the front and its back says nobody has certified it yet, so it never claims a real author's check.
+export type Card={example?:boolean;cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;certifiedBy?:string;certifiedOn?:string;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
 export const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 /**
@@ -34,9 +36,11 @@ export function ageYears(published?:string,now=new Date()){
 }
 /** The tier for a score: gold only when certified by the paper's author, otherwise by the score (TIERS). */
 export function tierOf(score:number,certified:boolean){return certified?GOLD_TIER:[...TIERS].reverse().find(t=>score>=t.min)!.tier}
-export function rarityOf(card:{lv:number;published?:string;author?:boolean}){
- const age=ageYears(card.published),score=card.lv*SCORE.perStar+age*SCORE.perYear+(card.author?SCORE.author:0);
- return {score,tier:tierOf(score,!!card.author),age};
+export function rarityOf(card:{lv:number;published?:string;author?:boolean;example?:boolean}){
+ // The example card is scored and colored as if certified, to show the look
+ const certified=!!card.author||!!card.example;
+ const age=ageYears(card.published),score=card.lv*SCORE.perStar+age*SCORE.perYear+(certified?SCORE.author:0);
+ return {score,tier:tierOf(score,certified),age};
 }
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
 // covers: what belongs in each subject, so every paper has one obvious home (Astra, 2026-11-14). A paper that fits two
@@ -128,8 +132,8 @@ function SunSeal(_:{id:string}){
  // Made of the page's one gold surface (Astra, 2026-11-14): a gold sun of jagged points, a disc with a thin ring, a check
  return <span className="sun-seal" aria-hidden="true"><span className="sun-rays"/><span className="sun-disc"><Check/></span></span>;
 }
-function PapermonSeal({id,author}:{id:string;author:boolean}){
- const words=author?'AUTHOR’S EDITION CARD ✦ PAPERMON ✦ ':'PAPERMON ✦ CERTIFICATE OF AUTHENTICITY ✦ ';
+function PapermonSeal({id,author,example=false}:{id:string;author:boolean;example?:boolean}){
+ const words=example?'AUTHOR’S EDITION ✦ EXAMPLE ✦ ':author?'AUTHOR’S EDITION CARD ✦ PAPERMON ✦ ':'PAPERMON ✦ CERTIFICATE OF AUTHENTICITY ✦ ';
  // Fit the crest's words once around the ring (radius 38, about 239 units round).
  const fs=Math.min(8.6,(232-words.length)/(words.length*.64));
  const p=`seal-p-${id}`;
@@ -291,7 +295,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
        <div><span>rarity score</span><b>{score}</b></div>
       </div>
      </div>
-     <div className="deck-band"><span className="deck-rarity-wrap"><span className={'deck-rarity'+(tier>=3?' shiny':'')}>{rarity}</span></span><Stars n={card.lv}/></div>
+     <div className="deck-band"><span className="deck-rarity-wrap"><span className={'deck-rarity'+(tier>=3?' shiny':'')}>{rarity}</span>{card.example&&<span className="deck-example">Example</span>}</span><Stars n={card.lv}/></div>
     </div>
     <div className="deck-face deck-back">
      {gold&&<Glitter seed={card.no+':back'} gold count={16} whole/>}
@@ -329,7 +333,12 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
           seal on the right, say what the seal certifies, who certified it and when; other cards leave the space empty.
           An author's certification only shows when the paper's own author checked the card. */}
       <div className="deck-made">{card.author&&!gold&&<b className="deck-approved">Approved by its author</b>}
-       {gold&&(card.author?<>
+       {gold&&card.example&&<>
+        <span><b>Certification:</b> Author’s Edition (example)</span>
+        <span><b>Author certifier:</b> none yet</span>
+        <span>This card shows how a certified card looks.</span>
+       </>}
+       {gold&&!card.example&&(card.author?<>
         <span><b>Certification:</b> Author’s Edition</span>
         <span><b>Author certifier:</b> {card.certifiedBy||'the paper’s author'}</span>
         {card.certifiedOn&&<span><b>Author certification date:</b> {shortDate(card.certifiedOn)}</span>}
@@ -338,7 +347,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
         <span><b>Certified by:</b> Papermon</span>
         {card.made&&<span><b>Certification date:</b> {shortDate(card.made)}</span>}
        </>)}</div>
-      {gold&&<PapermonSeal id={card.no.replace(/\D/g,'')} author={!!card.author}/>}
+      {gold&&<PapermonSeal id={card.no.replace(/\D/g,'')} author={!!card.author} example={!!card.example}/>}
      </div>
     </div>
    </div>

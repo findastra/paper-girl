@@ -1491,3 +1491,10 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 .deck-mode .paper-sheet .matters-body::after{content:"✦";position:absolute;left:0;top:50%;width:18px;transform:translateY(-50%);text-align:center;font-size:18px;line-height:1;
  font-family:'DM Sans',Arial,sans-serif;background:var(--sheen);background-size:var(--gold-size);background-position:var(--gold-pos,0 0);background-repeat:no-repeat;
  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 .5px #9a6814)}
+/* The labeled example gold card: a small "EXAMPLE" beside its rarity word, in the card's small-label style */
+.deck-example{margin-left:1.6cqw;font-family:'DM Sans',Arial,sans-serif;font-size:2.8cqw;font-weight:700;letter-spacing:.12cqw;text-transform:uppercase;
+ color:#4a3104;opacity:.75;padding:.3cqw 1.2cqw;border-radius:2cqw;box-shadow:inset 0 0 0 .25cqw #4a310466;vertical-align:middle}
+/* One text style for every pill (Astra, 2026-11-14): the subject choices, Order My Deck / Rules / Methods & Credits /
+   More Information and the deck's drop-downs all use the same serif, size, weight and dark brown */
+.pick-types.labeled .pick-dot span,.pick-order,.pick-more,.deck-pick select{font-family:'Times New Roman',Times,Georgia,serif!important;font-size:13.5px!important;
+ font-weight:700!important;letter-spacing:0!important;color:var(--btn-ink)!important;-webkit-text-fill-color:var(--btn-ink)!important;line-height:1.1!important}

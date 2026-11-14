@@ -122,6 +122,7 @@
   "src": "eLife 2025",
   "art": "cards/newborn-eeg-e-20261114.webp",
   "no": "000,005",
+  "example": true,
   "url": "https://doi.org/10.7554/elife.101802",
   "headline": "A newborn’s brain is already listening for the pattern.",
   "hook": "Babies just days old already notice sound patterns.",
