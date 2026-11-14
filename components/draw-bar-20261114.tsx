@@ -3,7 +3,7 @@
 // Difficulty), each turned by the mouse wheel, the arrows, a swipe or the keyboard, and a face-down deck of cards you
 // click to draw from. The Type wheel shows the same pills as a card's type chip: colored circle, symbol, name capitalized.
 import {useEffect,useRef,useState,useSyncExternalStore,type ReactNode,type CSSProperties} from 'react';
-import {ChevronUp,ChevronDown,Dices,Printer} from 'lucide-react';
+import {ChevronUp,ChevronDown,Printer,Shuffle} from 'lucide-react';
 import {TYPES} from '@/components/my-deck-20261114';
 import {dayKey} from '@/lib/science';
 
@@ -95,6 +95,7 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
  // Redone 2026-11-14 (Astra did not like the little deck with "Draw" or the "Order my deck" pill): everything centered
  // under the card, type circles, then stars, then two matching buttons side by side: Draw a card (gold) and Order my deck.
  return <div className="draw-picker" aria-label="Draw a card"><div className="pick-left">
+  <span className="pick-label pick-label-top">Subject</span>
   {/* Each circle with its subject's name to the right, in two columns (Astra, 2026-11-14) */}
   <div className="pick-types labeled" role="radiogroup" aria-label="Type">
    <button role="radio" aria-checked={type===0} title="Any subject" className={'pick-dot any'+(type===0?' on':'')} disabled={busy} onClick={()=>onType(0)}><i aria-hidden="true">?</i><span>Any subject</span></button>
@@ -103,28 +104,30 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
   </div>
   {/* Each row: its name on the left, the choices on the right (Astra, 2026-11-14) */}
   <div className="pick-row">
-   <span className="pick-label">Reading difficulty:</span>
+   <span className="pick-label">Reading difficulty</span>
    <div className="pick-stars" role="radiogroup" aria-label="Reading difficulty">
     {[1,2,3,4,5].map(n=><button key={n} role="radio" aria-checked={level===n} aria-label={`Reading difficulty ${n} of 5`} title={`Reading difficulty ${n}`}
      className={'pick-star'+(level>=n?' on':'')} disabled={busy} onClick={()=>onLevel(level===n?0:n)}>★</button>)}
-    {/* Any difficulty: a little dice button after the stars */}
+    {/* Any difficulty: the shuffle arrows right after the stars (Astra, 2026-11-14) */}
     <button role="radio" aria-checked={level===0} aria-label="Any reading difficulty" title="Any reading difficulty"
-     className={'pick-random'+(level===0?' on':'')} disabled={busy} onClick={()=>onLevel(0)}><Dices aria-hidden="true"/></button>
+     className={'pick-random'+(level===0?' on':'')} disabled={busy} onClick={()=>onLevel(0)}><Shuffle aria-hidden="true"/></button>
    </div>
   </div>
   {/* Published: This year, Past years or Any year (newer papers are more likely, see AGE_ODDS) */}
   <div className="pick-row">
-   <span className="pick-label">Published:</span>
+   <span className="pick-label">Published</span>
    <div className="pick-years" role="radiogroup" aria-label="Published">
     {[...YEAR_CHOICES,'Any year'].map((label,i)=>{const v=i<YEAR_CHOICES.length?i+1:0;return <button key={label} role="radio" aria-checked={year===v}
      className={'pick-year'+(year===v?' on':'')} disabled={busy} onClick={()=>onYear(v)}>{label}</button>})}
    </div>
   </div></div>
   <div className="pick-actions">
-   {/* Plain words (Astra, 2026-11-14): "Draw card 1 of 5" ... "Draw card 5 of 5"; once all five are drawn the button goes
+   {/* Plain words (Astra, 2026-11-14): "Draw Card 1/5" ... "Draw Card 5/5"; once all five are drawn the button goes
        gray and counts down to the next draws */}
    <button type="button" className={'pick-draw'+(busy?' busy':'')+(out?' out':'')} disabled={busy||out} onClick={()=>{if(out)return;spendDraw();onDraw()}}>
-    {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:`Draw card ${DRAWS_PER_DAY-left+1} of ${DRAWS_PER_DAY}`}</button>
+    {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:<>Draw Card <span className="draw-count-paren">({DRAWS_PER_DAY-left+1}/{DRAWS_PER_DAY})</span></>}</button>
+   {/* Some space, then a fancy gold divider, then the other buttons (Astra, 2026-11-14) */}
+   <div className="pick-divider" aria-hidden="true"><i/><span>✦</span><i/></div>
    <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>setOrdering(o=>!o)}><Printer size={16} aria-hidden="true"/>Order my deck</button>
    {children}
    {ordering&&<p className="pick-order-note" role="status">Printed decks are coming soon. Your cards are saved here until then.</p>}

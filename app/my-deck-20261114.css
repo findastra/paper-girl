@@ -1385,3 +1385,35 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 /* The tagline centered under Papermon however long it is: its own full-width line, centered text */
 .pm-tagline{align-self:stretch;width:100%;text-align:center!important;white-space:nowrap}
 @media(max-width:620px){.pm-tagline{white-space:normal}}
+
+/* ---------------- Labels and numbers, 2026-11-14 night (Astra) ---------------- */
+/* Every small label looks like the card's own ("SUBJECT", "READ TIME", "READING DIFFICULTY"): the picker's rows, the
+   deck's Group by / In order of, and "Good card?" on the back. The card's labels are 2.8% of a 330 px card wide. */
+.pick-label,.deck-pick>span{font-family:'DM Sans',Arial,sans-serif!important;font-size:9.24px!important;font-weight:500!important;text-transform:uppercase;
+ letter-spacing:.4px!important;line-height:1!important;color:#232025!important;opacity:.65}
+.deck-rate>span{font-family:'DM Sans',Arial,sans-serif!important;font-size:2.8cqw!important;font-weight:500!important;text-transform:uppercase;letter-spacing:.12cqw;line-height:1;opacity:.65}
+/* Methods & credits */
+.methods ul{margin:0 0 12px;padding-left:18px}
+.methods li{font-size:15px;line-height:1.6;margin:0 0 4px}
+.methods-by{font-family:'Caveat','Segoe Script',cursive!important;font-size:24px!important;font-weight:700;margin-top:14px!important}
+
+/* ---------------- Picker left-aligned, divider, card headings (Astra, 2026-11-14) ---------------- */
+/* Everything in the picker starts at the same left edge as its labels: SUBJECT over the subject buttons, then the
+   rows with their names close to their choices */
+.deck-mode .pick-left{align-items:stretch!important;width:100%;max-width:336px;align-self:center}
+.pick-label-top{display:block;margin:0 0 -2px 2px}
+.pick-types.labeled{max-width:none!important;margin:0!important}
+.pick-row{grid-template-columns:auto 1fr!important;justify-content:start!important;max-width:none!important;gap:10px!important}
+.pick-row .pick-label{min-width:0}
+/* "Draw Card (1/5)" */
+.draw-count-paren{margin-left:.3em;font-family:'DM Sans',Arial,sans-serif;font-size:.82em;font-weight:700;opacity:.85}
+/* Space after Draw Card, then a fancy gold divider (two lines fading out and a star), then the other buttons */
+.pick-divider{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin:14px 6px 8px}
+.pick-divider i{flex:1;height:2px;border-radius:2px;background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important}
+.pick-divider i:first-child{-webkit-mask:linear-gradient(90deg,transparent,#000 70%);mask:linear-gradient(90deg,transparent,#000 70%)}
+.pick-divider i:last-child{-webkit-mask:linear-gradient(270deg,transparent,#000 70%);mask:linear-gradient(270deg,transparent,#000 70%)}
+.pick-divider span{font-size:18px;line-height:1;background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 .5px #9a6814)}
+/* Card back headings underlined like the paper's section labels */
+.deck-back h4{text-decoration:underline;text-underline-offset:1cqw;text-decoration-thickness:.25cqw}
+.pick-draw{white-space:nowrap!important}

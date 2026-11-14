@@ -14,7 +14,7 @@ export const GOLD=[
  '.deck-back-actions>*','.deck-dir','.deck-rate button','.pick-types.labeled .pick-dot','.pick-dot i','.tally-sub','.tally-sub i',
  '.howto-subjects i','.card-form-chips button','.card-form-send','.deck-pick select','.deck-type','.deck-stats a','.deck-no',
  '.pick-star','.read-dot','.sun-rays','.sun-disc','.pm-seal-gold','.gold-card .deck-face','.cotd-box','.my-deck','.matters-body',
- '.source-dialog','.card-form input','.card-form textarea','.deck-star-row i','.gold-card .deck-band','.gold-card .deck-frame','.gold-card .deck-rim',
+ '.source-dialog','.pick-divider i','.pick-divider span','.card-form input','.card-form textarea','.deck-star-row i','.gold-card .deck-band','.gold-card .deck-frame','.gold-card .deck-rim',
 ].join(',');
 
 /** How far the sheet slides (px, along the gold's diagonal) and how long one sweep takes (the gold card's old 9 s). */
