@@ -46,3 +46,6 @@ next-env.d.ts
 /outputs/
 /work/
 *.tsbuildinfo
+
+# Full-size style drafts stay on this PC; the 512 px WebP copies are committed.
+/art-originals/drafts/*.png

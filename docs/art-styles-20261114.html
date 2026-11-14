@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paper Patty art styles</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Compare OpenAI's style drafts (Astra, 2026-11-14): five cards down, five styles across. Click a picture to see it
+   big. Mirror Pool rules: one screen tall, only the grid scrolls; on a phone each card's five styles swipe sideways. */
+:root{--bg:#1d1720;--ink:#f4e9ed;--soft:#b9a3b2;--pink:#efa9c5;--line:#3e3142}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:'DM Sans',Arial,sans-serif}
+header{text-align:center;padding:clamp(10px,2vh,18px) 16px 8px}
+h1{margin:0;font-family:'Space Grotesk',sans-serif;font-size:clamp(20px,2.4vw,28px)}
+header p{margin:4px 0 0;font-size:13px;color:var(--soft)}
+.grid{flex:1;min-height:0;overflow:auto;padding:8px clamp(12px,3vw,32px) 24px;display:grid;grid-template-columns:minmax(90px,140px) repeat(5,minmax(130px,1fr));gap:10px;align-content:start}
+.head{position:sticky;top:0;z-index:2;background:var(--bg);font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--pink);text-align:center;padding:6px 2px}
+.head b{display:block;font-size:22px;color:var(--ink)}
+.row-name{display:flex;flex-direction:column;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px}
+.row-name span{font-family:'DM Sans',sans-serif;font-weight:400;font-size:12px;color:var(--soft)}
+.cell{aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#2a2130;border:1px solid var(--line);cursor:zoom-in;padding:0}
+.cell img{width:100%;height:100%;object-fit:cover;display:block}
+.cell.missing{display:grid;place-items:center;font-size:12px;color:var(--soft);cursor:default}
+@media(max-width:620px){
+ .grid{grid-template-columns:repeat(5,72vw);grid-auto-flow:row;overflow-x:auto;scroll-snap-type:x mandatory}
+ .head{display:none}.row-name{grid-column:1/-1;position:sticky;left:0}
+ .cell{scroll-snap-align:center}
+}
+dialog{border:0;padding:0;background:transparent;max-width:min(92vw,92dvh)}
+dialog::backdrop{background:#000c}
+dialog img{width:100%;height:auto;display:block;border-radius:12px}
+dialog p{margin:8px 0 0;text-align:center;color:#fff;font-size:14px}
+</style>
+</head>
+<body>
+<header><h1>Pick a style</h1><p>OpenAI drafts · five styles across, one card per row · click any picture to see it big</p></header>
+<main class="grid" id="grid"></main>
+<dialog id="big" onclick="this.close()"><img id="bigImg" alt=""><p id="bigCap"></p></dialog>
+<script>
+'use strict';
+const STYLES=[['a','Bright creature-card cartoon'],['b','Storybook watercolor'],['c','Clay toy 3D'],['d','Flat vector sticker'],['e','Retro Saturday-morning cartoon']];
+const CARDS=[['jumping-spider','Spider Memory','Common'],['bat-pup','Babbling Bat','Uncommon'],['pika','Tiny Gardener','Rare'],['colored-seven','Color Number','Holo rare'],['newborn-eeg','Pattern Listener','Legendary']];
+const grid=document.getElementById('grid');
+grid.insertAdjacentHTML('beforeend','<div class="head"></div>'+STYLES.map(([k,n])=>`<div class="head"><b>${k.toUpperCase()}</b>${n}</div>`).join(''));
+for(const [slug,name,rar] of CARDS){
+  grid.insertAdjacentHTML('beforeend',`<div class="row-name">${name}<span>${rar}</span></div>`);
+  for(const [k,n] of STYLES){
+    const src=`../art-originals/drafts/${slug}-${k}-20261114.webp`;
+    const b=document.createElement('button');b.className='cell';b.title=`${name}: ${k.toUpperCase()} ${n}`;
+    const img=new Image();img.src=src;img.alt=`${name}, ${n}`;img.loading='lazy';
+    img.onerror=()=>{b.classList.add('missing');b.textContent='still drawing…'};
+    b.append(img);b.onclick=()=>{if(b.classList.contains('missing'))return;bigImg.src=src;bigCap.textContent=`${name} · ${k.toUpperCase()} ${n}`;big.showModal()};
+    grid.append(b);
+  }
+}
+</script>
+</body>
+</html>
