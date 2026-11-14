@@ -5,7 +5,7 @@
   "subject": "Biology",
   "src": "eLife 2025",
   "art": "cards/jumping-spider-e-20261114.webp",
-  "no": "000,181",
+  "no": "000,001",
   "url": "https://doi.org/10.7554/elife.97146",
   "headline": "A tiny spider may remember who it has met.",
   "hook": "A tiny loner spider may remember who it has met.",
@@ -22,10 +22,11 @@
   "published": "2025-11-11",
   "readMinutes": 33,
   "paper": {
-   "hook": "A tiny loner spider may remember who it has met. Jumping spiders mostly live alone, yet they seem to keep track of the individuals around them.",
-   "found": "Jumping spiders told a familiar spider from a stranger. Seen through clear barriers, new spiders were approached, familiar ones were kept at a distance, and a different spider was approached again.",
-   "matters": "Big social smarts can fit in a very small brain. Brain size may be a poor shortcut for judging what an animal can remember about others."
-  }
+   "hook": "Recognizing a familiar individual sounds like a big-brain skill. It helps animals find mates, avoid rivals and look after their young, and scientists usually link it to social species with large brains.\n\nJumping spiders don’t fit that picture. They are tiny hunters with excellent eyesight, but they mostly live alone and rarely meet the same spider twice. Earlier studies showed they can tell species and sex apart by colors and patterns. Nobody knew whether one could recognize a particular spider.",
+   "found": "Dahl and Cheng set up face-to-face meetings between regal jumping spiders (Phidippus regius), kept safely apart by clear panels. A camera overhead tracked how close each pair chose to sit. Moving closer meant interest; keeping a distance meant less interest, or growing familiarity.\n\nOn a first meeting, a spider usually moved closer. When the same pair met again minutes later, they kept a little more distance. When the next meeting was with a different spider, they moved closer again. That switch between “seen you” and “someone new” repeated reliably across many pairings.\n\nInterest faded as the same spiders were shown again, even hours later. Then, at the very end, a brand-new spider drew the strongest interest of all. A tired spider would lose interest in everything, so this late rebound suggests the spiders remembered who they had already seen and compared each new face with that memory.",
+   "matters": "We often treat brain size as a shortcut for how clever an animal is. If a tiny, mostly solitary spider can keep track of individuals, flexible social memory may need far less brain than we assumed, and animals with small nervous systems may be underrated.\n\nThe same simple test can now be used on many other animals, to ask whether recognizing individuals follows an animal’s lifestyle and senses more than its brain size, and whether the skill evolved many separate times."
+  },
+  "cite": "Dahl, Christoph D., and Yaling Cheng. “Individual Recognition in a Jumping Spider (*Phidippus regius*).” *eLife*, vol. 13, 2025, article RP97146, https://doi.org/10.7554/eLife.97146."
  },
  {
   "lv": 2,
@@ -33,7 +34,7 @@
   "subject": "Biology",
   "src": "eLife 2025",
   "art": "cards/bat-pup-e-20261114.webp",
-  "no": "000,140",
+  "no": "000,002",
   "url": "https://doi.org/10.7554/elife.99474",
   "headline": "Baby bats may benefit from more than a song playlist.",
   "hook": "Baby bats babble, just like human babies.",
@@ -50,10 +51,11 @@
   "published": "2025-05-13",
   "readMinutes": 39,
   "paper": {
-   "hook": "Baby bats babble, just like human babies. Greater sac-winged bat pups practice long strings of sounds before they use them as adults.",
-   "found": "Pups with more involved mothers practiced longer and sounded more grown-up. In 19 wild pups, more time with their mothers went with longer practice and a wider range of mature song sounds.",
-   "matters": "Learning to talk may lean on caring parents in many animals. Social contact may shape vocal learning outside humans too."
-  }
+   "hook": "Human babies learn to talk by copying the sounds around them, and they get a lot of help along the way: smiles, gestures and encouragement from the people who care for them. Very few other animals learn their calls by imitating adults, and in those that do, little is known about how that kind of social feedback shapes learning.\n\nGreater sac-winged bats, from the rainforests of Central and South America, are one of those rare learners. Their pups babble, a lot: nearly a third of their daytime activity goes to vocalizing and practicing the songs they hear from adult males. But the bats they spend the most time with are their mothers.",
+   "found": "Fernandez and colleagues followed 19 pups in wild colonies in Panama and Costa Rica over two breeding seasons. They measured how long each pup practiced babbling, how many different song syllables it produced, and how much those syllables sounded like an adult male’s. They also tracked how often each mother interacted with her pup, for example by hovering over it or touching it, and how many singing males were nearby.\n\nPups with more involved mothers babbled longer each day and on more days overall. They also produced a wider variety of adult-like sounds, and more of their syllables sounded like a grown-up singer’s. Having more singing males nearby did not improve any of these measures.",
+   "matters": "Most studies of vocal learning in animals pair one tutor with one learner in captivity. Watching wild bats shows that a youngster’s whole social world matters, not only the song it hears. Think of learning an instrument: hearing the tune and having company while you practice are two different parts of the experience.\n\nUnderstanding how social feedback shapes song in other animals helps scientists piece together how vocal learning, and perhaps language, evolved."
+  },
+  "cite": "Fernandez, Ahana Aurora, et al. “Maternal Behavior Influences Vocal Practice and Learning Processes in the Greater Sac-Winged Bat.” *eLife*, vol. 13, 2025, article RP99474, https://doi.org/10.7554/eLife.99474."
  },
  {
   "lv": 3,
@@ -61,7 +63,7 @@
   "subject": "Biology",
   "src": "eLife 2026",
   "art": "cards/pika-e-20261114.webp",
-  "no": "000,131",
+  "no": "000,003",
   "url": "https://doi.org/10.7554/elife.111340",
   "headline": "A yak’s best friend might be a tiny gardener.",
   "hook": "Pika, called pests, may be a yak’s best friend.",
@@ -78,10 +80,11 @@
   "published": "2026-09-08",
   "readMinutes": 22,
   "paper": {
-   "hook": "Pika, called pests, may be a yak’s best friend. On the Qinghai–Tibetan Plateau, grassland with some pika fed yaks better than grassland with none.",
-   "found": "Yaks gained more weight where some pika lived, because pika clip a poisonous plant. In summer field experiments yaks gained up to 42% more weight, most at moderate pika numbers; too many pika became competitors.",
-   "matters": "Wiping out a “pest” can backfire on the animals we care about. Managing the balance between species may help livestock more than removing one of them."
-  }
+   "hook": "On the Qinghai–Tibetan Plateau, yaks share alpine meadows with the plateau pika, a small round-eared mammal. People disagree about pikas. Some call them serious pests that compete with yaks for food and damage pastures. Others call them a keystone species that keeps the ecosystem healthy and feeds many predators. Until this study, nobody had tested which view was right.\n\nThere was a clue. Pikas often clip, but don’t eat, a tall poisonous weed called Stellera. Under heavy grazing, Stellera has spread widely, crowding out the grasses and sedges that yaks need to eat.",
+   "found": "Zhong and colleagues ran field experiments in which different patches of meadow had different numbers of pikas. The pikas cut down the tall Stellera, halving its cover. Freed from the weed, grasses and sedges grew more abundant, with 14% more crude protein, and yaks foraged 30–40% more efficiently.\n\nThe result: yaks gained up to 42% more weight per day where pikas were present. But only up to a point. The benefit peaked at about 200 pika burrows per hectare and turned negative above about 400, where the pikas became competitors for the same food.",
+   "matters": "Wiping out every pika could backfire. Herders and rangeland managers could switch from killing pikas everywhere to keeping them at moderate numbers, below about 400 burrows per hectare, to help yaks grow while preventing outbreaks.\n\nIt is also a reminder that an animal’s role can depend on how many of them there are. The researchers say more work is needed at higher elevations, in winter, and with other livestock such as sheep."
+  },
+  "cite": "Zhong, Zhiwei, et al. “Small Mammalian Herbivores at Moderate Densities Facilitate Livestock Growth by Improving Vegetation Composition in Grasslands.” *eLife*, vol. 15, 2026, article RP111340, https://doi.org/10.7554/eLife.111340."
  },
  {
   "lv": 4,
@@ -89,7 +92,7 @@
   "subject": "Psychology",
   "src": "eLife 2026",
   "art": "cards/colored-seven-e-20261114.webp",
-  "no": "000,152",
+  "no": "000,004",
   "url": "https://doi.org/10.7554/elife.110390",
   "headline": "A gray number can make an eye react to color.",
   "hook": "For some people, a gray number looks colored.",
@@ -106,10 +109,11 @@
   "published": "2026-08-04",
   "readMinutes": 27,
   "paper": {
-   "hook": "For some people, a gray number looks colored. In number–color synesthesia, digits automatically come with colors.",
-   "found": "Their pupils reacted to the color they experienced, though the screen stayed gray. In 16 people with synesthesia, pupils got smaller for numbers tied to brighter colors and larger for darker ones.",
-   "matters": "The colors are real enough that the body responds to them. Pupil measurements could add a check alongside people’s own descriptions of synesthesia."
-  }
+   "hook": "What we see is not a straight copy of the world. It is built from the light that reaches the eye plus what the brain adds. In synesthesia, the brain’s addition is easy to spot: ordinary things trigger extra sensations. Someone might always see the number 5 as red, or hear a trumpet as bright yellow. It isn’t imagination or a choice; it simply happens.\n\nThe most common kind is grapheme–color synesthesia, where letters and numbers reliably come with colors. Most people who have it enjoy it, and the colors can even help them remember phone numbers. But because researchers have mostly had to rely on people’s own descriptions, it has been hard to measure.",
+   "found": "Strauch, Leenaars and Rouw measured pupil size in 16 people with grapheme–color synesthesia and in two comparison groups of 16 people each, while everyone looked at gray digits on a screen.\n\nThe synesthetes’ pupils got smaller for digits that evoked brighter colors and larger for digits that evoked darker ones, even though every digit on the screen was the same gray. The responses were stronger for digits with a strong color link, and they came too quickly to be deliberate imagining.\n\nThe comparison group, asked to name a random color for each digit, showed no brightness effect. Their pupils also widened more, a sign that the task took them more effort than it took the synesthetes.",
+   "matters": "The pupil works a bit like a camera’s aperture that responds partly to the brain’s version of the scene. Measuring it gives researchers a cheap, objective way to spot synesthesia and map how it varies, which helps show that these experiences are real. That matters for children with synesthesia, who are often misunderstood at school when they describe colored letters and numbers.\n\nBecause the color has no physical source on the screen, the method also helps scientists study how the brain builds what we consciously see."
+  },
+  "cite": "Strauch, Christoph, et al. “Pupil Size Reveals the Perceptual Quality and Effortless Nature of Synesthesia.” *eLife*, vol. 15, 2026, article RP110390, https://doi.org/10.7554/eLife.110390."
  },
  {
   "lv": 5,
@@ -117,7 +121,7 @@
   "subject": "Psychology",
   "src": "eLife 2025",
   "art": "cards/newborn-eeg-e-20261114.webp",
-  "no": "000,128",
+  "no": "000,005",
   "url": "https://doi.org/10.7554/elife.101802",
   "headline": "A newborn’s brain is already listening for the pattern.",
   "hook": "Babies just days old already notice sound patterns.",
@@ -134,9 +138,10 @@
   "published": "2025-02-17",
   "readMinutes": 42,
   "paper": {
-   "hook": "Babies just days old already notice sound patterns. Newborns’ brains responded to repeats in both speech sounds and voices.",
-   "found": "Their brains tracked repeats in syllables and in voices, even when the other kept changing. Researchers recorded brain activity while newborns heard carefully built streams of sounds.",
-   "matters": "We may be born with a pattern finder that helps us learn to talk. Language learning may start with a broad ability to spot patterns."
-  }
+   "hook": "Imagine listening to a language you don’t know. Where does one word end and the next begin? Babies face this puzzle from birth, and yet they work out their mother tongue without anyone explaining it. By six months they recognize some common nouns, and by one year they say their first words.\n\nOne thing that helps is statistical learning: noticing which syllables tend to follow which. In English, many syllables can follow “the”, but “brocco” is almost always followed by “li”. What nobody knew was whether this pattern-spotting works only on syllables, or on any feature of a sound.",
+   "found": "Fló and colleagues recorded the brain’s electrical activity in newborns up to four days old while they listened to specially built streams of speech. In one experiment the pattern was in the syllables, while the voice kept changing. In the other, the pattern was in the voices, while the syllables kept changing. Voice patterns inside a word never happen in real speech, so spotting them would not help with learning words.\n\nThe newborns’ brains picked up both kinds of pattern equally well. Afterwards, the babies heard made-up “pseudo-words”. A specific brain response appeared only for pseudo-words built from the syllable patterns, not from the voice patterns.",
+   "matters": "Statistical learning looks like a general-purpose pattern finder that works on many features of sound, not only syllables. Yet from birth, the brain seems to treat only syllable patterns as possible words and to handle them with a dedicated network.\n\nTogether this suggests that babies arrive with a broad ability to detect patterns, which may play a bigger part in early language learning than scientists had thought."
+  },
+  "cite": "Fló, Ana, et al. “Statistical Learning beyond Words in Human Neonates.” *eLife*, vol. 13, 2025, article RP101802, https://doi.org/10.7554/eLife.101802."
  }
 ]

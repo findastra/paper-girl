@@ -132,10 +132,10 @@ export function formatArticleSummary(paper: Pick<Paper, 'summaryParagraphs' | 's
     hook, explanation, importance,
     kind: edited ? 'edited' : 'publisher-excerpts',
     attribution: edited
-      ? 'Plain-English take by Paper Girl, based on the publisher explanation.'
+      ? 'Plain-English take by Papermon, based on the publisher explanation.'
       : `A short reading guide using selected sentences from the publisher’s ${paper.summaryLabel || 'explanation'}.`,
     sourceNote: edited
-      ? 'Paper Girl’s wording and metaphors are editorial; the findings come from the cited study. Read the full publisher explanation for context.'
+      ? 'Papermon’s wording and metaphors are editorial; the findings come from the cited study. Read the full publisher explanation for context.'
       : 'Publisher sentences are kept intact, with some omitted for length. The headings and any brief reading prompts are ours. The full publisher explanation below provides the complete context.',
     wordCount: wordCount([hook, explanation, importance].join(' ')),
   };
