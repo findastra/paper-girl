@@ -38,13 +38,13 @@ export function HowToPlay(){
  return <div className="source-dialog-copy howto">
   <h3>The goal</h3>
   <p>Read as many papers as you can. Every card is a real, published study. When you finish the original article, tick
-   <b> Completion</b> on the card: the circle turns gold, and that article’s <b>Read time</b> (also on the card) is
+   <b> Completion</b> on the card: the gold ring becomes a gold sun seal, and that article’s <b>Read time</b> (also on the card) is
    added to the minutes at the top of your deck.</p>
   <h3>Draw a card</h3>
   <p>Under the card of the day, pick a subject (the rainbow circle means any subject), a reading difficulty (tap a
-   star; tap it again for any) and <b>This year</b> or <b>Past years</b> (tap again for any year). Then press
-   <b> Draw a card</b>. If the library has no card like that yet, you get a real paper to read, and Paper Patty makes
-   its card later.</p>
+   star; tap it again for any) and <b>This year</b>, <b>Past years</b> or <b>Any year</b>. Then press
+   <b> Draw card</b>. If the library has no card like that yet, you get a real paper to read, and Paper Patty makes
+   its card later. You get <b>5 draws a day</b>; they come back every morning.</p>
   <p>Newer papers come up more often. When the year is left open, a drawn card’s paper is from:</p>
   <table className="rc-points howto-odds"><thead><tr><th>Published</th><th>Chance</th></tr></thead><tbody>
    {AGE_ODDS.map(g=><tr key={g.label}><td>{g.label.replace(/^./,c=>c.toUpperCase())}</td><td>{g.odds}%</td></tr>)}

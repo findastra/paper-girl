@@ -1145,3 +1145,102 @@ body:has(.deck-mode){background:#8f8b91}
 /* Readable gold writing on light backgrounds: the same sheen with a firmer deep-gold edge */
 .pick-order,.pick-more,.pick-year:not(.on),.deck-back-actions>*{-webkit-text-stroke:.6px var(--sheen-edge)!important}
 .deck-stats a,.deck-no-stat b.deck-no{-webkit-text-stroke:.55px var(--sheen-edge)!important}
+
+/* ---------------- Buttons on the back work, pop-up forms, 2026-11-14 night (Astra) ---------------- */
+/* The side facing away takes no taps (a tap on the back was landing on the hidden front's picture and flipping it) */
+.deck-card.flipped .deck-front,.deck-card:not(.flipped) .deck-back{pointer-events:none}
+/* Report a problem / I wrote this paper: a big pop-up form */
+.card-form{max-width:560px}
+.card-form form{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+.card-form fieldset{border:0;margin:0;padding:0}
+.card-form legend,.card-form label{font-size:14px;font-weight:700;color:inherit}
+.card-form label{display:flex;flex-direction:column;gap:6px}
+.card-form label small{font-weight:400;opacity:.75}
+.card-form textarea,.card-form input{font:inherit;font-size:15px;font-weight:400;padding:9px 11px;border-radius:10px;border:1px solid #c9a24e;background:#fffdf8;color:#1c1a1e}
+.card-form textarea:focus-visible,.card-form input:focus-visible{outline:2px solid #a8761c;outline-offset:1px}
+.card-form-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.card-form-chips button{font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid #c9a24e;background:#fffdf8;color:#5a3c06;cursor:pointer}
+.card-form-chips button.on{background:var(--sheen);background-size:220% 220%;animation:gold-sheen 9s ease-in-out infinite alternate;border-color:var(--sheen-edge);color:#3a2606;font-weight:700}
+.card-form-lead{margin:0;font-size:15px;line-height:1.5}
+.card-form-send{align-self:flex-start;font-family:'Times New Roman',Times,Georgia,serif;font-size:17px;font-weight:700;padding:10px 22px;border-radius:999px;cursor:pointer;
+ border:1px solid var(--sheen-edge);color:#3a2606;background:var(--sheen);background-size:220% 220%;animation:gold-sheen 9s ease-in-out infinite alternate}
+.card-form-done{display:flex;flex-direction:column;gap:14px}
+.card-form-done p{margin:0;font-size:15px;line-height:1.5}
+
+/* ---------------- One button style, 2026-11-14 night (Astra: "make sure all of the buttons look cohesive") ----------
+   Two kinds only. Main or chosen: solid shining gold (--sheen) with dark brown writing. Everything else: paper white
+   with a shining gold rim and dark brown writing. Same serif, same weight, everywhere. */
+:root{--btn-ink:#3a2606}
+.pick-order,.pick-more,.pick-year:not(.on),.deck-back-actions>*,.deck-pick select,.deck-dir,.deck-rate button:not(.on),
+.pick-types.labeled .pick-dot:not(.on),.tally-sub,.card-form-chips button:not(.on){
+ border:1.5px solid transparent!important;
+ background:linear-gradient(#fbfaf7,#fbfaf7) padding-box,var(--sheen) border-box!important;background-size:100% 100%,220% 220%!important;
+ -webkit-background-clip:padding-box,border-box!important;background-clip:padding-box,border-box!important;
+ color:var(--btn-ink)!important;-webkit-text-fill-color:var(--btn-ink)!important;-webkit-text-stroke:0!important;
+ animation:gold-sheen 9s ease-in-out infinite alternate!important;box-shadow:0 1px 3px #0000001f!important;filter:none!important}
+.pick-draw,.pick-year.on,.deck-rate button.on,.pick-types.labeled .pick-dot.on,.card-form-chips button.on,.card-form-send{
+ border:1.5px solid var(--sheen-edge)!important;background:var(--sheen)!important;background-size:220% 220%!important;
+ -webkit-background-clip:border-box!important;background-clip:border-box!important;
+ color:var(--btn-ink)!important;-webkit-text-fill-color:var(--btn-ink)!important;-webkit-text-stroke:0!important;
+ animation:gold-sheen 9s ease-in-out infinite alternate!important;box-shadow:inset 0 1px 0 #ffffffa0,0 1px 3px #00000026!important;outline:0!important}
+.pick-order,.pick-more,.pick-year,.deck-back-actions>*,.deck-pick select,.pick-types.labeled .pick-dot span,.card-form-chips button,.card-form-send,.tally-sub b{
+ font-family:'Times New Roman',Times,Georgia,serif!important;font-weight:700!important}
+.pick-order svg,.pick-more svg,.deck-rate button svg{color:var(--btn-ink)!important}
+.pick-types.labeled .pick-dot span{color:var(--btn-ink)!important}
+.pick-order:hover,.pick-more:hover,.pick-year:not(.on):hover,.deck-back-actions>*:hover,.deck-pick select:hover,.deck-dir:hover,.deck-rate button:not(.on):hover,
+.pick-types.labeled .pick-dot:not(.on):hover,.card-form-chips button:not(.on):hover{
+ background:linear-gradient(#fff,#fff) padding-box,var(--sheen) border-box!important;background-size:100% 100%,220% 220%!important;transform:translateY(-1px)}
+.tally-sub b{color:var(--btn-ink)!important}
+/* The drop-downs: the same pill as the other buttons, with a small brown chevron */
+.deck-pick select{height:32px;padding:0 30px 0 13px!important;font-size:14px!important;line-height:1;
+ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%233a2606' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center,
+  linear-gradient(#fbfaf7,#fbfaf7) padding-box,var(--sheen) border-box!important;background-size:auto,100% 100%,220% 220%!important}
+.deck-pick select option{background:#fbfaf7;color:#1c1a1e;font-weight:400}
+.deck-pick>span{font-family:'DM Sans',Arial,sans-serif;font-size:13px;color:#2b2b2d}
+.deck-dir{width:32px;height:32px;font-size:15px}
+
+/* Pop-ups match the page: paper white, gold rim, dark writing (they were still in the old dark purple) */
+body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) padding-box,var(--sheen) border-box!important;background-size:100% 100%,220% 220%!important;
+ border:2px solid transparent!important;color:#1c1a1e!important;animation:gold-sheen 9s ease-in-out infinite alternate}
+body:has(.deck-mode) .source-dialog [data-slot=dialog-title]{font-family:'Times New Roman',Times,Georgia,serif;font-weight:700;color:#1c1a1e}
+body:has(.deck-mode) .source-dialog [data-slot=dialog-description]{color:#4a4a4e}
+body:has(.deck-mode) .source-dialog-copy h3{color:#5a3c06!important}
+body:has(.deck-mode) .source-dialog-copy p,body:has(.deck-mode) .source-dialog-copy li{color:#2b2b2d!important}
+body:has(.deck-mode) .source-dialog-copy a{color:#5a3c06}
+body:has(.deck-mode) .source-dialog button[data-slot=dialog-close],body:has(.deck-mode) .source-dialog>button:last-child{color:#3a2606}
+
+/* Card back: thumbs under the four buttons, the buttons a little lower, more room for the sentences */
+.deck-back .deck-bfoot{height:19cqw!important;margin-top:1.6cqw!important}
+.deck-back-actions{margin-top:2.6cqw!important}
+.deck-rate{margin-top:1.8cqw!important;gap:2cqw!important;font-size:3.2cqw!important}
+.deck-rate button{width:7.4cqw!important;height:7.4cqw!important}
+.deck-rate button svg{width:3.8cqw!important;height:3.8cqw!important}
+
+/* Draws left today, under the Draw button */
+.pick-draws-left{grid-column:1/-1;margin:-2px 0 2px;text-align:center;font-size:13px;color:#2b2b2d}
+.pick-draws-left b{font-size:15px;color:#1c1a1e}
+.pick-draw:disabled{filter:grayscale(.6) brightness(.95)!important;cursor:not-allowed}
+/* Same card size in piles and laid out (Astra, 2026-11-14: "meet in the middle"): both grids use the same columns and
+   gap; piles leave 15 px for the cards behind (5 px each, was 7), and laid-out cards are 15 px narrower than the column */
+.my-deck-grid,.my-deck-piles{grid-template-columns:repeat(auto-fill,minmax(clamp(220px,22vw,280px),1fr))!important;gap:clamp(20px,2.5vw,30px)!important}
+.deck-pile{padding:0 15px 15px 0!important}
+.pile-under{top:calc(var(--d) * 5px)!important;left:calc(var(--d) * 5px)!important;right:calc((3 - var(--d)) * 5px)!important;bottom:calc((3 - var(--d)) * 5px)!important}
+.my-deck-grid>.deck-slot{width:calc(100% - 15px)}
+@keyframes pile-up{from{transform:translate(5px,5px)}to{transform:none}}
+@media(max-width:520px){.my-deck-grid>.deck-slot{width:min(86vw,360px)}}
+@media(max-width:520px){.my-deck-grid>.deck-slot{width:calc(min(86vw,360px) - 15px)!important}}
+/* LV in the top corner: the small "LV" centered on the number, and the pair centered on the name (one line or two) */
+.deck-top .deck-lv{display:inline-flex!important;align-items:center;gap:.5cqw;line-height:1!important;align-self:center}
+.deck-top .deck-lv b{line-height:1!important}
+/* LV: the small "LV" centered on the number */
+.deck-top .deck-lv small{font-size:inherit;font-weight:inherit;line-height:1}
+/* Draw card button: the word, then a little tag with five tiny cards (filled = drawn today) and "2/5" */
+.pick-draw{display:inline-flex!important;align-items:center;justify-content:center;gap:9px!important}
+.pick-draw-word{white-space:nowrap}
+.draw-count{display:inline-flex;align-items:center;gap:5px;margin-left:4px;padding:3px 8px 3px 7px;border-radius:999px;background:#fffaf0cc;
+ box-shadow:inset 0 0 0 1px #9a681466;font-family:'DM Sans',Arial,sans-serif;font-size:12px;font-weight:700;color:#3a2606;-webkit-text-fill-color:#3a2606}
+.draw-pips{display:inline-flex;gap:2px}
+.draw-pips i{display:block;width:6px;height:9px;border-radius:1.5px;border:1px solid #9a6814;background:#fffdf6;transform:rotate(-6deg)}
+.draw-pips i:nth-child(even){transform:rotate(5deg)}
+.draw-pips i.used{background:linear-gradient(135deg,#b8862e,#f3d27a 45%,#9a6814);border-color:#7a520c}
+.pick-draw.out .pick-draw-icon{display:none}

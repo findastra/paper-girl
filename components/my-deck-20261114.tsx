@@ -6,10 +6,11 @@
 // Back: the three sections, the "Read the paper" link, the source, the author status and the card number.
 // Live since 2026-11-14 as the normal page (?classic shows the old one). For now everyone sees the same five starter
 // cards (lib/data/sample-deck-20261114.json) until Paper Patty makes cards per visitor. Card rules: docs/card-plan-20261113.md.
-import {useEffect,useState,type CSSProperties} from 'react';
+import {useEffect,useState,type CSSProperties,type FormEvent} from 'react';
 import {Atom,Brain,CircleHelp,ThumbsDown,ThumbsUp,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
+import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import '@/app/my-deck-20261114.css';
 
 // certifiedBy / certifiedOn: who checked the card for its paper's authors and when (only on author-checked cards).
@@ -171,6 +172,45 @@ function useRate(no:string):[0|1|-1,(v:0|1|-1)=>void]{
  return [m[no]||0,v=>{const all=loadRates();if(v)all[no]=v;else delete all[no];try{localStorage.setItem(RATE_KEY,JSON.stringify(all))}catch{}window.dispatchEvent(new Event(RATE_EVENT))}];
 }
 
+/**
+ * Report a problem / I wrote this paper (Astra, 2026-11-14: "a big thing that pops up on your page that lets you submit
+ * something"). Papermon has no inbox yet, so Send keeps the message in this browser and says so plainly; nothing
+ * pretends to have been sent.
+ */
+const OUTBOX_KEY='papermon:outbox:v1';
+const PROBLEMS=['A fact is wrong','Hard to understand','The picture does not fit','Something else'];
+function CardForm({card,kind,onClose}:{card:Card;kind:''|'report'|'author';onClose:()=>void}){
+ const [done,setDone]=useState(false),[problem,setProblem]=useState(PROBLEMS[0]);
+ const close=()=>{setDone(false);onClose()};
+ const send=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.currentTarget).entries());
+  try{const box=JSON.parse(localStorage.getItem(OUTBOX_KEY)||'[]');box.push({kind,card:card.no,name:card.name,problem:kind==='report'?problem:undefined,...f,at:new Date().toISOString()});
+   localStorage.setItem(OUTBOX_KEY,JSON.stringify(box))}catch{}setDone(true)};
+ const report=kind==='report';
+ return <Dialog open={!!kind} onOpenChange={o=>{if(!o)close()}}>
+  <DialogContent className="source-dialog card-form">
+   <DialogTitle>{report?'Report a problem':'I wrote this paper'}</DialogTitle>
+   <DialogDescription>{card.name} · No. {cardNumber(card.no)} · {card.headline}</DialogDescription>
+   {done?<div className="card-form-done"><p><b>Thank you.</b> Papermon can’t receive messages yet, so this is saved on this device for now.</p>
+    <button type="button" className="card-form-send" onClick={close}>Close</button></div>
+   :<form onSubmit={send}>
+    {report?<>
+     <fieldset><legend>What’s wrong?</legend><div className="card-form-chips">{PROBLEMS.map(p=><button key={p} type="button" aria-pressed={problem===p}
+      className={problem===p?'on':''} onClick={()=>setProblem(p)}>{p}</button>)}</div></fieldset>
+     <label>Tell us more<textarea name="details" rows={4} required placeholder="What should the card say instead?"/></label>
+     <label>Your email, if you’d like an answer <small>(optional)</small><input name="email" type="email" autoComplete="email"/></label>
+    </>:<>
+     <p className="card-form-lead">Authors can check their paper’s card, fix one thing, and make it an Author’s Edition: a gold card with
+      your certification on the back.</p>
+     <label>Your name<input name="author" required autoComplete="name"/></label>
+     <label>ORCID iD or your email at your institution<input name="contact" required placeholder="0000-0000-0000-0000 or you@university.edu"/></label>
+     <label>The one thing you would fix <small>(optional)</small><textarea name="fix" rows={3}/></label>
+    </>}
+    <button type="submit" className="card-form-send">{report?'Send report':'Send to Papermon'}</button>
+   </form>}
+  </DialogContent>
+ </Dialog>;
+}
+
 /** Every subject with its symbol, name and color, for places that list them (the How to play rules). */
 export const SUBJECTS=Object.entries(SUBJECT).map(([name,t])=>({name,icon:t.icon,color:t.color}));
 
@@ -181,7 +221,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
  // identical animations so each flip plays it again.
  const [sweep,setSweep]=useState(0);
  const [read,setRead]=useRead(card.no);
- const [note,setNote]=useState<''|'report'|'author'>('');
+ const [form,setForm]=useState<''|'report'|'author'>('');
  const [rate,setRate]=useRate(card.no);
  const turn=()=>{setFlipped(f=>!f);setSweep(s=>s===1?2:1)};
  // Rarity comes from the rarity score (difficulty, age and the author's check, weighted); the stars still show how
@@ -190,7 +230,10 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
  const type=SUBJECT[card.subject]||FALLBACK;const TypeIcon=type.icon;
  const own=(t:EventTarget)=>!!(t as HTMLElement).closest('a,label,input,button');
  // A click always flips the card (Astra, 2026-11-14). In My deck its back has a button that opens the write-up up top.
- const flip=(e:{target:EventTarget})=>{if(own(e.target))return;if(flipped&&onNext){onNext();return}turn()};
+ // Only clicks from the card itself: the forms' pop-ups render elsewhere on the page, but React still passes their
+ // clicks and keys up to the card.
+ const mine=(e:{target:EventTarget;currentTarget:EventTarget})=>(e.currentTarget as Element).contains(e.target as Node);
+ const flip=(e:{target:EventTarget;currentTarget:EventTarget})=>{if(!mine(e)||own(e.target))return;if(flipped&&onNext){onNext();return}turn()};
  // Gold card (Astra, 2026-11-14): a Legendary card is gold all over, whatever the subject, with sparkles over the
  // whole card. The Subject stat's colored chip still tells the subject.
  const gold=tier>=5;
@@ -202,14 +245,14 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
     el.classList.add('lit');el.style.setProperty('--lx',`${((e.clientX-r.left)/r.width*100).toFixed(1)}%`);el.style.setProperty('--ly',`${((e.clientY-r.top)/r.height*100).toFixed(1)}%`)}}
    onPointerLeave={e=>{e.currentTarget.classList.remove('lit')}}
    aria-label={`${card.name}, ${card.subject}, ${rarity}, rarity score ${score}, reading difficulty ${card.lv}. Tap to flip.`}
-   onClick={flip} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&!own(e.target)){e.preventDefault();flip(e)}}}>
+   onClick={flip} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&mine(e)&&!own(e.target)){e.preventDefault();flip(e)}}}>
    <div className="deck-inner">
     <div className="deck-face deck-front">
      {gold&&<><Glitter seed={card.no+':card'} gold count={22} whole/><Glitter seed={card.no+':card-tiny'} gold count={30} whole small/></>}
      <div className="deck-top">
       <span className="deck-type" title={card.subject}><TypeIcon aria-hidden="true"/></span>
       <div className="deck-title"><p className="deck-name">{card.name}</p></div>
-      <span className="deck-lv" aria-label={`Level ${card.lv}`}>LV <b>{card.lv}</b></span>
+      <span className="deck-lv" aria-label={`Level ${card.lv}`}><small aria-hidden="true">LV</small><b aria-hidden="true">{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
       {(tier>=4||gold)&&<><Glitter seed={card.no} gold={gold} count={30}/><Glitter seed={card.no+':tiny'} gold={gold} count={42} small/></>}</div></div>
@@ -248,31 +291,30 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
       <div><h4><span className="deck-num">03</span>WHY IT MATTERS</h4><p>{card.matters}</p></div>
      </div>
      {/* Two buttons on the back (Astra, 2026-11-14): the longer write-up on the paper up top, and the original article. */}
-     {/* Thumbs up or down, above the buttons (Astra, 2026-11-14): a quick rating; Report a problem is still there for more */}
+     <CardForm card={card} kind={form} onClose={()=>setForm('')}/>
+     <div className="deck-back-actions">
+      {onPick&&<button type="button" onClick={()=>onPick(card)}>Read the write-up ↑</button>}
+      <a href={card.url} target="_blank" rel="noreferrer">Original article ↗</a>
+      {/* Two more (Astra, 2026-11-14), each opening a form in a big pop-up. Neither shows on a card its author has
+          already verified: there is nothing left to report or claim. */}
+      {!card.author&&<>
+       <button type="button" onClick={()=>setForm('report')}>Report a problem</button>
+       <button type="button" onClick={()=>setForm('author')}>I wrote this paper</button>
+      </>}
+     </div>
+     {/* Thumbs up or down, under the four buttons (Astra, 2026-11-14: leaves room for long sentences); a quick rating,
+         and Report a problem is still there for more */}
      <div className="deck-rate" role="group" aria-label="Rate this card"><span>Good card?</span>
       <button type="button" aria-pressed={rate===1} aria-label="Thumbs up" className={rate===1?'on':''} onClick={()=>setRate(rate===1?0:1)}><ThumbsUp aria-hidden="true"/></button>
       <button type="button" aria-pressed={rate===-1} aria-label="Thumbs down" className={rate===-1?'on':''} onClick={()=>setRate(rate===-1?0:-1)}><ThumbsDown aria-hidden="true"/></button>
      </div>
-     <div className="deck-back-actions">
-      {onPick&&<button type="button" onClick={()=>onPick(card)}>Read the write-up ↑</button>}
-      <a href={card.url} target="_blank" rel="noreferrer">Original article ↗</a>
-      {/* Two more (Astra, 2026-11-14): tell us something is wrong, and the paper's author claiming the card to check it.
-          Neither is wired up yet, so each says so instead of pretending to send. */}
-      <button type="button" aria-expanded={note==='report'} onClick={()=>setNote(n=>n==='report'?'':'report')}>Report a problem</button>
-      <button type="button" aria-expanded={note==='author'} onClick={()=>setNote(n=>n==='author'?'':'author')}>I wrote this paper</button>
-      {/* The note floats above the buttons, so nothing on the card moves */}
-      {note&&<p className="deck-back-note" role="status">{note==='report'
-       ?'Coming soon: tell Papermon what this card got wrong, and Paper Patty fixes it.'
-       :'Coming soon: authors can check their paper’s card, fix one thing and make it an Author’s Edition.'}</p>}
-     </div>
      {/* Back footer (Astra, 2026-11-14): the day the card was made; on an author-approved card, the author's own
          signature or their lab's logo as a stamp (they send it with their answer; this one is a placeholder). */}
      <div className="deck-bfoot">
-      {/* Just the rarity score (Astra, 2026-11-14: the two dates are on the front already). Gold cards, which carry the
-          Papermon seal on the right, also say what the seal certifies, who certified it and when. An author's
-          certification only shows when the paper's own author checked the card. */}
+      {/* No rarity score or dates here (Astra, 2026-11-14: they are on the front). Gold cards, which carry the Papermon
+          seal on the right, say what the seal certifies, who certified it and when; other cards leave the space empty.
+          An author's certification only shows when the paper's own author checked the card. */}
       <div className="deck-made">{card.author&&!gold&&<b className="deck-approved">Approved by its author</b>}
-       <span><b>Rarity score:</b> {score}</span>
        {gold&&(card.author?<>
         <span><b>Certification:</b> Author’s Edition</span>
         <span><b>Author certifier:</b> {card.certifiedBy||'the paper’s author'}</span>
