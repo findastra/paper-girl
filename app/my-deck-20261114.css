@@ -875,3 +875,11 @@ body:has(.deck-mode){background:#8f8b91}
 .lv4 .deck-band{background:linear-gradient(90deg,#ffd1e6,#fff2c2 25%,#d6ffe9 50%,#c7ecff 75%,#e0ccff)}
 /* Room under the rarity word: the band keeps its full padding at the card bottom */
 .deck-band{padding-top:1.6cqw;padding-bottom:1.8cqw}
+
+/* Card back footer (Astra, 2026-11-14): "Article publication date:" and "Card mint date:" on the left, the Papermon
+   seal (a chiseled gold sunburst with the logo and a crest of words) on the right of gold cards */
+.deck-back .deck-bfoot{flex-direction:row;align-items:center;justify-content:space-between;gap:2cqw}
+.deck-made{font-size:3.3cqw;gap:.5cqw;min-width:0}
+.deck-made span{opacity:.85}
+.deck-made b{font-weight:700}
+.pm-seal{flex:none;width:19cqw;height:19cqw;filter:drop-shadow(0 .4cqw .8cqw #5a3c0666)}

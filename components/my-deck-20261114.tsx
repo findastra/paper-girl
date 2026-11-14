@@ -75,6 +75,42 @@ function Glitter({seed,gold,count=14,whole=false,small=false}:{seed:string;gold:
 }
 
 const fmtDate=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+/**
+ * The Papermon seal on the back of gold cards (Astra, 2026-11-14): the logo (three gold cards) chiseled into a gold
+ * sunburst, like a certificate of authenticity, with a crest of words around it. "Author's Edition Card" only when
+ * the paper's own author has checked the card; otherwise "Certificate of Authenticity", so no card claims an author's
+ * check it never had.
+ */
+function sunburst(cx:number,cy:number,outer:number,inner:number,points:number){
+ return Array.from({length:points*2},(_,i)=>{const r=i%2?inner:outer,a=Math.PI*i/points-Math.PI/2;return `${(cx+r*Math.cos(a)).toFixed(2)},${(cy+r*Math.sin(a)).toFixed(2)}`}).join(' ');
+}
+function PapermonSeal({id,author}:{id:string;author:boolean}){
+ const words=author?'AUTHOR’S EDITION CARD ✦ PAPERMON ✦ ':'PAPERMON ✦ CERTIFICATE OF AUTHENTICITY ✦ ';
+ // Fit the crest's words once around the ring (radius 38, about 239 units round).
+ const fs=Math.min(8.6,(232-words.length)/(words.length*.64));
+ const g=`seal-g-${id}`,d=`seal-d-${id}`,c=`seal-c-${id}`,p=`seal-p-${id}`;
+ return <svg className="pm-seal" viewBox="0 0 120 120" role="img" aria-label={author?'Papermon seal: Author’s Edition Card':'Papermon seal: Certificate of Authenticity'}>
+  <defs>
+   <linearGradient id={g} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#fff3c4"/><stop offset=".35" stopColor="#e8bb52"/><stop offset=".7" stopColor="#b8862e"/><stop offset="1" stopColor="#7a520c"/></linearGradient>
+   <linearGradient id={d} x1="1" y1="1" x2="0" y2="0"><stop offset="0" stopColor="#fff3c4"/><stop offset=".4" stopColor="#e0ac45"/><stop offset="1" stopColor="#8a5a10"/></linearGradient>
+   <linearGradient id={c} x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#c48a24"/><stop offset=".4" stopColor="#fff3c4"/><stop offset=".6" stopColor="#f3d27a"/><stop offset="1" stopColor="#a8761c"/></linearGradient>
+   <path id={p} d="M60,60 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/>
+  </defs>
+  <polygon points={sunburst(60,60,59,51,32)} fill={`url(#${g})`} stroke="#7a520c" strokeWidth=".7" strokeLinejoin="round"/>
+  <circle cx="60" cy="60" r="48" fill={`url(#${d})`} stroke="#fff3c4" strokeOpacity=".8" strokeWidth="1"/>
+  <circle cx="60" cy="60" r="45.5" fill={`url(#${g})`}/>
+  <text fontSize={fs.toFixed(2)} fontWeight="700" letterSpacing="1" fill="#5a3c06" fontFamily="'Times New Roman',Times,serif">
+   <textPath href={`#${p}`} startOffset="25%" textAnchor="middle">{words}</textPath></text>
+  <circle cx="60" cy="60" r="29" fill={`url(#${d})`} stroke="#7a520c" strokeWidth=".8"/>
+  <circle cx="60" cy="60" r="26.5" fill="none" stroke="#fff3c4" strokeOpacity=".7" strokeWidth=".8"/>
+  <g transform="translate(60 61) scale(.24) translate(-96 -101)" stroke="#fff8e0" strokeOpacity=".75" strokeWidth="5" strokeLinejoin="round">
+   <rect x="64" y="40" width="72" height="108" rx="10" fill={`url(#${g})`} transform="rotate(-20 100 175)"/>
+   <rect x="64" y="40" width="72" height="108" rx="10" fill={`url(#${d})`} transform="rotate(-2 100 175)"/>
+   <rect x="64" y="40" width="72" height="108" rx="10" fill={`url(#${c})`} transform="rotate(16 100 175)"/>
+  </g>
+ </svg>;
+}
 const shortDate=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 /** The card number as Astra asked for it: four digits, "0001" (the data keeps "000,001", which read ticks use). */
 export const cardNumber=(no:string)=>String(parseInt(no.replace(/\D/g,''),10)||0).padStart(4,'0');
@@ -169,13 +205,14 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
      {/* Back footer (Astra, 2026-11-14): the day the card was made; on an author-approved card, the author's own
          signature or their lab's logo as a stamp (they send it with their answer; this one is a placeholder). */}
      <div className="deck-bfoot">
-      {card.author&&<div className="deck-stamp" aria-label="Author's stamp"><span>✍</span><small>author’s<br/>stamp</small></div>}
-      {/* Two dates (Astra, 2026-11-14): when the paper came out, and when this card was minted. */}
+      {/* Two dates (Astra, 2026-11-14): "Article publication date:" and "Card mint date:", the Papermon seal to the right
+          on gold cards. */}
       <div className="deck-made">{card.author&&<b className="deck-approved">Approved by its author</b>}
-       {card.published&&<span>Paper published {fmtDate(card.published)}</span>}
-       {card.made&&<span>Card minted {fmtDate(card.made)}</span>}
+       {card.published&&<span><b>Article publication date:</b> {shortDate(card.published)}</span>}
+       {card.made&&<span><b>Card mint date:</b> {shortDate(card.made)}</span>}
        {/* The rarity score lives on the back with a label (Astra, 2026-11-14: a bare number on the front was unclear) */}
-       <span>Rarity score {score}</span></div>
+       <span><b>Rarity score:</b> {score}</span></div>
+      {gold&&<PapermonSeal id={card.no.replace(/\D/g,'')} author={!!card.author}/>}
      </div>
     </div>
    </div>
