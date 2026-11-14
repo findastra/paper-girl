@@ -3,7 +3,7 @@
 // lib/browser-library.ts answers the same /api/* requests in the visitor's browser instead.
 const env = ((import.meta as unknown as {env?: Record<string, string | undefined>}).env) || {};
 
-export const staticEdition = env.VITE_PAPER_GIRL_STATIC === '1';
+export const staticEdition = env.VITE_PAPERMON_STATIC === '1';
 
 /** Where the site is served from: "/" for the full site, "./" on GitHub Pages. */
 export const base = env.BASE_URL || '/';

@@ -9,14 +9,16 @@ type SearchResult = {hitCount: number; nextCursorMark?: string; resultList?: {re
 type HistoryItem = {id: string; filters: Filters; pmcid: string | null; title: string | null; journal: string | null; outcome: string; message: string | null; created_at: number};
 type Store = {visits: string[]; history: HistoryItem[]; checked: Record<string, 'ready' | 'unavailable'>};
 
-const STORE_KEY = 'paper-girl:library:v1';
+// Saved under the Papermon name since 2026-11-14; a history saved under the old Paper Girl name is read once and
+// carried over, so nobody loses what they have read.
+const STORE_KEY = 'papermon:library:v1', OLD_STORE_KEY = 'paper-girl:library:v1';
 const PAGE = 30;
 let memory: Store | null = null;
 
 function store(): Store {
   if (memory) return memory;
   let saved: Partial<Store> = {};
-  try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch { /* storage blocked or corrupt: start fresh */ }
+  try { saved = JSON.parse(localStorage.getItem(STORE_KEY) || localStorage.getItem(OLD_STORE_KEY) || '{}'); } catch { /* storage blocked or corrupt: start fresh */ }
   memory = {
     visits: Array.isArray(saved.visits) ? saved.visits : [],
     history: Array.isArray(saved.history) ? saved.history : [],
