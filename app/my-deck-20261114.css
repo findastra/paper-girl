@@ -782,3 +782,131 @@ body:has(.deck-mode){background:#8f8b91}
 .howto-odds th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.7;padding:4px 8px;border-bottom:1px solid #00000033}
 .howto-odds td{padding:5px 8px;border-bottom:1px solid #00000014}
 .howto-odds td:last-child{font-variant-numeric:tabular-nums;font-weight:700}
+
+/* ---------------- Polish, 2026-11-14 late (Astra) ---------------- */
+/* No black outlines anywhere: the logo word and the motto are plain shiny gold */
+.deck-mode .brand,.deck-mode .brand>span,.deck-mode .site-motto,.deck-mode .site-motto em{-webkit-text-stroke:0!important}
+/* The card stays where it is while you read: it does not slide down the page */
+@media(min-width:761px){.deck-mode .cotd-card{position:static!important}}
+
+/* Section 04: bibliography and other information, all in the paper's own format */
+.deck-mode .paper-sheet .paper-bib p.bib-fact{font-size:16px!important;line-height:1.6;margin:8px 0 0}
+
+/* Card: a bigger picture; published, the number and minted on one line */
+.deck-frame{margin:0 1.6cqw}
+.deck-lower{padding:1.6cqw 0 1.2cqw}
+.deck-stats-years{margin-top:1.4cqw;grid-template-columns:repeat(3,auto);justify-content:space-evenly;gap:0 2cqw}
+.deck-stats-years b{font-size:3.6cqw}
+.deck-no-stat b.deck-no{margin:0;font-size:4.4cqw;font-weight:800;letter-spacing:.2cqw;opacity:1;
+ background:linear-gradient(110deg,#5a3c06,#a8761c 30%,#e8b850 48%,#c48a24 62%,#5a3c06);background-size:250% 100%;
+ -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:deck-text-shine 5s ease-in-out infinite}
+/* The rarity score sits beside the rarity word as a small badge, on one line */
+.deck-rarity-wrap{flex-direction:row;align-items:center;gap:1.4cqw}
+.deck-score{font-size:3.2cqw;letter-spacing:0;opacity:.9;padding:.4cqw 1.4cqw;border-radius:3cqw;background:#ffffff80;color:#1c1a1e;text-transform:none}
+
+/* Gold rings around every subject symbol: on the cards, in the picker, in the deck tally and the rules */
+.deck-type,.deck-type-stat i:not(.read-dot){box-shadow:0 0 0 .45cqw #f3d27a,0 0 0 .75cqw #a8761c,0 .4cqw 1cqw #2a1f2c40!important}
+.pick-dot i,.tally-sub i,.howto-subjects i{box-shadow:0 0 0 2px #f3d27a,0 0 0 3.5px #a8761c,0 1px 3px #0004!important}
+.pick-dot{border-color:transparent}
+.pick-dot.on{border-color:transparent;box-shadow:0 0 0 2px #fff3c4,0 0 10px 2px #e8b850}
+
+/* Every button: a soft paper-white pill with shiny gold writing (Astra: "gold text on buttons everywhere") */
+.pick-draw,.pick-order,.pick-more,.pick-year,.deck-back-actions>*{
+ border:1.5px solid #e2c27a!important;border-radius:999px!important;
+ background-image:linear-gradient(110deg,#5a3c06,#8a5a10 30%,#c48a24 48%,#8a5a10 66%,#5a3c06),linear-gradient(#fbfaf7,#fbfaf7)!important;
+ background-size:250% 100%,100% 100%!important;-webkit-background-clip:text,padding-box!important;background-clip:text,padding-box!important;
+ color:transparent!important;-webkit-text-fill-color:transparent!important;
+ box-shadow:inset 0 1px 0 #fff,0 2px 6px #0000001f,0 0 0 3px #f3d27a22!important;filter:none!important;
+ animation:deck-text-shine 6s ease-in-out infinite!important;transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.pick-draw:hover:not(:disabled),.pick-order:hover,.pick-more:hover,.pick-year:hover,.deck-back-actions>*:hover{
+ transform:translateY(-1px);border-color:#d9a53f!important;box-shadow:inset 0 1px 0 #fff,0 4px 10px #00000026,0 0 0 4px #f3d27a40!important}
+.pick-order svg,.pick-more svg{color:#a8761c}
+.pick-draw-icon{color:#c48a24!important;-webkit-text-fill-color:#c48a24!important;animation:none!important}
+.pick-draw{min-height:48px;font-size:19px!important;letter-spacing:.02em}
+.pick-year.on{border:2px solid #b8862e!important;
+ background-image:linear-gradient(110deg,#5a3c06,#8a5a10 30%,#c48a24 48%,#8a5a10 66%,#5a3c06),linear-gradient(#fff3d1,#fff3d1)!important;
+ box-shadow:0 0 0 3px #f3d27a66!important}
+.pick-year{font-family:'Times New Roman',Times,Georgia,serif!important;font-size:14px!important;padding:5px 14px!important}
+
+/* ---------------- Polish 2, 2026-11-14 late (Astra) ---------------- */
+/* Draw a card: solid shining gold again, a sparkle on each side of the words */
+.pick-draw{border:1px solid #8a5a10!important;
+ background-image:linear-gradient(110deg,#b8862e,#f3d27a 28%,#fff3c4 42%,#e8bb52 58%,#b8862e 80%,#d9a53f)!important;background-size:220% 100%!important;
+ -webkit-background-clip:border-box!important;background-clip:border-box!important;color:#2a1a02!important;-webkit-text-fill-color:#2a1a02!important;
+ box-shadow:inset 0 1px 0 #ffffffa0,0 2px 0 #7a520c,0 6px 14px #00000026!important;animation:deck-text-shine 6s ease-in-out infinite!important}
+.pick-draw:hover:not(:disabled){filter:brightness(1.06)!important;border-color:#8a5a10!important;box-shadow:inset 0 1px 0 #ffffffa0,0 3px 0 #7a520c,0 8px 18px #0000002e!important}
+.pick-draw-icon{color:#5a3c06!important;-webkit-text-fill-color:#5a3c06!important;font-size:16px}
+
+/* One size for every subject circle: the picker's circles and the card's circles (top corner, Subject, Completion)
+   are all 24 px on a card 330 px wide (7.3cqw) */
+.pick-dot{width:30px;height:30px}
+.pick-dot i{width:24px;height:24px}
+.pick-dot i svg{width:14px;height:14px}
+.deck-type{width:7.3cqw;height:7.3cqw}
+.deck-type svg{width:4.2cqw;height:4.2cqw}
+.deck-type-stat i,.deck-type-stat i.read-dot{width:7.3cqw!important;height:7.3cqw!important}
+.deck-type-stat i svg{width:4.2cqw!important;height:4.2cqw!important}
+
+/* Card stats: an even 2 x 3 grid. Both rows use the same three equal columns, so the stats line up */
+.deck-stats,.deck-stats-years{width:100%;grid-template-columns:repeat(3,minmax(0,1fr))!important;justify-content:stretch!important;gap:0 1.4cqw!important}
+.deck-stats-years{margin-top:2.2cqw}
+.deck-stats b,.deck-stats a{font-size:3.6cqw;height:7.3cqw;line-height:7.3cqw}
+.deck-type-stat{gap:1cqw!important;max-width:100%}
+/* The card number in black, the same size as the dates beside it */
+.deck-no-stat b.deck-no{font-size:3.6cqw!important;font-weight:700;letter-spacing:0;background:none!important;color:#1c1a1e!important;-webkit-text-fill-color:#1c1a1e!important;animation:none!important}
+
+/* ---------------- Polish 3, 2026-11-14 late (Astra) ---------------- */
+/* Fit the 2 x 3 stats without shrinking the picture: tighter gaps, and the date row only as tall as its text */
+.deck-top{margin-bottom:1.4cqw}
+.deck-lower{padding:1cqw 0 .8cqw}
+.deck-stats-years{margin-top:1.2cqw}
+.deck-stats-years b{height:5cqw;line-height:5cqw}
+/* Sparkles: no pulsing. Each fades in, stays a while turning slowly, and fades out, at its own time, so many show at
+   once; a second layer of tiny ones stays up longer still */
+.deck-glitter i{animation:deck-twinkle-soft 9s ease-in-out var(--d) infinite!important}
+.deck-glitter.small i{animation-name:deck-twinkle-linger!important;animation-duration:11s!important}
+@keyframes deck-twinkle-soft{0%{opacity:0;transform:scale(.75) rotate(0deg)}16%{opacity:1;transform:scale(1) rotate(8deg)}
+ 72%{opacity:1;transform:scale(1) rotate(34deg)}88%,100%{opacity:0;transform:scale(.75) rotate(45deg)}}
+@keyframes deck-twinkle-linger{0%{opacity:0;transform:rotate(0deg)}10%{opacity:.95;transform:rotate(5deg)}
+ 85%{opacity:.95;transform:rotate(40deg)}100%{opacity:0;transform:rotate(45deg)}}
+/* Holo rare: the card itself is the same pastel rainbow as its band, not the subject's color, with a slow drift */
+.lv4:not(.gold-card) .deck-face{background:linear-gradient(125deg,#ffd1e6,#ffe3c2 18%,#fff2c2 32%,#d6ffe9 48%,#c7ecff 64%,#e0ccff 80%,#ffd1e6);
+ background-size:220% 220%;animation:deck-prism 12s ease-in-out infinite alternate}
+.lv4 .deck-band{background:linear-gradient(90deg,#ffd1e6,#fff2c2 25%,#d6ffe9 50%,#c7ecff 75%,#e0ccff)}
+/* Room under the rarity word: the band keeps its full padding at the card bottom */
+.deck-band{padding-top:1.6cqw;padding-bottom:1.8cqw}
+
+/* Card back footer (Astra, 2026-11-14): "Article publication date:" and "Card mint date:" on the left, the Papermon
+   seal (a chiseled gold sunburst with the logo and a crest of words) on the right of gold cards */
+.deck-back .deck-bfoot{flex-direction:row;align-items:center;justify-content:space-between;gap:2cqw}
+.deck-made{font-size:3.3cqw;gap:.5cqw;min-width:0}
+.deck-made span{opacity:.85}
+.deck-made b{font-weight:700}
+.pm-seal{flex:none;width:19cqw;height:19cqw;filter:drop-shadow(0 .4cqw .8cqw #5a3c0666)}
+
+/* Card colors by rarity (Astra, 2026-11-14): Common white, Uncommon copper, Rare silver, Holo rare rainbow, Legendary
+   gold. The card no longer takes its subject's color; the subject circle still shows it. */
+.lv1 .deck-face{background:linear-gradient(165deg,#ffffff,#f4f3f0)}
+.lv1 .deck-band{background:#ecebe7;border-top-color:#d6d3cc}
+.lv2{--rc:#6e3416;--frame:linear-gradient(135deg,#fbe0cc,#c47a4e 35%,#fde9da 52%,#a85a30 72%,#efb994)}
+.lv2 .deck-face{background:linear-gradient(135deg,#f9dcc6,#e9a77e 22%,#fbe6d6 40%,#d4865a 60%,#f6cdb0 80%,#e09a70);
+ background-size:220% 220%;animation:deck-prism 12s ease-in-out infinite alternate}
+.lv2 .deck-band{background:linear-gradient(100deg,#c97b4e,#f7d2b6 35%,#b8683c 60%,#efb994 85%);border-top-color:#a85a30}
+.lv3 .deck-face{background:linear-gradient(135deg,#f7f8fa,#cfd2d8 22%,#ffffff 40%,#b9bdc5 60%,#eef0f3 80%,#c8ccd2);
+ background-size:220% 220%;animation:deck-prism 12s ease-in-out infinite alternate}
+/* The rarity chart's scale uses the same colors */
+.rc-t1{background:#ffffff}
+.rc-t2{background:linear-gradient(100deg,#e9a77e,#fbe6d6 45%,#d4865a)}
+.rc-t3{background:linear-gradient(100deg,#c9ccd2,#ffffff 50%,#b9bdc5)}
+
+/* Stats, 2026-11-14 (Astra): the Completion circle and its glow are never cut off; Article and the card number in
+   shiny gold (deep gold on gold cards so they still read); two rows of three */
+.deck-stats .deck-type-stat,.deck-stats .deck-read{overflow:visible!important}
+.deck-stats a,.deck-no-stat b.deck-no{background:linear-gradient(110deg,#5a3c06,#8a5a10 30%,#c48a24 48%,#8a5a10 66%,#5a3c06)!important;background-size:250% 100%!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;
+ animation:deck-text-shine 5s ease-in-out infinite!important;text-decoration-color:#a8761c}
+.gold-card .deck-stats a,.gold-card .deck-no-stat b.deck-no{background:none!important;color:#4a3104!important;-webkit-text-fill-color:#4a3104!important;animation:none!important}
+
+/* Common cards are the paper itself (Astra, 2026-11-14): the same cool white as the paper sheet and the same crumpled
+   texture */
+.lv1 .deck-face{background-color:#f8fafd;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='c' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .022' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23ffffff' surfaceScale='7' diffuseConstant='1.05'%3E%3CfeDistantLight azimuth='225' elevation='58'/%3E%3C/feDiffuseLighting%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='.42' intercept='.64'/%3E%3CfeFuncG type='linear' slope='.42' intercept='.64'/%3E%3CfeFuncB type='linear' slope='.42' intercept='.65'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");background-size:420px 420px;background-blend-mode:multiply}

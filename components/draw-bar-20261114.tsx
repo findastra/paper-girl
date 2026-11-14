@@ -91,7 +91,7 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
    <span className="pick-any">{year?'':'any year'}</span>
   </div></div>
   <div className="pick-actions">
-   <button type="button" className={'pick-draw'+(busy?' busy':'')} disabled={busy} onClick={onDraw}><span className="pick-draw-icon" aria-hidden="true">✦</span>{busy?'Drawing…':'Draw a card'}</button>
+   <button type="button" className={'pick-draw'+(busy?' busy':'')} disabled={busy} onClick={onDraw}><span className="pick-draw-icon" aria-hidden="true">✦</span>{busy?'Drawing…':'Draw a card'}<span className="pick-draw-icon" aria-hidden="true">✦</span></button>
    <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>setOrdering(o=>!o)}><Printer size={16} aria-hidden="true"/>Order my deck</button>
    {children}
    {ordering&&<p className="pick-order-note" role="status">Printed decks are coming soon. Your cards are saved here until then.</p>}

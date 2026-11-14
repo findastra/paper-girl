@@ -6,14 +6,14 @@ import type {CSSProperties} from 'react';
 import {SUBJECTS,SCORE,TIERS,RARITY} from '@/components/my-deck-20261114';
 import {AGE_ODDS} from '@/components/draw-bar-20261114';
 
-const LOOK:Record<number,string>={1:'plain gray band',2:'pale blue band',3:'polished silver band and frame',
- 4:'rainbow frame and sparkles on the picture',5:'the whole card is gold'};
+const LOOK:Record<number,string>={1:'a white card',2:'a copper card',3:'a silver card',
+ 4:'a rainbow card with sparkles on the picture',5:'a gold card with sparkles all over'};
 const range=(t:typeof TIERS[number])=>t.max===null?`${t.min}+`:`${t.min}–${t.max}`;
-const EXAMPLES=[
- {what:'A 3-star paper from 2012',sum:`3 × ${SCORE.perStar} + 14 = 44`,score:44},
- {what:'A 1-star paper from 1970',sum:`1 × ${SCORE.perStar} + 56 = 66`,score:66},
- {what:'A 4-star paper from 2025, checked by its author',sum:`4 × ${SCORE.perStar} + 1 + ${SCORE.author} = 91`,score:91},
-];
+// Worked out from SCORE, so the examples follow any change to the weights.
+const EXAMPLES=[{what:'A 2-star paper from 10 years ago',stars:2,age:10},{what:'A 1-star paper from 56 years ago',stars:1,age:56},
+ {what:'A 2-star paper from last year, checked by its author',stars:2,age:1,author:true}].map(e=>{
+ const score=e.stars*SCORE.perStar+e.age*SCORE.perYear+(e.author?SCORE.author:0);
+ return {what:e.what,score,sum:`${e.stars} × ${SCORE.perStar} + ${e.age}${e.author?` + ${SCORE.author}`:''} = ${score}`}});
 const tierOf=(s:number)=>[...TIERS].reverse().find(t=>s>=t.min)!.tier;
 
 /** The rarity chart: what earns points, the score ranges as a colored scale, and worked examples. */
