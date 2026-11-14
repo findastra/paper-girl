@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paper Girl card looks</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,400&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Draft for Astra, 2026-11-13 (second round): the front is the picture, with only the name, a one-line quote and a
+   small level mark. Flip for the words. Five looks; the level bar on top changes every card's rarity.
+   Follows Mirror Pool's "build for every screen": one screen tall, 5x7 cards sized in cqw, the row swipes sideways. */
+:root{--bg:#211a24;--ink:#f4e9ed;--soft:#c9b0c0;--pink:#efa9c5;--line:#4f3f52;
+  --t-small:clamp(12px,1.1vw,14px);--t-title:clamp(19px,2.2vw,26px);
+  /* rarity colors, set by the level bar */
+  --r1:#d9d2d6;--r2:#b9d7e8;--r3:#f1cf7c;--r4:#c9aef5;--r5:#f6b3d2}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:'DM Sans',Arial,sans-serif}
+header{padding:clamp(10px,2vh,18px) clamp(16px,3vw,32px) 0;display:flex;flex-wrap:wrap;align-items:center;gap:8px 22px}
+h1{margin:0;font-family:'Space Grotesk',sans-serif;font-size:var(--t-title);font-weight:600}
+h1 span{color:var(--pink)}
+.level{display:flex;align-items:center;gap:10px;font-size:var(--t-small);color:var(--soft)}
+.level input{width:clamp(140px,18vw,220px);accent-color:var(--pink);min-height:32px}
+.level b{color:var(--ink);min-width:9.5em}
+.hint{font-size:var(--t-small);color:var(--soft)}
+.row{flex:1;min-height:0;display:flex;gap:clamp(16px,2.4vw,34px);overflow-x:auto;overflow-y:hidden;padding:clamp(10px,2vh,20px) clamp(16px,3vw,32px);scroll-snap-type:x mandatory}
+.slot{flex:0 0 auto;margin:auto 0;width:min(max(260px,calc((100vw - 64px - 100px)/3.4)),calc((100dvh - 190px)*5/7),440px);container-type:inline-size;display:flex;flex-direction:column;gap:10px;scroll-snap-align:center}
+@media (max-width:620px){.slot{width:min(80vw,calc((100dvh - 210px)*5/7))}}
+@media (max-height:480px){body{overflow:auto;height:auto}.row{flex:none}.slot{width:260px}}
+.label{font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--pink);text-align:center}
+.label i{font-style:normal;color:var(--soft);letter-spacing:0}
+
+/* flip */
+.card{width:100%;aspect-ratio:5/7;perspective:1600px;cursor:pointer;border:0;padding:0;background:none;font:inherit;color:inherit;display:block}
+.card:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:5cqw}
+.inner{position:relative;width:100%;height:100%;transition:transform .65s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+.card.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border-radius:4.4cqw;box-shadow:0 2.4cqw 6cqw #0009;text-align:left}
+.back{transform:rotateY(180deg)}
+@media (prefers-reduced-motion:reduce){.inner{transition:none}}
+.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+/* rarity foil: level 4-5 get a moving shine on the front */
+.shine::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 36%,#ffffff55 47%,transparent 58%);background-size:260% 100%;animation:shine 5s ease-in-out infinite;pointer-events:none;mix-blend-mode:soft-light}
+body:not([data-level="4"]):not([data-level="5"]) .shine::after{display:none}
+@keyframes shine{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
+@media (prefers-reduced-motion:reduce){.shine::after{animation:none}}
+
+/* shared back */
+.back .wrap{position:absolute;inset:0;display:flex;flex-direction:column;gap:2.3cqw;padding:6cqw 6.4cqw}
+.back .kick{font-family:'Space Grotesk',sans-serif;font-size:2.7cqw;letter-spacing:.45cqw;font-weight:700;opacity:.85;display:flex;justify-content:space-between}
+.back .nm{margin:0;font-size:6.6cqw;line-height:1.02}
+.back .hl{margin:0;font-size:3.7cqw;line-height:1.3;font-style:italic;opacity:.9}
+.back h4{margin:0;font-family:'Space Grotesk',sans-serif;font-size:2.5cqw;letter-spacing:.4cqw;opacity:.75}
+.back p.t{margin:.5cqw 0 0;font-size:3.15cqw;line-height:1.38}
+.back .small{font-size:2.7cqw;line-height:1.35;opacity:.8}
+.back .links{margin-top:auto;display:flex;gap:2cqw}
+.back .links a{flex:1;text-align:center;font-size:2.9cqw;font-weight:600;color:inherit;border-radius:9cqw;padding:2cqw 1cqw;text-decoration:none}
+.back .meta{display:flex;justify-content:space-between;font-size:2.3cqw;opacity:.7}
+
+/* 1. FULL BLEED: picture to the edges, name and quote on a soft fade */
+.l1 .front{background:#000}
+.l1 .front .fade{position:absolute;left:0;right:0;bottom:0;height:42%;background:linear-gradient(transparent,#140e18e6 70%)}
+.l1 .front .lv{position:absolute;top:4cqw;left:4cqw;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:3cqw;letter-spacing:.3cqw;padding:1.2cqw 2.6cqw;border-radius:9cqw;background:#140e18a0;color:var(--rc);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.l1 .front .nm{position:absolute;left:6cqw;right:6cqw;bottom:13cqw;margin:0;font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:8.4cqw;line-height:1;color:#fff}
+.l1 .front .q{position:absolute;left:6cqw;right:6cqw;bottom:5.4cqw;margin:0;font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:3.5cqw;line-height:1.3;color:#f1dfe8}
+.l1 .front{box-shadow:0 0 0 .9cqw var(--rc) inset,0 2.4cqw 6cqw #0009}
+.l1 .back{background:#2c2230;color:var(--ink);box-shadow:0 0 0 .9cqw var(--rc) inset}
+.l1 .back .nm{font-family:'Fraunces',Georgia,serif}
+.l1 .back h4,.l1 .back .kick{color:var(--rc)}
+.l1 .back .links a{background:#ffffff14}
+
+/* 2. TAROT: arched window, roman numeral level, name on a ribbon */
+.l2 .front{background:#f4ead9;padding:0}
+.l2 .front .border{position:absolute;inset:3cqw;border:.5cqw solid #8a6a3e;border-radius:3cqw}
+.l2 .front .win{position:absolute;left:8cqw;right:8cqw;top:12cqw;bottom:26cqw;border-radius:50cqw 50cqw 2cqw 2cqw;overflow:hidden;border:.8cqw solid var(--rc);box-shadow:0 0 0 .4cqw #8a6a3e}
+.l2 .front .num{position:absolute;top:4.6cqw;left:0;right:0;text-align:center;font-family:'Fraunces',Georgia,serif;font-size:5.4cqw;color:#6c4f2c;letter-spacing:.6cqw}
+.l2 .front .nm{position:absolute;left:0;right:0;bottom:14cqw;margin:0;text-align:center;font-family:'Fraunces',Georgia,serif;font-weight:700;font-size:6.6cqw;color:#3b2a1d;letter-spacing:.2cqw}
+.l2 .front .q{position:absolute;left:10cqw;right:10cqw;bottom:6cqw;margin:0;text-align:center;font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:3.2cqw;line-height:1.3;color:#6c4f2c}
+.l2 .back{background:#f4ead9;color:#3b2a1d}
+.l2 .back .wrap{margin:3cqw;border:.5cqw solid #8a6a3e;border-radius:3cqw;padding:5cqw 5.4cqw}
+.l2 .back .nm{font-family:'Fraunces',Georgia,serif;text-align:center}
+.l2 .back .hl{text-align:center;font-family:'Fraunces',Georgia,serif}
+.l2 .back h4,.l2 .back .kick{color:#8a5a3e}
+.l2 .back .links a{background:#8a6a3e22}
+
+/* 3. FROSTED: thin foil edge in the rarity color, name on frosted glass */
+.l3 .front{padding:1.8cqw;background:linear-gradient(135deg,var(--rc),#ffffff 45%,var(--rc) 70%,#ffffffaa)}
+.l3 .front .pic{position:absolute;inset:1.8cqw;border-radius:3.2cqw;overflow:hidden}
+.l3 .front .glass{position:absolute;left:5cqw;right:5cqw;bottom:5cqw;padding:3.4cqw 4cqw;border-radius:3.4cqw;background:#ffffff38;border:.3cqw solid #ffffff70;backdrop-filter:blur(10px) saturate(1.3);-webkit-backdrop-filter:blur(10px) saturate(1.3);color:#2a1f2c}
+.l3 .front .nm{margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:6.2cqw;line-height:1.05}
+.l3 .front .q{margin:1.2cqw 0 0;font-size:3.2cqw;line-height:1.3}
+.l3 .front .dots{position:absolute;top:5cqw;right:5cqw;display:flex;gap:1.3cqw;padding:1.6cqw 2.2cqw;border-radius:9cqw;background:#ffffff55;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.l3 .front .dots i{width:2.2cqw;height:2.2cqw;border-radius:50%;background:#2a1f2c33}
+.l3 .front .dots i.on{background:#2a1f2c}
+.l3 .back{background:linear-gradient(160deg,#fbf7fa,#f0e6f6);color:#2a1f2c;box-shadow:0 0 0 1.8cqw var(--rc) inset,0 2.4cqw 6cqw #0009}
+.l3 .back .wrap{padding:7.4cqw}
+.l3 .back .nm{font-family:'Space Grotesk',sans-serif}
+.l3 .back h4,.l3 .back .kick{color:#8b4a72}
+.l3 .back .links a{background:#2a1f2c12}
+
+/* 4. NOTEBOOK: picture taped onto paper, handwritten name */
+.l4 .front{background:#fbf6ee;background-image:radial-gradient(#d9cbbd 0.5cqw,transparent 0.55cqw);background-size:5cqw 5cqw}
+.l4 .front .photo{position:absolute;left:8cqw;right:8cqw;top:8cqw;height:60%;background:#fff;padding:2.4cqw;box-shadow:0 1cqw 3cqw #0003;transform:rotate(-2deg)}
+.l4 .front .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.l4 .front .tape{position:absolute;top:5cqw;left:50%;width:24cqw;height:6.4cqw;margin-left:-12cqw;background:var(--rc);opacity:.85;transform:rotate(3deg)}
+.l4 .front .nm{position:absolute;left:6cqw;right:6cqw;bottom:16cqw;margin:0;text-align:center;font-family:'Caveat',cursive;font-weight:700;font-size:10cqw;line-height:1;color:#3a2635}
+.l4 .front .q{position:absolute;left:8cqw;right:8cqw;bottom:4cqw;margin:0;text-align:center;font-family:'Caveat',cursive;font-size:4.6cqw;line-height:1.05;color:#7a5a6c}
+.l4 .front .stars{position:absolute;top:2.4cqw;right:4cqw;font-size:4cqw;color:#c2507f;letter-spacing:.4cqw}
+.l4 .back{background:#fbf6ee;color:#3a2635;background-image:repeating-linear-gradient(transparent 0 7.6cqw,#e3d6ea 7.6cqw 7.9cqw)}
+.l4 .back .nm{font-family:'Caveat',cursive;font-size:9cqw}
+.l4 .back h4,.l4 .back .kick{color:#b04a7a}
+.l4 .back .links a{background:var(--rc)}
+
+/* 5. NIGHT SKY: picture fades into a starry sky, level as a constellation */
+.l5 .front{background:#120d1c}
+.l5 .front .pic{position:absolute;inset:0;-webkit-mask-image:linear-gradient(#000 52%,transparent 86%);mask-image:linear-gradient(#000 52%,transparent 86%)}
+.l5 .front .sky{position:absolute;inset:0;background-image:radial-gradient(#ffffffaa 0.25cqw,transparent 0.35cqw),radial-gradient(#ffffff66 0.2cqw,transparent 0.3cqw);background-size:13cqw 11cqw,7cqw 9cqw;background-position:2cqw 70cqw,5cqw 74cqw;-webkit-mask-image:linear-gradient(transparent 55%,#000 75%);mask-image:linear-gradient(transparent 55%,#000 75%)}
+.l5 .front .nm{position:absolute;left:0;right:0;bottom:15cqw;margin:0;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:7cqw;letter-spacing:.2cqw;color:#fff}
+.l5 .front .q{position:absolute;left:10cqw;right:10cqw;bottom:6.4cqw;margin:0;text-align:center;font-size:3.2cqw;line-height:1.35;color:#d9cdf0}
+.l5 .front svg{position:absolute;left:50%;bottom:25cqw;width:30cqw;margin-left:-15cqw;color:var(--rc)}
+.l5 .front{box-shadow:0 0 0 .5cqw color-mix(in srgb,var(--rc) 60%,transparent) inset,0 2.4cqw 6cqw #0009}
+.l5 .back{background:radial-gradient(circle at 30% 10%,#2b2046,#120d1c 70%);color:#ece6fb}
+.l5 .back .nm{font-family:'Space Grotesk',sans-serif;font-weight:600}
+.l5 .back h4,.l5 .back .kick{color:var(--rc)}
+.l5 .back .links a{background:#ffffff14}
+
+.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.actions button{font:inherit;font-size:13px;min-height:40px;padding:6px 12px;border-radius:20px;border:1px solid var(--line);background:#2e2431;color:var(--ink);cursor:pointer}
+.actions button.main{background:var(--pink);border-color:var(--pink);color:#2c2230;font-weight:700}
+</style>
+</head>
+<body data-level="3">
+<header>
+<h1>Card looks <span>· picture first, words on the back</span></h1>
+<label class="level">Level <input id="lv" type="range" min="1" max="5" value="3" step="1"> <b id="lvName"></b></label>
+<span class="hint">Tap a card to flip it.</span>
+</header>
+<main class="row" id="row"></main>
+<script>
+'use strict';
+const P={name:'The Pattern Listener',quote:'A newborn’s brain is already listening for the pattern.',
+  hook:'Babies only a few days old showed brain responses to repeating patterns in speech sounds and voices.',
+  found:'Newborns heard carefully built sound streams while their brain activity was recorded. Their brains tracked repeating syllable patterns even when the voice changed, and voice patterns even when the syllables changed.',
+  matters:'Learning language may start with a broad pattern detector we are born with.',
+  small:'Brain responses to artificial sounds don’t show that newborns understand words.',
+  source:'eLife 2025 · Psychology',no:'No. 000,128',art:'../public/art/curious-brain-20261113.webp',alt:'A curious cartoon brain with a magnifying glass'};
+const LEVELS=[null,{n:'Curious',r:'Common',m:'●'},{n:'Reader',r:'Uncommon',m:'◆'},{n:'College',r:'Rare',m:'★'},{n:'Grad',r:'Holo rare',m:'★'},{n:'PhD coffee',r:'Legendary',m:'✦'}];
+const ROMAN=['','I','II','III','IV','V'];
+const LOOKS=[
+  {cls:'l1',name:'Full bleed',note:'picture to the edges'},
+  {cls:'l2',name:'Tarot',note:'arched window'},
+  {cls:'l3',name:'Frosted',note:'foil edge, glass label'},
+  {cls:'l4',name:'Notebook',note:'taped-in picture'},
+  {cls:'l5',name:'Night sky',note:'level as stars'}];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const img=`<img class="art" src="${P.art}" alt="${esc(P.alt)}">`;
+function constellation(n){const pts=[[10,30],[30,12],[50,26],[70,8],[90,22]];const on=pts.slice(0,n);
+  return `<svg viewBox="0 0 100 40" aria-hidden="true"><polyline points="${on.map(p=>p.join(',')).join(' ')}" fill="none" stroke="currentColor" stroke-width="1" opacity=".7"/>${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="${i<n?2.6:1.4}" fill="currentColor" opacity="${i<n?1:.35}"/>`).join('')}</svg>`}
+function front(cls,lv){const L=LEVELS[lv];
+  if(cls==='l1')return `${img}<div class="fade"></div><span class="lv">${L.m} LV ${lv}</span><p class="nm">${esc(P.name)}</p><p class="q">“${esc(P.quote)}”</p>`;
+  if(cls==='l2')return `<div class="border"></div><div class="num">${ROMAN[lv]}</div><div class="win">${img}</div><p class="nm">${esc(P.name)}</p><p class="q">${esc(P.quote)}</p>`;
+  if(cls==='l3')return `<div class="pic">${img}</div><span class="dots">${[1,2,3,4,5].map(i=>`<i class="${i<=lv?'on':''}"></i>`).join('')}</span><div class="glass"><p class="nm">${esc(P.name)}</p><p class="q">${esc(P.quote)}</p></div>`;
+  if(cls==='l4')return `<div class="photo"><img src="${P.art}" alt="${esc(P.alt)}"></div><div class="tape"></div><span class="stars">${'★'.repeat(lv)}</span><p class="nm">${esc(P.name)}</p><p class="q">${esc(P.quote)}</p>`;
+  return `<div class="pic">${img}</div><div class="sky"></div>${constellation(lv)}<p class="nm">${esc(P.name)}</p><p class="q">${esc(P.quote)}</p>`}
+function back(lv){const L=LEVELS[lv];
+  return `<div class="wrap"><div class="kick"><span>${L.m} ${L.r.toUpperCase()}</span><span>LV ${lv} · ${L.n.toUpperCase()}</span></div>
+  <p class="nm">${esc(P.name)}</p><p class="hl">“${esc(P.quote)}”</p>
+  <div><h4>STRANGE HOOK</h4><p class="t">${esc(P.hook)}</p></div>
+  <div><h4>WHAT THEY FOUND</h4><p class="t">${esc(P.found)}</p></div>
+  <div><h4>WHY IT MATTERS</h4><p class="t">${esc(P.matters)}</p></div>
+  <p class="small">Small print: ${esc(P.small)}</p>
+  <div class="links"><a href="#" onclick="event.stopPropagation()">Read the paper ↗</a><a href="#" onclick="event.stopPropagation()">More on Paper Girl ↗</a></div>
+  <div class="meta"><span>${esc(P.source)}</span><span>${P.no}</span></div></div>`}
+const row=document.getElementById('row');
+function render(){
+  const lv=Number(document.getElementById('lv').value);
+  document.body.dataset.level=lv;
+  document.body.style.setProperty('--rc',getComputedStyle(document.documentElement).getPropertyValue('--r'+lv));
+  document.getElementById('lvName').textContent=`${lv} · ${LEVELS[lv].n} · ${LEVELS[lv].r}`;
+  const flipped=[...row.querySelectorAll('.card')].map(c=>c.classList.contains('flipped'));
+  row.innerHTML='';
+  LOOKS.forEach((L,i)=>{
+    const slot=document.createElement('div');slot.className='slot '+L.cls;
+    slot.innerHTML=`<div class="label">${i+1}. ${L.name.toUpperCase()} <i>· ${L.note}</i></div>
+    <button class="card${flipped[i]?' flipped':''}" aria-pressed="${!!flipped[i]}" aria-label="${esc(P.name)}, ${L.name} look. Tap to flip."><div class="inner">
+      <div class="face front shine">${front(L.cls,lv)}</div><div class="face back">${back(lv)}</div></div></button>
+    <div class="actions"><button class="main" type="button">Send to a friend</button><button type="button">Keep</button><button type="button" aria-label="Good card">👍</button><button type="button" aria-label="Something is off">👎</button></div>`;
+    const card=slot.querySelector('.card');
+    card.addEventListener('click',()=>{const on=card.classList.toggle('flipped');card.setAttribute('aria-pressed',String(on))});
+    row.append(slot);
+  });
+}
+document.getElementById('lv').addEventListener('input',render);
+render();
+</script>
+</body>
+</html>
