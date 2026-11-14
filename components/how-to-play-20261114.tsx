@@ -61,9 +61,10 @@ export function HowToPlay(){
    own author has checked score higher. Because age counts, a card gets a point rarer every year you keep it.</p>
   <RarityChart/>
   <h3>Subjects</h3>
-  <p>Each subject has its own symbol and color. Hover a symbol anywhere on the site to see its name.</p>
+  <p>Every card has one subject, with its own symbol and color. A paper that fits two goes in the more specific one: a
+   genetics paper is Genetics, not Biology.</p>
   <ul className="howto-subjects">{SUBJECTS.map(s=>{const Icon=s.icon;return <li key={s.name} style={{'--sc':s.color} as CSSProperties}>
-   <i aria-hidden="true"><Icon/></i>{s.name.replace(/\b\w/g,c=>c.toUpperCase())}</li>})}</ul>
+   <i aria-hidden="true"><Icon/></i><span><b>{s.name.replace(/\b\w/g,c=>c.toUpperCase())}</b>: {s.covers}</span></li>})}</ul>
   <h3>Your deck</h3>
   <p>Your deck is at the bottom of the page, saved in this browser. For now everyone starts with the same five
    cards. Tap a card to flip it; its back has buttons for the longer write-up and the original article. The line at

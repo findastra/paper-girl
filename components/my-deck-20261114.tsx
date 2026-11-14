@@ -7,7 +7,7 @@
 // Live since 2026-11-14 as the normal page (?classic shows the old one). For now everyone sees the same five starter
 // cards (lib/data/sample-deck-20261114.json) until Paper Patty makes cards per visitor. Card rules: docs/card-plan-20261113.md.
 import {useEffect,useState,type CSSProperties,type FormEvent} from 'react';
-import {Atom,Brain,CircleHelp,ThumbsDown,ThumbsUp,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
+import {Atom,Brain,Check,CircleHelp,ThumbsDown,ThumbsUp,TreePine,Users,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
@@ -34,16 +34,28 @@ export function rarityOf(card:{lv:number;published?:string;author?:boolean}){
  const tier=[...TIERS].reverse().find(t=>score>=t.min)!.tier;return {score,tier,age};
 }
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
-const SUBJECT:Record<string,{icon:LucideIcon;color:string}>={
+// covers: what belongs in each subject, so every paper has one obvious home (Astra, 2026-11-14). A paper that fits two
+// goes in the more specific one (a genetics paper is Genetics, not Biology).
+const SUBJECT:Record<string,{icon:LucideIcon;color:string;covers:string}>={
  // Each subject always has the same symbol and color (Astra, 2026-11-14: "psychology, which is always a brain in pink").
- Biology:{icon:Leaf,color:'#4f9a5e'},Psychology:{icon:Brain,color:'#d26a9a'},Chemistry:{icon:FlaskConical,color:'#d08a2e'},
- 'Earth science':{icon:Globe2,color:'#3f8ccc'},Physics:{icon:Atom,color:'#d4664a'},Math:{icon:Sigma,color:'#2f9c95'},
+ Biology:{icon:Leaf,color:'#4f9a5e',covers:'living things: animals, plants, cells, evolution'},
+ Psychology:{icon:Brain,color:'#d26a9a',covers:'the mind and behavior: thinking, memory, feelings, the brain at work'},
+ Chemistry:{icon:FlaskConical,color:'#d08a2e',covers:'molecules, reactions and materials'},
+ 'Earth science':{icon:Globe2,color:'#3f8ccc',covers:'the planet itself: rocks, oceans, weather, earthquakes, fossils'},
+ Physics:{icon:Atom,color:'#d4664a',covers:'forces, energy, light and motion'},
+ Math:{icon:Sigma,color:'#2f9c95',covers:'numbers, patterns, models and chance'},
  // Added 2026-11-14 (Astra: "it seems like we're missing subjects")
- Medicine:{icon:HeartPulse,color:'#c94a4a'},Genetics:{icon:Dna,color:'#7a5ec8'},Space:{icon:Telescope,color:'#34478f'},
- 'Computer science':{icon:Cpu,color:'#56656f'},Engineering:{icon:Cog,color:'#8a6a4a'}};
-const FALLBACK={icon:CircleHelp,color:'#6b6470'};
+ Medicine:{icon:HeartPulse,color:'#c94a4a',covers:'health and disease: patients, treatments, infections'},
+ Genetics:{icon:Dna,color:'#7a5ec8',covers:'genes, DNA, heredity and mutations'},
+ Space:{icon:Telescope,color:'#34478f',covers:'planets, stars and spaceflight'},
+ 'Computer science':{icon:Cpu,color:'#56656f',covers:'computers, code, algorithms and AI'},
+ Engineering:{icon:Cog,color:'#8a6a4a',covers:'building things: devices, robots, sensors'},
+ // Added 2026-11-14 (Astra: "yes, add both")
+ 'Social science':{icon:Users,color:'#8e4f8a',covers:'people and societies: economics, education, culture, language, the past'},
+ Environment:{icon:TreePine,color:'#7a8a22',covers:'nature as a whole: ecosystems, climate, conservation, pollution'}};
+const FALLBACK={icon:CircleHelp,color:'#6b6470',covers:''};
 /** Every type, in order, with its symbol and color, for the draw bar's pills (Astra, 2026-11-14). */
-export const TYPES=Object.entries(SUBJECT).map(([name,t])=>({name,label:name.replace(/\b\w/g,c=>c.toUpperCase()),icon:t.icon,color:t.color}));
+export const TYPES=Object.entries(SUBJECT).map(([name,t])=>({name,label:name.replace(/\b\w/g,c=>c.toUpperCase()),icon:t.icon,color:t.color,covers:t.covers}));
 /** The subject's color, so the page around a card can take it as its accent (Astra, 2026-11-14). */
 export function subjectColor(subject?:string){return (subject&&SUBJECT[subject]?.color)||'#d9a53f'}
 
@@ -106,41 +118,37 @@ export function StencilFan({id,fills,gap=10}:{id:string;fills:string[];gap?:numb
  * triangle points, like a certification seal, with a check in the middle. It fills the same spot as the circle, so
  * ticking it never moves anything (no stamp at the top left: Astra, 2026-11-14).
  */
-function SunSeal({id}:{id:string}){
- const g=`sun-g-${id}`;
- return <svg className="sun-seal" viewBox="0 0 40 40" aria-hidden="true">
-  <defs><linearGradient id={g} x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stopColor="#fff3cc"/><stop offset=".2" stopColor="#efc65e"/><stop offset=".38" stopColor="#fff8e0"/><stop offset=".56" stopColor="#dcae48"/><stop offset=".74" stopColor="#fbe6a6"/><stop offset="1" stopColor="#cf9c38"/><animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/></linearGradient></defs>
-  <polygon points={sunburst(20,20,19.5,14.5,16)} fill={`url(#${g})`} stroke="#7a520c" strokeWidth=".8" strokeLinejoin="round"/>
-  <circle cx="20" cy="20" r="11.5" fill={`url(#${g})`} stroke="#7a520c" strokeWidth=".8"/>
-  <circle cx="20" cy="20" r="9.8" fill="none" stroke="#fff3c4" strokeOpacity=".8" strokeWidth=".7"/>
-  <path d="M14.5 20.5l3.6 3.6 7.4-8" fill="none" stroke="#4a3104" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round"/>
- </svg>;
+function SunSeal(_:{id:string}){
+ // Made of the page's one gold surface (Astra, 2026-11-14): a gold sun of jagged points, a disc with a thin ring, a check
+ return <span className="sun-seal" aria-hidden="true"><span className="sun-rays"/><span className="sun-disc"><Check/></span></span>;
 }
 function PapermonSeal({id,author}:{id:string;author:boolean}){
  const words=author?'AUTHOR’S EDITION CARD ✦ PAPERMON ✦ ':'PAPERMON ✦ CERTIFICATE OF AUTHENTICITY ✦ ';
  // Fit the crest's words once around the ring (radius 38, about 239 units round).
  const fs=Math.min(8.6,(232-words.length)/(words.length*.64));
- const g=`seal-g-${id}`,d=`seal-d-${id}`,c=`seal-c-${id}`,p=`seal-p-${id}`;
- return <svg className="pm-seal" viewBox="0 0 120 120" role="img" aria-label={author?'Papermon seal: Author’s Edition Card':'Papermon seal: Certificate of Authenticity'}>
+ const p=`seal-p-${id}`;
+ // The seal's gold is the page's one gold surface showing through (Astra, 2026-11-14); the drawing on top only adds the
+ // chiseled rings, the crest of words and the card fan as light and dark tints.
+ return <span className="pm-seal-wrap"><span className="pm-seal-gold" aria-hidden="true"/>
+ <svg className="pm-seal" viewBox="0 0 120 120" role="img" aria-label={author?'Papermon seal: Author’s Edition Card':'Papermon seal: Certificate of Authenticity'}>
   <defs>
-   <linearGradient id={g} x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stopColor="#fff3c4"/><stop offset=".35" stopColor="#e8bb52"/><stop offset=".7" stopColor="#b8862e"/><stop offset="1" stopColor="#7a520c"/><animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/></linearGradient>
-   <linearGradient id={d} x1="1" y1="1" x2="0" y2="0" spreadMethod="reflect"><stop offset="0" stopColor="#fff3c4"/><stop offset=".4" stopColor="#e0ac45"/><stop offset="1" stopColor="#8a5a10"/><animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/></linearGradient>
-   <linearGradient id={c} x1="0" y1="0" x2="1" y2="1" spreadMethod="reflect"><stop offset="0" stopColor="#c48a24"/><stop offset=".4" stopColor="#fff3c4"/><stop offset=".6" stopColor="#f3d27a"/><stop offset="1" stopColor="#a8761c"/><animateTransform attributeName="gradientTransform" type="translate" values="-.25 -.25;.25 .25;-.25 -.25" dur="18s" calcMode="spline" keySplines=".42 0 .58 1;.42 0 .58 1" repeatCount="indefinite"/></linearGradient>
    <path id={p} d="M60,60 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/>
   </defs>
-  <polygon points={sunburst(60,60,59,51,32)} fill={`url(#${g})`} stroke="#7a520c" strokeWidth=".7" strokeLinejoin="round"/>
-  <circle cx="60" cy="60" r="48" fill={`url(#${d})`} stroke="#fff3c4" strokeOpacity=".8" strokeWidth="1"/>
-  <circle cx="60" cy="60" r="45.5" fill={`url(#${g})`}/>
+  <polygon points={sunburst(60,60,59,51,32)} fill="none" stroke="#7a520c" strokeWidth=".7" strokeLinejoin="round"/>
+  <circle cx="60" cy="60" r="48" fill="#7a520c" fillOpacity=".16" stroke="#fff3c4" strokeOpacity=".8" strokeWidth="1"/>
+  <circle cx="60" cy="60" r="45.5" fill="#fff8e0" fillOpacity=".1"/>
   <text fontSize={fs.toFixed(2)} fontWeight="700" letterSpacing="1" fill="#5a3c06" fontFamily="'Times New Roman',Times,serif">
    <textPath href={`#${p}`} startOffset="25%" textAnchor="middle">{words}</textPath></text>
-  <circle cx="60" cy="60" r="29" fill={`url(#${d})`} stroke="#7a520c" strokeWidth=".8"/>
+  <circle cx="60" cy="60" r="29" fill="#7a520c" fillOpacity=".16" stroke="#7a520c" strokeWidth=".8"/>
   <circle cx="60" cy="60" r="26.5" fill="none" stroke="#fff3c4" strokeOpacity=".7" strokeWidth=".8"/>
   {/* The logo as a stencil (Astra, 2026-11-14: no white border, "see-through"): each card cuts a thin gap out of the
       cards behind it, so the outline is the seal's own gold showing through. */}
-  <g transform="translate(60 61) scale(.24) translate(-96 -101)"><StencilFan id={id} fills={[`url(#${g})`,`url(#${d})`,`url(#${c})`]}/></g>
- </svg>;
+  <g transform="translate(60 61) scale(.24) translate(-96 -101)"><StencilFan id={id} fills={['#7a520c33','#fff8e04d','#fff8e080']}/></g>
+ </svg></span>;
 }
-const shortDate=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+// Abbreviated months end with a period, like "No." and "LV." (Astra, 2026-11-14): "Nov. 14, 2026"; May is not shortened.
+const MONTHS=['Jan.','Feb.','Mar.','Apr.','May','Jun.','Jul.','Aug.','Sep.','Oct.','Nov.','Dec.'];
+const shortDate=(d:string)=>{const t=new Date(d+'T12:00:00');return `${MONTHS[t.getMonth()]} ${t.getDate()}, ${t.getFullYear()}`};
 /** The card number as Astra asked for it: four digits, "0001" (the data keeps "000,001", which read ticks use). */
 export const cardNumber=(no:string)=>String(parseInt(no.replace(/\D/g,''),10)||0).padStart(4,'0');
 
@@ -212,7 +220,7 @@ function CardForm({card,kind,onClose}:{card:Card;kind:''|'report'|'author';onClo
 }
 
 /** Every subject with its symbol, name and color, for places that list them (the How to play rules). */
-export const SUBJECTS=Object.entries(SUBJECT).map(([name,t])=>({name,icon:t.icon,color:t.color}));
+export const SUBJECTS=Object.entries(SUBJECT).map(([name,t])=>({name,icon:t.icon,color:t.color,covers:t.covers}));
 
 // onNext (in a pile): tapping the card's back puts it at the bottom of the pile instead of turning it back over.
 export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;onNext?:()=>void}){
@@ -250,9 +258,9 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
     <div className="deck-face deck-front">
      {gold&&<><Glitter seed={card.no+':card'} gold count={22} whole/><Glitter seed={card.no+':card-tiny'} gold count={30} whole small/></>}
      <div className="deck-top">
-      <span className="deck-type" title={card.subject}><TypeIcon aria-hidden="true"/></span>
+      <span className="deck-type" title={type.covers?`${card.subject}: ${type.covers}`:card.subject}><TypeIcon aria-hidden="true"/></span>
       <div className="deck-title"><p className="deck-name">{card.name}</p></div>
-      <span className="deck-lv" aria-label={`Level ${card.lv}`}><small aria-hidden="true">LV</small><b aria-hidden="true">{card.lv}</b></span>
+      <span className="deck-lv" aria-label={`Level ${card.lv}`}><small aria-hidden="true">LV.</small><b aria-hidden="true">{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
       {(tier>=4||gold)&&<><Glitter seed={card.no} gold={gold} count={30}/><Glitter seed={card.no+':tiny'} gold={gold} count={42} small/></>}</div></div>
