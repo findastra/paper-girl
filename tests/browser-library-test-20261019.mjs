@@ -28,7 +28,7 @@ async function withLibrary(network, run, saved = {}) {
     Math.random = () => 0.999;
     const {installBrowserLibrary} = await import(`../lib/browser-library.ts?test=${++moduleId}`);
     installBrowserLibrary();
-    await run(() => JSON.parse(storage.get('paper-girl:library:v1')));
+    await run(() => JSON.parse(storage.get('papermon:library:v1')));
   } finally {
     Math.random = random;
     for (const [key, descriptor] of Object.entries(originals)) {

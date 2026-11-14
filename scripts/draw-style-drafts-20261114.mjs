@@ -6,7 +6,7 @@
 //   node scripts/draw-style-drafts-20261114.mjs --dry     print the prompts
 //   node scripts/draw-style-drafts-20261114.mjs           draw every draft not drawn yet (never pays twice)
 //
-// Needs PAPERGIRL_PATTY_OPENAI_API_KEY. Drafts land in art-originals/drafts/ (PNG + 512 px WebP), outside the site.
+// Needs PAPERMON_PATTY_OPENAI_API_KEY (the old name PAPERGIRL_PATTY_OPENAI_API_KEY still works until API Fairy renames it). Drafts land in art-originals/drafts/ (PNG + 512 px WebP), outside the site.
 import {readFileSync, writeFileSync, mkdirSync, existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import sharp from 'sharp';
@@ -33,8 +33,8 @@ const STYLES = {
 const RULES = 'One clear main subject, cartoonish and cute but not girly, filling most of the square. No text, letters, logos, stars, sparkles or hearts (except numbers that are the subject itself).';
 
 const dry = process.argv.includes('--dry');
-const key = process.env.PAPERGIRL_PATTY_OPENAI_API_KEY;
-if (!dry && !key) { console.error('PAPERGIRL_PATTY_OPENAI_API_KEY is not set. Nothing was drawn.'); process.exit(1); }
+const key = process.env.PAPERMON_PATTY_OPENAI_API_KEY || process.env.PAPERGIRL_PATTY_OPENAI_API_KEY;
+if (!dry && !key) { console.error('PAPERMON_PATTY_OPENAI_API_KEY is not set. Nothing was drawn.'); process.exit(1); }
 mkdirSync(OUT, {recursive: true});
 const cards = JSON.parse(readFileSync(DECK, 'utf8'));
 const jobs = [];
