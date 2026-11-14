@@ -907,6 +907,563 @@ body:has(.deck-mode){background:#8f8b91}
  animation:deck-text-shine 5s ease-in-out infinite!important;text-decoration-color:#a8761c}
 .gold-card .deck-stats a,.gold-card .deck-no-stat b.deck-no{background:none!important;color:#4a3104!important;-webkit-text-fill-color:#4a3104!important;animation:none!important}
 
+/* Read time on the front (Astra, 2026-11-14): the top row is four stats (Subject, Article, Read time, Completion) and
+   the date row stays three, so the card keeps its two rows. Tighter gaps and labels so all four fit on one line. */
+.deck-stats.deck-stats-top{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0 .8cqw!important}
+.deck-stats-top span{letter-spacing:.08cqw}
+
 /* Common cards are the paper itself (Astra, 2026-11-14): the same cool white as the paper sheet and the same crumpled
    texture */
 .lv1 .deck-face{background-color:#f8fafd;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='c' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .022' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23ffffff' surfaceScale='7' diffuseConstant='1.05'%3E%3CfeDistantLight azimuth='225' elevation='58'/%3E%3C/feDiffuseLighting%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='.42' intercept='.64'/%3E%3CfeFuncG type='linear' slope='.42' intercept='.64'/%3E%3CfeFuncB type='linear' slope='.42' intercept='.65'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");background-size:420px 420px;background-blend-mode:multiply}
+
+/* ---------------- Round 4, 2026-11-14 night (Astra) ---------------- */
+/* Card stats spacing: the gap from the picture to the first row matches the gap between the two rows (and the gap
+   to the band), and both rows are the same height. The Completion circle is a small dot beside Read / Unread. */
+.deck-lower{justify-content:space-evenly!important;gap:0!important;padding:0!important}
+.deck-stats-years{margin-top:0!important}
+.deck-stats-top b,.deck-stats-top a{height:5cqw!important;line-height:5cqw!important}
+.deck-stats-top .deck-type-stat{gap:.9cqw!important}
+.deck-stats-top .deck-type-stat i,.deck-stats-top .deck-type-stat i.read-dot{width:3.8cqw!important;height:3.8cqw!important;border-width:.45cqw}
+.deck-stats-top .deck-type-stat i svg{width:2.6cqw!important;height:2.6cqw!important;stroke-width:3.4}
+
+/* Card back: section numbers like the paper's (01, 02, 03); the footer is the rarity score, plus what the seal
+   certifies on gold cards */
+.deck-num{font-family:'Times New Roman',Times,serif;font-weight:700;letter-spacing:0;margin-right:1.6cqw;opacity:.75}
+.deck-made{gap:.4cqw}
+
+/* Sort line above the deck: one line, scrolls sideways on a narrow screen */
+.deck-sort{display:flex;align-items:center;gap:6px;margin:0 0 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:thin;padding-bottom:2px}
+.deck-sort>span{font-size:13px;color:#2b2b2d;margin-right:4px;flex:none}
+.deck-sort button{flex:none;font-family:'Times New Roman',Times,Georgia,serif;font-size:14px;font-weight:700;padding:4px 11px;border-radius:999px;
+ border:1px solid #c9a24e;background:#fbf8f1;color:#8a5a10;cursor:pointer}
+.deck-sort button:hover{background:#fff}
+.deck-sort button.on{background:linear-gradient(110deg,#b8862e,#f3d27a 35%,#fff3c4 50%,#e8bb52 65%,#b8862e);border-color:#8a5a10;color:#2a1a02}
+.deck-sort button i{font-style:normal}
+
+/* Draw picker: each subject circle with its name to the right, two columns */
+.pick-types.labeled{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px!important;max-width:320px!important;width:100%;justify-content:stretch!important}
+.pick-types.labeled .pick-dot{width:auto;height:auto;display:flex;align-items:center;gap:8px;padding:3px 8px 3px 3px;border-radius:999px;justify-content:flex-start;text-align:left}
+.pick-types.labeled .pick-dot i{flex:none}
+.pick-types.labeled .pick-dot span{font-family:'Times New Roman',Times,Georgia,serif;font-size:15px;font-weight:700;color:#1c1a1e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pick-types.labeled .pick-dot:hover i{transform:none}
+.pick-types.labeled .pick-dot:hover{background:#ffffff55}
+.pick-types.labeled .pick-dot.on{box-shadow:none;background:#fff3c4;outline:1px solid #c9a24e}
+
+/* ---------------- Round 5, 2026-11-14 night (Astra) ---------------- */
+/* Completion: a plain gold circle the size of the other circles; once read, a gold sun seal with a check */
+.deck-stats-top b,.deck-stats-top a{height:7.3cqw!important;line-height:7.3cqw!important}
+.deck-stats .deck-type-stat i.read-dot{width:7.3cqw!important;height:7.3cqw!important;border:.6cqw solid #c9952e!important;
+ background:radial-gradient(circle at 35% 30%,#fffaf0,#f3e6c4)!important;box-shadow:inset 0 0 0 .3cqw #fff3c4,0 .2cqw .6cqw #2a1f2c30!important;animation:none!important}
+.deck-stats .deck-type-stat i.read-dot.on{border:0!important;background:none!important;box-shadow:none!important}
+
+/* Card back: four buttons, two by two, and the "coming soon" note under them */
+.deck-back-actions{display:grid!important;grid-template-columns:1fr 1fr;gap:1.6cqw!important}
+.deck-back-actions>*{text-align:center;justify-content:center}
+
+/* Draw picker: names fit (smaller, may wrap to a second line), labeled rows, visible stars, three year buttons */
+.pick-types.labeled .pick-dot span{font-size:13px;white-space:normal;line-height:1.1;overflow:visible;text-overflow:clip}
+.pick-row{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 10px;max-width:330px}
+.pick-label{display:inline-flex;flex-direction:column;font-family:'Times New Roman',Times,Georgia,serif;font-size:14px;font-weight:700;color:#1c1a1e;line-height:1.1}
+.pick-label small{font-family:'DM Sans',Arial,sans-serif;font-size:11px;font-weight:400;color:#4a4a4e}
+.pick-star{font-size:26px!important;color:#f8f1df!important;-webkit-text-stroke:1.2px #a8761c;text-shadow:none!important}
+.pick-star.on{color:#e3ad3c!important;-webkit-text-stroke:1.2px #7a520c;text-shadow:0 0 6px #f3d27a90!important}
+.pick-years{max-width:none!important;flex-wrap:nowrap!important}
+.pick-year{font-size:13px!important;padding:5px 10px!important;white-space:nowrap}
+.pick-order,.pick-more{font-size:15px!important;white-space:normal!important;line-height:1.15!important;text-align:center}
+.pick-draw{font-size:16px!important}
+
+/* "Papermon" as a chunky card-game word: gold with a deep gold edge (no black outline: Astra, 2026-11-14), the first letter big, the rest on an arch */
+.pm-word{display:inline-flex;align-items:flex-end;font-family:'Luckiest Guy','Arial Black',Impact,sans-serif;font-weight:400;font-size:.92em;line-height:1;
+ letter-spacing:.01em;padding:.1em .06em .14em;filter:drop-shadow(0 .06em 0 #6e4a0a) drop-shadow(0 .1em .08em #0005)}
+.pm-word b{display:inline-block;font-family:'Luckiest Guy','Arial Black',Impact,sans-serif!important;font-weight:400;transform:translateY(var(--lift,0));
+ background:linear-gradient(180deg,#fff6cf 0%,#f8dc84 28%,#e8b445 52%,#c18a28 76%,#9a6814 100%);-webkit-background-clip:text;background-clip:text;
+ color:transparent;-webkit-text-fill-color:transparent;-webkit-text-stroke:0!important}
+.pm-word b.big{font-size:1.3em}
+
+/* ---------------- Round 6, 2026-11-14 night (Astra) ---------------- */
+/* Both stat rows alike: the same height, so the gap from each label to its value is the same */
+.deck-stats-years b,.deck-no-stat b.deck-no{height:7.3cqw!important;line-height:7.3cqw!important}
+/* Completion just turns on and off: the circle and the sun fill the same spot, and the word has a fixed width, so
+   nothing moves. Unread = a plain circle with a shiny gold rim; Read = the gold sun seal. */
+.deck-stats .deck-type-stat i.read-dot{border:.6cqw solid transparent!important;
+ background:linear-gradient(#fffaf0,#fffaf0) padding-box,linear-gradient(135deg,#b8862e,#f3d27a 35%,#fff3c4 50%,#e8bb52 65%,#b8862e) border-box!important;
+ box-shadow:0 .2cqw .6cqw #2a1f2c30!important;transition:none!important;transform:none!important}
+.deck-stats .deck-type-stat i.read-dot.on{border-color:transparent!important;background:none!important;box-shadow:none!important}
+.deck-stats .deck-type-stat i.read-dot svg.sun-seal{width:7.3cqw!important;height:7.3cqw!important;transform:scale(1.18);filter:drop-shadow(0 .2cqw .4cqw #5a3c0655)}
+.read-word{display:inline-block;min-width:11.6cqw;text-align:left;font-style:normal}
+
+/* Card back, fixed spots: text from the top, then the four buttons, then a footer of fixed height (rarity score and,
+   on gold cards, the certification lines and the seal) */
+.deck-back{justify-content:flex-start!important;gap:0!important}
+.deck-back-text{flex:1 1 0;min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:2.4cqw}
+.deck-back p{font-size:4.8cqw!important;line-height:1.25}
+.deck-back-actions{flex:none;position:relative;margin-top:2.4cqw}
+.deck-back .deck-bfoot{flex:none;height:21cqw;margin-top:2.4cqw;align-items:flex-start!important}
+.deck-back-note{position:absolute;left:0;right:0;bottom:calc(100% + 1.4cqw);margin:0;z-index:3;font-size:3.4cqw;line-height:1.3;
+ background:#fffdf6;color:#2a1f2c;border:.3cqw solid #c9a24e;border-radius:2cqw;padding:1.8cqw 2.6cqw;box-shadow:0 1cqw 3cqw #2a1f2c33}
+
+/* Picker stars: the same shiny gold as the Draw button when chosen */
+.pick-star.on{color:transparent!important;-webkit-text-fill-color:transparent;
+ background:linear-gradient(110deg,#b8862e,#f3d27a 35%,#fff3c4 50%,#e8bb52 65%,#b8862e);-webkit-background-clip:text;background-clip:text;
+ -webkit-text-stroke:1.2px #8a5a10;text-shadow:none!important;filter:drop-shadow(0 0 4px #f3d27a90)}
+
+/* The motto under the draw buttons, centered, in gold handwriting */
+.pick-motto{margin:6px 0 0;text-align:center;font-family:'Caveat','Segoe Script','Bradley Hand',cursive;font-size:30px;font-weight:700;line-height:1.1;
+ background:linear-gradient(110deg,#8a5a10,#c48a24 30%,#f3d27a 48%,#c48a24 66%,#8a5a10);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;
+ color:transparent;-webkit-text-fill-color:transparent;animation:deck-text-shine 6s ease-in-out infinite;transform:rotate(-3deg)}
+/* Room under the picture (Astra, 2026-11-14: the stats sat too close to the square): both rows a little shorter
+   (the Completion circle may stand slightly past its line), the picture 2% smaller and the band trimmed, so the
+   gaps above, between and below the two rows are all the same and clearly visible */
+.deck-stats>*{gap:1.4cqw!important}
+.deck-stats b,.deck-stats a,.deck-stats-top b,.deck-stats-top a,.deck-stats-years b,.deck-no-stat b.deck-no{height:6cqw!important;line-height:6cqw!important}
+.deck-frame{margin:0 2.8cqw!important}
+.deck-band{padding-top:1cqw!important;padding-bottom:1.2cqw!important}
+.pick-motto{font-family:'Caveat','Segoe Script','Bradley Hand',cursive!important}
+
+/* ---------------- Round 7, 2026-11-14 night (Astra) ---------------- */
+/* Both stat rows have four columns that line up; Rarity score is the bottom row's fourth, at the far right */
+.deck-stats-years{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0 .8cqw!important}
+.deck-stats-years b{font-size:3.4cqw!important}
+/* Every small label on the card is the same size and style: the stat names and "Reading difficulty" */
+.deck-stats span,.deck-stats-top span,.deck-stars em{font-family:'DM Sans',Arial,sans-serif!important;font-size:2.8cqw!important;font-weight:500!important;
+ letter-spacing:.12cqw!important;text-transform:uppercase;line-height:1!important}
+
+/* Piles: the top card in front, up to three cards peeking out behind it, down and to the right */
+.my-deck-piles{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(220px,22vw,280px),1fr));gap:clamp(24px,3vw,36px)}
+.deck-pile{position:relative;padding:0 calc(var(--under,0) * 7px) calc(var(--under,0) * 7px) 0}
+.pile-under{position:absolute;top:calc(var(--d) * 7px);left:calc(var(--d) * 7px);right:calc((var(--under) - var(--d)) * 7px);bottom:calc((var(--under) - var(--d)) * 7px);pointer-events:none;filter:brightness(.94)}
+.pile-under .deck-glitter{display:none}
+.pile-top{position:relative;z-index:2;animation:pile-up .3s ease-out}
+@keyframes pile-up{from{transform:translate(7px,7px)}to{transform:none}}
+@media(max-width:520px){.my-deck-piles{grid-template-columns:1fr;justify-items:center}.my-deck-piles .deck-pile{width:min(86vw,360px)}}
+@media(prefers-reduced-motion:reduce){.pile-top{animation:none}}
+/* Every pile keeps the same room for three cards behind, so all cards are the same size whatever the pile holds */
+.deck-pile{padding:0 21px 21px 0!important}
+.pile-under{right:calc((3 - var(--d)) * 7px)!important;bottom:calc((3 - var(--d)) * 7px)!important}
+/* Handwriting leans past its box; padding keeps the gold on the whole last letter */
+.pick-motto{padding:0 .35em;font-size:28px!important}
+
+/* ---------------- Round 8, 2026-11-14 night (Astra) ---------------- */
+/* "Papermon" in the gold cards' own shining gold, the sheen drifting across the whole word, with a trademark sign */
+.pm-word{display:inline-block!important;background:linear-gradient(135deg,#fff3cc,#efc65e 20%,#fff8e0 38%,#dcae48 56%,#fbe6a6 74%,#cf9c38);
+ background-size:220% 220%;animation:deck-prism 9s ease-in-out infinite alternate;-webkit-background-clip:text;background-clip:text;
+ color:transparent;-webkit-text-fill-color:transparent;padding:.18em .1em .16em;
+ filter:drop-shadow(0 .05em 0 #9a6814) drop-shadow(0 .09em .07em #0005)}
+.pm-word b{display:inline!important;transform:none!important;background:none!important;-webkit-text-fill-color:transparent}
+.pm-tm{font-family:'DM Sans',Arial,sans-serif;font-size:.28em;font-weight:700;vertical-align:super;margin-left:.08em;letter-spacing:0}
+@media(prefers-reduced-motion:reduce){.pm-word{animation:none}}
+
+/* The deck's one line: tally, then Group by and In order of drop-downs and the order arrow */
+.deck-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;margin:0 0 18px;padding:0 2px 12px;border-bottom:1px solid #96929a}
+.deck-bar .deck-tally{display:flex;flex-wrap:nowrap;align-items:center;gap:8px 14px;margin:0!important;padding:0!important;border:0!important;flex:none;justify-content:flex-start}
+.deck-bar .tally-stats{flex-wrap:nowrap;gap:12px;font-size:14px;white-space:nowrap}
+.deck-bar .tally-stats b{font-size:16px}
+.deck-pick{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#2b2b2d;white-space:nowrap}
+.deck-bar .deck-pick:first-of-type{margin-left:auto}
+.deck-pick select{appearance:none;-webkit-appearance:none;font-family:'Times New Roman',Times,Georgia,serif;font-size:14px;font-weight:700;color:#5a3c06;cursor:pointer;
+ padding:5px 28px 5px 12px;border-radius:999px;border:1px solid #c9a24e;
+ background:#fbf8f1 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a5a10' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 11px center}
+.deck-pick select:hover{background-color:#fff}
+.deck-pick select:focus-visible,.deck-dir:focus-visible{outline:2px solid #a8761c;outline-offset:2px}
+.deck-dir{width:30px;height:30px;border-radius:50%;border:1px solid #8a5a10;cursor:pointer;font-size:15px;font-weight:700;color:#2a1a02;line-height:1;
+ background:linear-gradient(110deg,#b8862e,#f3d27a 35%,#fff3c4 50%,#e8bb52 65%,#b8862e)}
+@media(max-width:720px){.deck-bar .deck-pick:first-of-type{margin-left:0}}
+
+/* Shading under every card */
+.deck-face{box-shadow:0 2.6cqw 4.4cqw -1cqw #000a,0 .8cqw 1.6cqw #0004!important}
+
+/* The motto a little further down from the buttons */
+.pick-motto{margin-top:22px!important}
+/* A little more room between the deck's box and the footer line */
+.astra-footer{margin-top:26px}
+
+/* ---------------- Round 9, 2026-11-14 night (Astra) ---------------- */
+/* Unread: just a shiny gold ring; the middle shows the card's own color */
+.deck-stats .deck-type-stat i.read-dot:not(.on){border:0!important;padding:.6cqw;box-sizing:border-box;
+ background:linear-gradient(135deg,#b8862e,#f3d27a 35%,#fff3c4 50%,#e8bb52 65%,#b8862e)!important;
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;box-shadow:none!important}
+/* Thumbs up / down above the buttons on the back */
+.deck-rate{flex:none;display:flex;align-items:center;justify-content:center;gap:2.4cqw;margin-top:2cqw;font-size:3.4cqw;font-weight:700}
+.deck-rate button{width:9cqw;height:9cqw;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;color:#5a3c06;
+ border:.4cqw solid #c9a24e;background:#fffaf0}
+.deck-rate button svg{width:4.6cqw;height:4.6cqw}
+.deck-rate button:hover{background:#fff}
+.deck-rate button.on{border-color:#8a5a10;color:#2a1a02;background:linear-gradient(110deg,#b8862e,#f3d27a 35%,#fff3c4 50%,#e8bb52 65%,#b8862e)}
+.deck-rate button:focus-visible{outline:2px solid #a8761c;outline-offset:2px}
+.deck-back-actions{margin-top:2cqw!important}
+/* The paper's edges a little more crinkled on all four sides (Astra, 2026-11-14: "almost too straight") */
+.deck-mode .paper-sheet{clip-path:polygon(0% 1.9px,4% 1.6px,8% 2.4px,12% 2.9px,16% 2.3px,20% 2.1px,24% 1.5px,28% 0.8px,32% 2.6px,36% 2.5px,40% 3.4px,44% 1.2px,48% 3.4px,52% 0.9px,56% 2.1px,60% 2.7px,64% 3.2px,68% 2.9px,72% 3.3px,76% 3.2px,80% 1.6px,84% 1.3px,88% 1.7px,92% 3.3px,96% 1.4px,100% 3.5px,calc(100% - 0.7px) 3%,calc(100% - 4.1px) 6%,calc(100% - 0.5px) 9%,calc(100% - 3.0px) 12%,calc(100% - 1.2px) 15%,calc(100% - 4.4px) 18%,calc(100% - 1.2px) 21%,calc(100% - 1.0px) 24%,calc(100% - 2.0px) 27%,calc(100% - 3.1px) 30%,calc(100% - 0.9px) 33%,calc(100% - 2.1px) 36%,calc(100% - 3.2px) 39%,calc(100% - 3.8px) 42%,calc(100% - 1.9px) 45%,calc(100% - 3.7px) 48%,calc(100% - 4.0px) 51%,calc(100% - 3.9px) 54%,calc(100% - 3.2px) 57%,calc(100% - 0.1px) 60%,calc(100% - 3.5px) 63%,calc(100% - 0.0px) 66%,calc(100% - 3.2px) 69%,calc(100% - 1.3px) 72%,calc(100% - 3.7px) 75%,calc(100% - 1.0px) 78%,calc(100% - 1.6px) 81%,calc(100% - 1.6px) 84%,calc(100% - 1.5px) 87%,calc(100% - 2.9px) 90%,calc(100% - 1.1px) 93%,calc(100% - 3.0px) 96%,100% calc(100% - 2.0px),96% calc(100% - 3.4px),92% calc(100% - 3.1px),88% calc(100% - 0.7px),84% calc(100% - 2.1px),80% calc(100% - 0.5px),76% calc(100% - 2.6px),72% calc(100% - 2.0px),68% calc(100% - 1.1px),64% calc(100% - 0.4px),60% calc(100% - 2.2px),56% calc(100% - 0.4px),52% calc(100% - 0.2px),48% calc(100% - 1.0px),44% calc(100% - 0.1px),40% calc(100% - 1.0px),36% calc(100% - 0.2px),32% calc(100% - 1.3px),28% calc(100% - 1.8px),24% calc(100% - 1.2px),20% calc(100% - 0.2px),16% calc(100% - 0.2px),12% calc(100% - 3.1px),8% calc(100% - 3.1px),4% calc(100% - 0.2px),0% calc(100% - 2.4px),3.0px 97%,3.9px 94%,3.9px 91%,0.0px 88%,4.1px 85%,3.8px 82%,3.6px 79%,0.3px 76%,4.1px 73%,0.4px 70%,4.4px 67%,2.0px 64%,0.7px 61%,2.4px 58%,2.6px 55%,2.0px 52%,2.3px 49%,2.4px 46%,3.2px 43%,4.1px 40%,3.9px 37%,4.1px 34%,0.2px 31%,1.0px 28%,1.5px 25%,2.0px 22%,4.4px 19%,3.3px 16%,3.6px 13%,2.7px 10%,2.3px 7%,0.0px 4%) !important}
+
+/* ---------------- One gold, 2026-11-14 night (Astra) ----------------
+   "The back of the gold card is the perfect shimmer of gold. And every single gold thing on this whole page should
+   shimmer with that exact same pattern." --sheen is the gold card's own gradient; every gold thing uses it at the
+   same size with the same 9 s drift (deck-prism). Gold text on light backgrounds gets a thin deep-gold edge so it
+   stays readable. */
+:root{--sheen:linear-gradient(135deg,#fff3cc,#efc65e 20%,#fff8e0 38%,#dcae48 56%,#fbe6a6 74%,#cf9c38);--sheen-edge:#9a6814}
+@keyframes gold-sheen{0%{background-position:0 30%}100%{background-position:100% 70%}}
+/* Solid gold: the Draw button, chosen year, the order arrow, a chosen thumb */
+.pick-draw,.pick-year.on,.deck-dir,.deck-rate button.on{background:var(--sheen)!important;background-size:220% 220%!important;
+ -webkit-background-clip:border-box!important;background-clip:border-box!important;animation:gold-sheen 9s ease-in-out infinite alternate!important;
+ color:#3a2606!important;-webkit-text-fill-color:#3a2606!important;border-color:var(--sheen-edge)!important}
+/* Paper-white pills: gold writing and a gold rim, same sheen */
+.pick-order,.pick-more,.pick-year:not(.on),.deck-back-actions>*{border:1.5px solid transparent!important;
+ background:var(--sheen) text,linear-gradient(#fbfaf7,#fbfaf7) padding-box,var(--sheen) border-box!important;
+ background-size:220% 220%,100% 100%,220% 220%!important;-webkit-background-clip:text,padding-box,border-box!important;background-clip:text,padding-box,border-box!important;
+ color:transparent!important;-webkit-text-fill-color:transparent!important;-webkit-text-stroke:.4px var(--sheen-edge);animation:gold-sheen 9s ease-in-out infinite alternate!important}
+.pick-order svg,.pick-more svg{color:var(--sheen-edge)}
+/* Gold writing on cards and on the page: Article, the card number, chosen stars, the motto */
+.deck-stats a,.deck-no-stat b.deck-no,.pick-star.on,.pick-motto{background:var(--sheen)!important;background-size:220% 220%!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;
+ animation:gold-sheen 9s ease-in-out infinite alternate!important}
+.deck-stats a,.deck-no-stat b.deck-no{-webkit-text-stroke:.25px var(--sheen-edge);text-decoration-color:#c9952e}
+.pick-motto{filter:drop-shadow(0 1px 0 var(--sheen-edge))}
+.gold-card .deck-stats a,.gold-card .deck-no-stat b.deck-no{background:none!important;color:#4a3104!important;-webkit-text-fill-color:#4a3104!important;animation:none!important;-webkit-text-stroke:0}
+/* Gold rings: the Unread ring and the ring round every subject circle */
+.deck-stats .deck-type-stat i.read-dot:not(.on){background:var(--sheen)!important;background-size:220% 220%!important;animation:gold-sheen 9s ease-in-out infinite alternate!important}
+.pick-dot i,.tally-sub i,.howto-subjects i,.deck-type{box-sizing:border-box;border:2px solid transparent!important;
+ background:linear-gradient(var(--sc,var(--tc)),var(--sc,var(--tc))) padding-box,var(--sheen) border-box!important;background-size:100% 100%,220% 220%!important;
+ animation:gold-sheen 9s ease-in-out infinite alternate;box-shadow:0 1px 3px #0004!important}
+.pick-dot i{background:linear-gradient(var(--tc),var(--tc)) padding-box,var(--sheen) border-box!important;background-size:100% 100%,220% 220%!important}
+.pick-dot.any i{background:conic-gradient(#d26a9a,#e0a43a,#4f9a5e,#3f8ccc,#8d6bc8,#d26a9a) padding-box,var(--sheen) border-box!important;background-size:100% 100%,220% 220%!important}
+.deck-type{border-width:.6cqw!important}
+/* Gold box edges round the card of the day and the deck */
+.deck-mode .cotd-box,.deck-mode .my-deck{background:linear-gradient(#b8b4ba,#b8b4ba) padding-box,var(--sheen) border-box!important;
+ background-size:100% 100%,220% 220%!important;animation:gold-sheen 9s ease-in-out infinite alternate}
+/* The line beside "Why it matters" */
+.deck-mode .paper-sheet .matters-body{position:relative;border-left:0!important;padding-left:19px}
+.deck-mode .paper-sheet .matters-body::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:2px;
+ background:var(--sheen);background-size:220% 220%;animation:gold-sheen 9s ease-in-out infinite alternate;box-shadow:0 0 0 .5px var(--sheen-edge)}
+/* Drop-downs: gold rim */
+.deck-pick select{border:1px solid transparent!important;
+ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%239a6814' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 11px center,
+  linear-gradient(#fbf8f1,#fbf8f1) padding-box,var(--sheen) border-box!important;background-size:auto,100% 100%,220% 220%!important;animation:gold-sheen 9s ease-in-out infinite alternate}
+/* The Holo rare card drifts on the same 9 s beat as the gold card */
+.lv4:not(.gold-card) .deck-face{animation-duration:9s!important}
+/* "00 SCIENTIFIC ARTICLE ANALYSIS" above the headline, like the other section labels */
+.deck-mode .paper-sheet .paper-kicker{display:flex;margin:4px 0 10px}
+@media(prefers-reduced-motion:reduce){.pick-draw,.pick-year,.deck-dir,.deck-rate button,.pick-order,.pick-more,.deck-back-actions>*,.deck-stats a,.deck-no,.pick-star,.pick-motto,.read-dot,.pick-dot i,.tally-sub i,.howto-subjects i,.deck-type,.cotd-box,.my-deck,.matters-body::before,.deck-pick select{animation:none!important}}
+/* Readable gold writing on light backgrounds: the same sheen with a firmer deep-gold edge */
+.pick-order,.pick-more,.pick-year:not(.on),.deck-back-actions>*{-webkit-text-stroke:.6px var(--sheen-edge)!important}
+.deck-stats a,.deck-no-stat b.deck-no{-webkit-text-stroke:.55px var(--sheen-edge)!important}
+
+/* ---------------- Buttons on the back work, pop-up forms, 2026-11-14 night (Astra) ---------------- */
+/* The side facing away takes no taps (a tap on the back was landing on the hidden front's picture and flipping it) */
+.deck-card.flipped .deck-front,.deck-card:not(.flipped) .deck-back{pointer-events:none}
+/* Report a problem / I wrote this paper: a big pop-up form */
+.card-form{max-width:560px}
+.card-form form{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+.card-form fieldset{border:0;margin:0;padding:0}
+.card-form legend,.card-form label{font-size:14px;font-weight:700;color:inherit}
+.card-form label{display:flex;flex-direction:column;gap:6px}
+.card-form label small{font-weight:400;opacity:.75}
+.card-form textarea,.card-form input{font:inherit;font-size:15px;font-weight:400;padding:9px 11px;border-radius:10px;border:1px solid #c9a24e;background:#fffdf8;color:#1c1a1e}
+.card-form textarea:focus-visible,.card-form input:focus-visible{outline:2px solid #a8761c;outline-offset:1px}
+.card-form-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.card-form-chips button{font:inherit;font-size:14px;padding:6px 12px;border-radius:999px;border:1px solid #c9a24e;background:#fffdf8;color:#5a3c06;cursor:pointer}
+.card-form-chips button.on{background:var(--sheen);background-size:220% 220%;animation:gold-sheen 9s ease-in-out infinite alternate;border-color:var(--sheen-edge);color:#3a2606;font-weight:700}
+.card-form-lead{margin:0;font-size:15px;line-height:1.5}
+.card-form-send{align-self:flex-start;font-family:'Times New Roman',Times,Georgia,serif;font-size:17px;font-weight:700;padding:10px 22px;border-radius:999px;cursor:pointer;
+ border:1px solid var(--sheen-edge);color:#3a2606;background:var(--sheen);background-size:220% 220%;animation:gold-sheen 9s ease-in-out infinite alternate}
+.card-form-done{display:flex;flex-direction:column;gap:14px}
+.card-form-done p{margin:0;font-size:15px;line-height:1.5}
+
+/* ---------------- One button style, 2026-11-14 night (Astra: "make sure all of the buttons look cohesive") ----------
+   Two kinds only. Main or chosen: solid shining gold (--sheen) with dark brown writing. Everything else: paper white
+   with a shining gold rim and dark brown writing. Same serif, same weight, everywhere. */
+:root{--btn-ink:#3a2606}
+.pick-order,.pick-more,.pick-year:not(.on),.deck-back-actions>*,.deck-pick select,.deck-dir,.deck-rate button:not(.on),
+.pick-types.labeled .pick-dot:not(.on),.tally-sub,.card-form-chips button:not(.on){
+ border:1.5px solid transparent!important;
+ background:linear-gradient(#fbfaf7,#fbfaf7) padding-box,var(--sheen) border-box!important;background-size:100% 100%,220% 220%!important;
+ -webkit-background-clip:padding-box,border-box!important;background-clip:padding-box,border-box!important;
+ color:var(--btn-ink)!important;-webkit-text-fill-color:var(--btn-ink)!important;-webkit-text-stroke:0!important;
+ animation:gold-sheen 9s ease-in-out infinite alternate!important;box-shadow:0 1px 3px #0000001f!important;filter:none!important}
+.pick-draw,.pick-year.on,.deck-rate button.on,.pick-types.labeled .pick-dot.on,.card-form-chips button.on,.card-form-send{
+ border:1.5px solid var(--sheen-edge)!important;background:var(--sheen)!important;background-size:220% 220%!important;
+ -webkit-background-clip:border-box!important;background-clip:border-box!important;
+ color:var(--btn-ink)!important;-webkit-text-fill-color:var(--btn-ink)!important;-webkit-text-stroke:0!important;
+ animation:gold-sheen 9s ease-in-out infinite alternate!important;box-shadow:inset 0 1px 0 #ffffffa0,0 1px 3px #00000026!important;outline:0!important}
+.pick-order,.pick-more,.pick-year,.deck-back-actions>*,.deck-pick select,.pick-types.labeled .pick-dot span,.card-form-chips button,.card-form-send,.tally-sub b{
+ font-family:'Times New Roman',Times,Georgia,serif!important;font-weight:700!important}
+.pick-order svg,.pick-more svg,.deck-rate button svg{color:var(--btn-ink)!important}
+.pick-types.labeled .pick-dot span{color:var(--btn-ink)!important}
+.pick-order:hover,.pick-more:hover,.pick-year:not(.on):hover,.deck-back-actions>*:hover,.deck-pick select:hover,.deck-dir:hover,.deck-rate button:not(.on):hover,
+.pick-types.labeled .pick-dot:not(.on):hover,.card-form-chips button:not(.on):hover{
+ background:linear-gradient(#fff,#fff) padding-box,var(--sheen) border-box!important;background-size:100% 100%,220% 220%!important;transform:translateY(-1px)}
+.tally-sub b{color:var(--btn-ink)!important}
+/* The drop-downs: the same pill as the other buttons, with a small brown chevron */
+.deck-pick select{height:32px;padding:0 30px 0 13px!important;font-size:14px!important;line-height:1;
+ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%233a2606' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center,
+  linear-gradient(#fbfaf7,#fbfaf7) padding-box,var(--sheen) border-box!important;background-size:auto,100% 100%,220% 220%!important}
+.deck-pick select option{background:#fbfaf7;color:#1c1a1e;font-weight:400}
+.deck-pick>span{font-family:'DM Sans',Arial,sans-serif;font-size:13px;color:#2b2b2d}
+.deck-dir{width:32px;height:32px;font-size:15px}
+
+/* Pop-ups match the page: paper white, gold rim, dark writing (they were still in the old dark purple) */
+body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) padding-box,var(--sheen) border-box!important;background-size:100% 100%,220% 220%!important;
+ border:2px solid transparent!important;color:#1c1a1e!important;animation:gold-sheen 9s ease-in-out infinite alternate}
+body:has(.deck-mode) .source-dialog [data-slot=dialog-title]{font-family:'Times New Roman',Times,Georgia,serif;font-weight:700;color:#1c1a1e}
+body:has(.deck-mode) .source-dialog [data-slot=dialog-description]{color:#4a4a4e}
+body:has(.deck-mode) .source-dialog-copy h3{color:#5a3c06!important}
+body:has(.deck-mode) .source-dialog-copy p,body:has(.deck-mode) .source-dialog-copy li{color:#2b2b2d!important}
+body:has(.deck-mode) .source-dialog-copy a{color:#5a3c06}
+body:has(.deck-mode) .source-dialog button[data-slot=dialog-close],body:has(.deck-mode) .source-dialog>button:last-child{color:#3a2606}
+
+/* Card back: thumbs under the four buttons, the buttons a little lower, more room for the sentences */
+.deck-back .deck-bfoot{height:19cqw!important;margin-top:1.6cqw!important}
+.deck-back-actions{margin-top:2.6cqw!important}
+.deck-rate{margin-top:1.8cqw!important;gap:2cqw!important;font-size:3.2cqw!important}
+.deck-rate button{width:7.4cqw!important;height:7.4cqw!important}
+.deck-rate button svg{width:3.8cqw!important;height:3.8cqw!important}
+
+/* Draws left today, under the Draw button */
+.pick-draws-left{grid-column:1/-1;margin:-2px 0 2px;text-align:center;font-size:13px;color:#2b2b2d}
+.pick-draws-left b{font-size:15px;color:#1c1a1e}
+.pick-draw:disabled{filter:grayscale(.6) brightness(.95)!important;cursor:not-allowed}
+/* Same card size in piles and laid out (Astra, 2026-11-14: "meet in the middle"): both grids use the same columns and
+   gap; piles leave 15 px for the cards behind (5 px each, was 7), and laid-out cards are 15 px narrower than the column */
+.my-deck-grid,.my-deck-piles{grid-template-columns:repeat(auto-fill,minmax(clamp(220px,22vw,280px),1fr))!important;gap:clamp(20px,2.5vw,30px)!important}
+.deck-pile{padding:0 15px 15px 0!important}
+.pile-under{top:calc(var(--d) * 5px)!important;left:calc(var(--d) * 5px)!important;right:calc((3 - var(--d)) * 5px)!important;bottom:calc((3 - var(--d)) * 5px)!important}
+.my-deck-grid>.deck-slot{width:calc(100% - 15px)}
+@keyframes pile-up{from{transform:translate(5px,5px)}to{transform:none}}
+@media(max-width:520px){.my-deck-grid>.deck-slot{width:min(86vw,360px)}}
+@media(max-width:520px){.my-deck-grid>.deck-slot{width:calc(min(86vw,360px) - 15px)!important}}
+/* LV in the top corner: the small "LV" centered on the number, and the pair centered on the name (one line or two) */
+.deck-top .deck-lv{display:inline-flex!important;align-items:center;gap:.5cqw;line-height:1!important;align-self:center}
+.deck-top .deck-lv b{line-height:1!important}
+/* LV: the small "LV" centered on the number */
+.deck-top .deck-lv small{font-size:inherit;font-weight:inherit;line-height:1}
+/* Draw card button: the word, then a little tag with five tiny cards (filled = drawn today) and "2/5" */
+.pick-draw{display:inline-flex!important;align-items:center;justify-content:center;gap:9px!important}
+.pick-draw-word{white-space:nowrap}
+.draw-count{display:inline-flex;align-items:center;gap:5px;margin-left:4px;padding:3px 8px 3px 7px;border-radius:999px;background:#fffaf0cc;
+ box-shadow:inset 0 0 0 1px #9a681466;font-family:'DM Sans',Arial,sans-serif;font-size:12px;font-weight:700;color:#3a2606;-webkit-text-fill-color:#3a2606}
+.draw-pips{display:inline-flex;gap:2px}
+.draw-pips i{display:block;width:6px;height:9px;border-radius:1.5px;border:1px solid #9a6814;background:#fffdf6;transform:rotate(-6deg)}
+.draw-pips i:nth-child(even){transform:rotate(5deg)}
+.draw-pips i.used{background:linear-gradient(135deg,#b8862e,#f3d27a 45%,#9a6814);border-color:#7a520c}
+.pick-draw.out .pick-draw-icon{display:none}
+
+/* ---------------- Picker rows and the Draw button, 2026-11-14 night (Astra) ---------------- */
+/* Each row: the name on the left, the choices on the right; both rows' choices start at the same place */
+.pick-row{display:grid!important;grid-template-columns:118px auto;align-items:center;justify-content:center;gap:8px!important;max-width:340px;width:100%}
+.pick-label{display:block;font-family:'Times New Roman',Times,Georgia,serif;font-size:14px;font-weight:700;color:#1c1a1e;white-space:nowrap;text-align:left}
+.pick-row .pick-stars,.pick-row .pick-years{justify-content:flex-start!important}
+.pick-years{gap:5px!important}
+.pick-year{font-size:12.5px!important;padding:4px 9px!important}
+/* Hollow stars (just a gold outline, see-through inside) until chosen; chosen stars fill with the shining gold */
+.pick-star:not(.on){color:transparent!important;-webkit-text-fill-color:transparent!important;-webkit-text-stroke:1.4px #9a6814!important;background:none!important;filter:none!important}
+.pick-star{font-size:24px!important;padding:0 1px!important}
+/* Any difficulty: a little dice button just after the stars */
+.pick-random{width:28px;height:28px;margin-left:8px;border-radius:50%;display:grid;place-items:center;cursor:pointer;padding:0;
+ border:1.5px solid transparent;background:linear-gradient(#fbfaf7,#fbfaf7) padding-box,var(--sheen) border-box;background-size:100% 100%,220% 220%;
+ animation:gold-sheen 9s ease-in-out infinite alternate;color:var(--btn-ink);box-shadow:0 1px 3px #0000001f}
+.pick-random svg{width:16px;height:16px}
+.pick-random.on{background:var(--sheen);background-size:220% 220%;border-color:var(--sheen-edge)}
+.pick-random:focus-visible{outline:2px solid #a8761c;outline-offset:2px}
+/* Draw card: just the words; gray with a countdown once the day's five are drawn */
+.pick-draw{gap:0!important;font-variant-numeric:tabular-nums}
+.pick-draw.out,.pick-draw.out:disabled{background:#d3d0d6!important;border-color:#9d99a1!important;color:#4a474e!important;-webkit-text-fill-color:#4a474e!important;
+ animation:none!important;box-shadow:inset 0 1px 0 #ffffff80,0 1px 3px #0000001f!important;filter:none!important;cursor:default}
+.pick-wait{margin-left:.3em;font-family:'DM Sans',Arial,sans-serif;font-weight:700}
+/* Rows fit: the names column fits "Reading difficulty:", both rows' choices start at the same place, nothing past the edge */
+.pick-row{grid-template-columns:114px auto!important;justify-content:start!important;max-width:336px!important}
+.pick-label{font-size:13px!important}
+.pick-year{font-size:12px!important;padding:4px 8px!important}
+.pick-star{font-size:22px!important}
+.pick-random{margin-left:6px!important}
+
+/* ---------------- One gold surface, 2026-11-14 night (Astra) ----------------
+   "One image behind it all, and it's moving in the same way." Every gold thing paints the same big repeating gold
+   (the gold card's colors), lined up with its place on the screen by components/gold-surface-20261114.tsx, so they all
+   look cut from one sheet. The list here matches GOLD there. */
+:root{--sheen:repeating-linear-gradient(135deg,#fff3cc 0px,#efc65e 144px,#fff8e0 274px,#dcae48 403px,#fbe6a6 533px,#cf9c38 650px,#fff3cc 720px);--gold-size:4000px 4000px}
+/* Solid gold */
+.pick-draw:not(.out),.pick-year.on,.deck-rate button.on,.pick-types.labeled .pick-dot.on,.card-form-chips button.on,.card-form-send,.pick-random.on,
+.gold-card .deck-face,.sun-rays,.sun-disc,.pm-seal-gold,.pm-logo,.deck-stats .deck-type-stat i.read-dot:not(.on){
+ background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;animation:none!important}
+/* Gold writing */
+.pm-word,.pick-motto,.deck-stats a,.deck-no-stat b.deck-no,.pick-star.on{
+ background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;animation:none!important}
+.gold-card .deck-stats a,.gold-card .deck-no-stat b.deck-no{background:none!important;color:#4a3104!important;-webkit-text-fill-color:#4a3104!important}
+/* Paper-white buttons with a gold rim */
+.pick-order,.pick-more,.pick-year:not(.on),.deck-back-actions>*,.deck-dir,.deck-rate button:not(.on),.pick-types.labeled .pick-dot:not(.on),.tally-sub,.card-form-chips button:not(.on),.pick-random:not(.on){
+ background:linear-gradient(#fbfaf7,#fbfaf7) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;
+ background-position:0 0,var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;animation:none!important}
+.pick-order:hover,.pick-more:hover,.pick-year:not(.on):hover,.deck-back-actions>*:hover,.deck-dir:hover,.deck-rate button:not(.on):hover,.pick-types.labeled .pick-dot:not(.on):hover,.card-form-chips button:not(.on):hover,.pick-random:not(.on):hover{
+ background:linear-gradient(#fff,#fff) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important;background-repeat:no-repeat!important}
+.deck-pick select,.deck-pick select:hover{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%233a2606' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat,
+ linear-gradient(#fbfaf7,#fbfaf7) padding-box,var(--sheen) border-box!important;background-size:auto,100% 100%,var(--gold-size)!important;
+ background-position:right 12px center,0 0,var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;animation:none!important}
+/* Gold rims round the boxes and the pop-ups */
+.deck-mode .cotd-box,.deck-mode .my-deck{background:linear-gradient(#b8b4ba,#b8b4ba) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;animation:none!important}
+body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;animation:none!important}
+/* Gold rings round the subject circles */
+.pick-dot i,.tally-sub i,.howto-subjects i,.deck-type{background:linear-gradient(var(--sc,var(--tc)),var(--sc,var(--tc))) padding-box,var(--sheen) border-box!important;
+ background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;animation:none!important}
+.pick-dot i{background:linear-gradient(var(--tc),var(--tc)) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important}
+.pick-dot.any i{background:conic-gradient(#d26a9a,#e0a43a,#4f9a5e,#3f8ccc,#8d6bc8,#d26a9a) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important}
+/* The "Why it matters" line */
+.deck-mode .paper-sheet .matters-body::before{background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;animation:none!important}
+/* The Read mark: a sun of jagged points and a disc with a thin ring, both cut from the gold surface */
+.sun-seal{position:relative;display:block;width:7.3cqw;height:7.3cqw;filter:drop-shadow(0 0 .3px #7a520c) drop-shadow(0 .2cqw .4cqw #5a3c0655)}
+.sun-rays{position:absolute;inset:-12%;clip-path:polygon(50.00% 0.00%,57.22% 13.71%,69.13% 3.81%,70.56% 19.24%,85.36% 14.64%,80.76% 29.44%,96.19% 30.87%,86.29% 42.78%,100.00% 50.00%,86.29% 57.22%,96.19% 69.13%,80.76% 70.56%,85.36% 85.36%,70.56% 80.76%,69.13% 96.19%,57.22% 86.29%,50.00% 100.00%,42.78% 86.29%,30.87% 96.19%,29.44% 80.76%,14.64% 85.36%,19.24% 70.56%,3.81% 69.13%,13.71% 57.22%,0.00% 50.00%,13.71% 42.78%,3.81% 30.87%,19.24% 29.44%,14.64% 14.64%,29.44% 19.24%,30.87% 3.81%,42.78% 13.71%)}
+.sun-disc{position:absolute;inset:14%;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 0 0 .35cqw #9a6814,inset 0 0 0 .65cqw #fff3c4aa}
+.deck-stats .sun-disc svg{width:3.4cqw!important;height:3.4cqw!important;color:#3a2606;stroke-width:3.4}
+/* The gold-card seal: the gold surface in a sunburst, the drawing on top */
+.pm-seal-wrap{position:relative;flex:none;display:block;width:19cqw;height:19cqw;filter:drop-shadow(0 .4cqw .8cqw #5a3c0666)}
+.pm-seal-gold{position:absolute;inset:0;clip-path:polygon(50.00% 0.83%,54.17% 7.70%,59.59% 1.78%,62.34% 9.33%,68.82% 4.58%,70.03% 12.52%,77.32% 9.12%,76.96% 17.15%,84.77% 15.23%,82.85% 23.04%,90.88% 22.68%,87.48% 29.97%,95.42% 31.18%,90.67% 37.66%,98.22% 40.41%,92.30% 45.83%,99.17% 50.00%,92.30% 54.17%,98.22% 59.59%,90.67% 62.34%,95.42% 68.82%,87.48% 70.03%,90.88% 77.32%,82.85% 76.96%,84.77% 84.77%,76.96% 82.85%,77.32% 90.88%,70.03% 87.48%,68.82% 95.42%,62.34% 90.67%,59.59% 98.22%,54.17% 92.30%,50.00% 99.17%,45.83% 92.30%,40.41% 98.22%,37.66% 90.67%,31.18% 95.42%,29.97% 87.48%,22.68% 90.88%,23.04% 82.85%,15.23% 84.77%,17.15% 76.96%,9.12% 77.32%,12.52% 70.03%,4.58% 68.82%,9.33% 62.34%,1.78% 59.59%,7.70% 54.17%,0.83% 50.00%,7.70% 45.83%,1.78% 40.41%,9.33% 37.66%,4.58% 31.18%,12.52% 29.97%,9.12% 22.68%,17.15% 23.04%,15.23% 15.23%,23.04% 17.15%,22.68% 9.12%,29.97% 12.52%,31.18% 4.58%,37.66% 9.33%,40.41% 1.78%,45.83% 7.70%)}
+.pm-seal-wrap .pm-seal{position:absolute;inset:0;width:100%;height:100%;filter:none}
+/* The logo: a cutout of the gold surface in the shape of the card fan (the stencil gaps show through) */
+.pm-logo{display:inline-block;width:1.1em;height:1.1em;flex:none;filter:none!important;
+ -webkit-mask:var(--logo) center/contain no-repeat;mask:var(--logo) center/contain no-repeat}
+/* More room between the Completion mark and its word */
+.deck-stats-top .deck-type-stat{gap:1.8cqw!important}
+.read-word{min-width:10.6cqw!important}
+/* The motto: centered in the space between the last buttons and the bottom of the box */
+.deck-mode .cotd-box .cotd-card{align-self:stretch!important;display:flex!important;flex-direction:column;position:static!important;top:auto!important}
+.deck-mode .cotd-below{flex:1 1 auto;display:flex;flex-direction:column}
+.deck-mode .draw-picker{flex:1 1 auto}
+.pick-motto{margin:auto 0!important}
+/* The Papermon logo and word at the top center (Astra, 2026-11-14) */
+.deck-mode header{justify-content:center!important}
+.deck-mode header>.brand{margin:0 auto}
+/* The draw message is only as tall as its text, so the motto can sit in the middle of the space */
+.draw-picker .draw-status{flex:0 0 auto!important}
+/* Header: the logo and word centered, the tagline under them; a little less space above and below */
+.deck-mode header{flex-direction:column!important;align-items:center!important;gap:0!important;padding-top:12px!important;padding-bottom:8px!important}
+.pm-tagline{margin:-8px 0 0;padding:0 .35em .08em;font-family:'Caveat','Segoe Script','Bradley Hand',cursive;font-weight:700;font-size:30px;line-height:1.1;text-align:center;
+ filter:drop-shadow(0 1px 0 #9a6814);background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;
+ background-repeat:no-repeat!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important}
+@media(max-width:520px){.pm-tagline{font-size:23px}}
+/* Half the gap between the deck's box and the footer line */
+.astra-footer{margin-top:10px!important}
+
+/* ---------------- Every gold outline and border is the one gold surface too (Astra, 2026-11-14) ---------------- */
+/* Gold buttons: no darker edge; the gold runs right to the rim */
+.pick-draw:not(.out),.pick-year.on,.deck-rate button.on,.pick-types.labeled .pick-dot.on,.card-form-chips button.on,.card-form-send,.pick-random.on{border-color:transparent!important}
+/* Picker stars: a gold outline cut from the surface (hollow inside) until chosen, then a solid gold star */
+.pick-star,.pick-star.on,.pick-star:not(.on){font-size:0!important;width:24px;height:24px;padding:0!important;border:0!important;
+ -webkit-text-stroke:0!important;color:transparent!important;-webkit-text-fill-color:transparent!important;filter:none!important;text-shadow:none!important;
+ background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
+ -webkit-background-clip:border-box!important;background-clip:border-box!important;animation:none!important;
+ -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.6l2.85 6.05 6.65.8-4.9 4.55 1.3 6.6L12 17.35 6.1 20.6l1.3-6.6L2.5 9.45l6.65-.8z' fill='none' stroke='%23000' stroke-width='1.7' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.6l2.85 6.05 6.65.8-4.9 4.55 1.3 6.6L12 17.35 6.1 20.6l1.3-6.6L2.5 9.45l6.65-.8z' fill='none' stroke='%23000' stroke-width='1.7' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+.pick-star.on{-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.6l2.85 6.05 6.65.8-4.9 4.55 1.3 6.6L12 17.35 6.1 20.6l1.3-6.6L2.5 9.45l6.65-.8z' fill='%23000' stroke='%23000' stroke-width='1.7' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat!important;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2.6l2.85 6.05 6.65.8-4.9 4.55 1.3 6.6L12 17.35 6.1 20.6l1.3-6.6L2.5 9.45l6.65-.8z' fill='%23000' stroke='%23000' stroke-width='1.7' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat!important}
+.pick-stars{gap:3px!important}
+/* The Read seal: gold rays and a gold disc cut from the same surface, a thin see-through ring between them, no dark edge */
+.sun-seal{filter:drop-shadow(0 .2cqw .4cqw #5a3c0640)!important}
+.sun-rays{inset:-12%!important;-webkit-mask:radial-gradient(circle,#000 0 29%,transparent 30% 34%,#000 35%);mask:radial-gradient(circle,#000 0 29%,transparent 30% 34%,#000 35%)}
+.sun-disc{background:none!important;box-shadow:none!important}
+.deck-stats .sun-disc svg{color:#3a2606}
+/* The "Why it matters" line: just the gold */
+.deck-mode .paper-sheet .matters-body::before{box-shadow:none!important}
+/* Form boxes: gold rim from the surface */
+.card-form textarea,.card-form input{border:1.5px solid transparent!important;background:linear-gradient(#fffdf8,#fffdf8) padding-box,var(--sheen) border-box!important;
+ background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important;background-repeat:no-repeat!important}
+/* Difficulty stars on every card: the same gold, a little bigger, with a fine edge so they read on any card */
+.deck-star-row{font-size:5.4cqw!important;gap:.4cqw!important}
+.deck-star-row i,.deck-star-row i.on{background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;
+ filter:drop-shadow(0 0 .35px #5a3c06) drop-shadow(0 .15cqw .2cqw #5a3c0640)}
+/* The gold card's band, picture frame and back rim are the surface too */
+.gold-card .deck-band{background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important}
+.gold-card .deck-frame,.gold-card .deck-rim{background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;animation:none!important}
+/* The tagline in the motto's handwriting */
+.pm-tagline{font-family:'Caveat','Segoe Script','Bradley Hand',cursive!important;font-weight:700!important;letter-spacing:0!important}
+/* The motto sits in the middle of the space under the buttons; the draw message stays right under the buttons */
+.draw-picker .draw-status{order:1}
+.pick-motto{order:2}
+/* The tagline written exactly like the motto (same handwriting, size and gold), only straight */
+.pm-tagline{font-size:28px!important;line-height:1.1!important;transform:none!important;margin-top:-6px!important;filter:drop-shadow(0 1px 0 var(--sheen-edge))!important}
+@media(max-width:520px){.pm-tagline{font-size:23px!important}}
+/* The Read seal stands off light cards with a soft shadow (no dark edge) */
+.sun-seal{filter:drop-shadow(0 .25cqw .35cqw #5a3c0680) drop-shadow(0 0 .8cqw #9a681440)!important}
+/* The tagline centered under Papermon however long it is: its own full-width line, centered text */
+.pm-tagline{align-self:stretch;width:100%;text-align:center!important;white-space:nowrap}
+@media(max-width:620px){.pm-tagline{white-space:normal}}
+
+/* ---------------- Labels and numbers, 2026-11-14 night (Astra) ---------------- */
+/* Every small label looks like the card's own ("SUBJECT", "READ TIME", "READING DIFFICULTY"): the picker's rows, the
+   deck's Group by / In order of, and "Good card?" on the back. The card's labels are 2.8% of a 330 px card wide. */
+.pick-label,.deck-pick>span{font-family:'DM Sans',Arial,sans-serif!important;font-size:9.24px!important;font-weight:500!important;text-transform:uppercase;
+ letter-spacing:.4px!important;line-height:1!important;color:#232025!important;opacity:.65}
+.deck-rate>span{font-family:'DM Sans',Arial,sans-serif!important;font-size:2.8cqw!important;font-weight:500!important;text-transform:uppercase;letter-spacing:.12cqw;line-height:1;opacity:.65}
+/* Methods & credits */
+.methods ul{margin:0 0 12px;padding-left:18px}
+.methods li{font-size:15px;line-height:1.6;margin:0 0 4px}
+.methods-by{font-family:'Caveat','Segoe Script',cursive!important;font-size:24px!important;font-weight:700;margin-top:14px!important}
+
+/* ---------------- Picker left-aligned, divider, card headings (Astra, 2026-11-14) ---------------- */
+/* Everything in the picker starts at the same left edge as its labels: SUBJECT over the subject buttons, then the
+   rows with their names close to their choices */
+.deck-mode .pick-left{align-items:stretch!important;width:100%;max-width:336px;align-self:center}
+.pick-label-top{display:block;margin:0 0 -2px 2px}
+.pick-types.labeled{max-width:none!important;margin:0!important}
+.pick-row{grid-template-columns:auto 1fr!important;justify-content:start!important;max-width:none!important;gap:10px!important}
+.pick-row .pick-label{min-width:0}
+/* "Draw Card (1/5)" */
+.draw-count-paren{margin-left:.3em;font-family:'DM Sans',Arial,sans-serif;font-size:.82em;font-weight:700;opacity:.85}
+/* Space after Draw Card, then a fancy gold divider (two lines fading out and a star), then the other buttons */
+.pick-divider{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin:14px 6px 8px}
+.pick-divider i{flex:1;height:2px;border-radius:2px;background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important}
+.pick-divider i:first-child{-webkit-mask:linear-gradient(90deg,transparent,#000 70%);mask:linear-gradient(90deg,transparent,#000 70%)}
+.pick-divider i:last-child{-webkit-mask:linear-gradient(270deg,transparent,#000 70%);mask:linear-gradient(270deg,transparent,#000 70%)}
+.pick-divider span{font-size:18px;line-height:1;background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 .5px #9a6814)}
+/* Card back headings underlined like the paper's section labels */
+.deck-back h4{text-decoration:underline;text-underline-offset:1cqw;text-decoration-thickness:.25cqw}
+.pick-draw{white-space:nowrap!important}
+.pick-divider-top{margin:4px 6px 8px!important;flex:none}
+/* The tagline as two centered lines; Papermon 10% smaller (Astra, 2026-11-14) */
+.pm-tagline span{display:block;text-align:center;white-space:nowrap}
+@media(max-width:620px){.pm-tagline span{white-space:normal}}
+.deck-mode .brand{font-size:clamp(36px,5.04vw,57.6px)!important}
+@media(max-width:520px){.deck-mode .brand{font-size:30.6px!important}}
+/* The logo cutout: its shape comes from the element's own mask-image (set in the page); the header's older
+   ".brand>span{background:none}" must not blank its gold */
+.deck-mode .brand>.pm-logo{background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
+ -webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+/* Both tagline lines in the motto's handwriting */
+.pm-tagline span{font:inherit!important;letter-spacing:inherit!important}
+
+/* ---------------- One pill size, Draw Card on top, one click feel (Astra, 2026-11-14) ---------------- */
+/* Every pill is the same width and height: the subject choices, the year choices, the four buttons under the divider,
+   and the deck's tally chips and drop-downs. Only Draw Card is bigger. */
+:root{--pill-w:163px;--pill-h:32px}
+.pick-types.labeled{grid-template-columns:repeat(2,var(--pill-w))!important;gap:6px 10px!important;justify-content:start!important}
+.pick-types.labeled .pick-dot{width:var(--pill-w)!important;height:var(--pill-h)!important;box-sizing:border-box}
+.pick-years.pick-grid{display:grid!important;grid-template-columns:repeat(2,var(--pill-w));gap:6px 10px!important;justify-content:start}
+.pick-year{width:var(--pill-w)!important;height:var(--pill-h)!important;box-sizing:border-box;padding:0 10px!important;font-size:13px!important;display:inline-flex;align-items:center;justify-content:center}
+.pick-actions{grid-template-columns:repeat(2,var(--pill-w))!important;gap:10px!important;justify-content:center;max-width:none!important}
+.pick-order,.pick-more{width:var(--pill-w)!important;height:var(--pill-h)!important;min-height:0!important;box-sizing:border-box;padding:0 10px!important;font-size:14px!important;
+ white-space:nowrap!important;display:inline-flex!important;align-items:center;justify-content:center;gap:6px}
+.deck-bar .tally-sub{width:var(--pill-w);height:var(--pill-h);box-sizing:border-box;justify-content:center}
+.deck-pick select{width:var(--pill-w)!important;height:var(--pill-h)!important;box-sizing:border-box}
+/* Draw Card: bigger than the rest, the full width of the section, at the top right under the card */
+.pick-left .pick-draw{width:100%!important;height:52px!important;min-height:0!important;font-size:19px!important;border-radius:999px!important}
+.pick-left .draw-status{order:0!important;flex:0 0 auto!important;text-align:center;font-size:13px;margin:-4px 0}
+.pick-left .draw-status:empty{margin:-5px 0}
+.pick-actions .pick-divider{margin-top:10px!important}
+/* One click feel for every pill, like Draw Card: a small ledge under it, it lifts a hair on hover and presses down on click */
+.pick-draw:not(:disabled),.pick-types.labeled .pick-dot,.pick-year,.pick-order,.pick-more,.deck-dir,.pick-random,.tally-sub,.deck-pick select,.deck-rate button,.deck-back-actions>*,.card-form-chips button,.card-form-send{
+ transition:transform .12s ease,box-shadow .12s ease,filter .12s ease!important;box-shadow:inset 0 1px 0 #ffffffa0,0 2px 0 #9a681466,0 3px 6px #0000001f!important}
+.pick-draw:not(:disabled):hover,.pick-types.labeled .pick-dot:hover,.pick-year:hover,.pick-order:hover,.pick-more:hover,.deck-dir:hover,.pick-random:hover,.tally-sub:hover,.deck-pick select:hover,.deck-rate button:hover,.deck-back-actions>*:hover,.card-form-chips button:hover,.card-form-send:hover{
+ transform:translateY(-1px)!important;filter:brightness(1.04)}
+.pick-draw:not(:disabled):active,.pick-types.labeled .pick-dot:active,.pick-year:active,.pick-order:active,.pick-more:active,.deck-dir:active,.pick-random:active,.tally-sub:active,.deck-pick select:active,.deck-rate button:active,.deck-back-actions>*:active,.card-form-chips button:active,.card-form-send:active{
+ transform:translateY(1px)!important;box-shadow:inset 0 1px 0 #ffffffa0,0 1px 0 #9a681466,0 1px 2px #0000001f!important}
+.pick-draw:not(:disabled){box-shadow:inset 0 1px 0 #ffffffb0,0 3px 0 #9a6814aa,0 6px 14px #00000026!important}
+/* The tagline a little smaller than the motto */
+.pm-tagline{font-size:25px!important}
+@media(max-width:520px){.pm-tagline{font-size:21px!important}}
+/* The space above the top divider matches the others (24 px) */
+.pick-left .draw-status,.pick-left .draw-status:empty{margin:0!important}
+/* The gold card's rarity word: plain dark brown on the gold band, so no second gold shows on the card */
+.gold-card .deck-band .deck-rarity,.gold-card .deck-band .deck-rarity.shiny{background:none!important;color:#4a3104!important;-webkit-text-fill-color:#4a3104!important;-webkit-text-stroke:0!important;animation:none!important;filter:none!important}
+/* Two pills and their gap are exactly as wide as the card and Draw Card (330 px) */
+:root{--pill-w:160px}
+/* The two tagline lines a little closer together (Astra, 2026-11-14) */
+.pm-tagline,.pm-tagline span{line-height:.95!important}

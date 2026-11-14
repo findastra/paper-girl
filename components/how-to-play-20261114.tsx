@@ -38,13 +38,13 @@ export function HowToPlay(){
  return <div className="source-dialog-copy howto">
   <h3>The goal</h3>
   <p>Read as many papers as you can. Every card is a real, published study. When you finish the original article, tick
-   <b> Completion</b> on the card: the circle turns gold, and that article’s reading time is added to the minutes at the
-   top of your deck.</p>
+   <b> Completion</b> on the card: the gold ring becomes a gold sun seal, and that article’s <b>Read time</b> (also on the card) is
+   added to the minutes at the top of your deck.</p>
   <h3>Draw a card</h3>
   <p>Under the card of the day, pick a subject (the rainbow circle means any subject), a reading difficulty (tap a
-   star; tap it again for any) and <b>This year</b> or <b>Past years</b> (tap again for any year). Then press
-   <b> Draw a card</b>. If the library has no card like that yet, you get a real paper to read, and Paper Patty makes
-   its card later.</p>
+   star; tap it again for any) and <b>This year</b>, <b>Past years</b> or <b>Any year</b>. Then press
+   <b> Draw card</b>. If the library has no card like that yet, you get a real paper to read, and Paper Patty makes
+   its card later. You get <b>5 draws a day</b>; they come back every morning.</p>
   <p>Newer papers come up more often. When the year is left open, a drawn card’s paper is from:</p>
   <table className="rc-points howto-odds"><thead><tr><th>Published</th><th>Chance</th></tr></thead><tbody>
    {AGE_ODDS.map(g=><tr key={g.label}><td>{g.label.replace(/^./,c=>c.toUpperCase())}</td><td>{g.odds}%</td></tr>)}
@@ -61,9 +61,10 @@ export function HowToPlay(){
    own author has checked score higher. Because age counts, a card gets a point rarer every year you keep it.</p>
   <RarityChart/>
   <h3>Subjects</h3>
-  <p>Each subject has its own symbol and color. Hover a symbol anywhere on the site to see its name.</p>
+  <p>Every card has one subject, with its own symbol and color. A paper that fits two goes in the more specific one: a
+   genetics paper is Genetics, not Biology.</p>
   <ul className="howto-subjects">{SUBJECTS.map(s=>{const Icon=s.icon;return <li key={s.name} style={{'--sc':s.color} as CSSProperties}>
-   <i aria-hidden="true"><Icon/></i>{s.name.replace(/\b\w/g,c=>c.toUpperCase())}</li>})}</ul>
+   <i aria-hidden="true"><Icon/></i><span><b>{s.name.replace(/\b\w/g,c=>c.toUpperCase())}</b>: {s.covers}</span></li>})}</ul>
   <h3>Your deck</h3>
   <p>Your deck is at the bottom of the page, saved in this browser. For now everyone starts with the same five
    cards. Tap a card to flip it; its back has buttons for the longer write-up and the original article. The line at
