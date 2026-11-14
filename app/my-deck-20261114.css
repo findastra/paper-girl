@@ -1465,3 +1465,5 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 .gold-card .deck-band .deck-rarity,.gold-card .deck-band .deck-rarity.shiny{background:none!important;color:#4a3104!important;-webkit-text-fill-color:#4a3104!important;-webkit-text-stroke:0!important;animation:none!important;filter:none!important}
 /* Two pills and their gap are exactly as wide as the card and Draw Card (330 px) */
 :root{--pill-w:160px}
+/* The two tagline lines a little closer together (Astra, 2026-11-14) */
+.pm-tagline,.pm-tagline span{line-height:.95!important}
