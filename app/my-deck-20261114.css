@@ -898,3 +898,11 @@ body:has(.deck-mode){background:#8f8b91}
 .rc-t1{background:#ffffff}
 .rc-t2{background:linear-gradient(100deg,#e9a77e,#fbe6d6 45%,#d4865a)}
 .rc-t3{background:linear-gradient(100deg,#c9ccd2,#ffffff 50%,#b9bdc5)}
+
+/* Stats, 2026-11-14 (Astra): the Completion circle and its glow are never cut off; Article and the card number in
+   shiny gold (deep gold on gold cards so they still read); two rows of three */
+.deck-stats .deck-type-stat,.deck-stats .deck-read{overflow:visible!important}
+.deck-stats a,.deck-no-stat b.deck-no{background:linear-gradient(110deg,#5a3c06,#8a5a10 30%,#c48a24 48%,#8a5a10 66%,#5a3c06)!important;background-size:250% 100%!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;
+ animation:deck-text-shine 5s ease-in-out infinite!important;text-decoration-color:#a8761c}
+.gold-card .deck-stats a,.gold-card .deck-no-stat b.deck-no{background:none!important;color:#4a3104!important;-webkit-text-fill-color:#4a3104!important;animation:none!important}

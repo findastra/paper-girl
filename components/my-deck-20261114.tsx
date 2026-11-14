@@ -176,7 +176,8 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
          fills in), centered in the space under the picture, with the card number centered under them. */}
      <div className="deck-lower">
       <div className="deck-stats">
-       <div><span>subject</span><b className="deck-type-stat"><i aria-hidden="true"><TypeIcon/></i>{card.subject}</b></div>
+       {/* Just the word: the subject's circle is already in the top corner (Astra, 2026-11-14) */}
+       <div><span>subject</span><b>{card.subject}</b></div>
        <div><span>article</span><a href={card.url} target="_blank" rel="noreferrer">{journal} ↗</a></div>
        <label className="deck-read"><span>completion</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/>
         <b className="deck-type-stat"><i className={'read-dot'+(read?' on':'')} aria-hidden="true">{read&&<Check/>}</i>{read?'Read':'Unread'}</b></label>
