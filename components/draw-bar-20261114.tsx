@@ -95,6 +95,8 @@ export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,st
  // Redone 2026-11-14 (Astra did not like the little deck with "Draw" or the "Order my deck" pill): everything centered
  // under the card, type circles, then stars, then two matching buttons side by side: Draw a card (gold) and Order my deck.
  return <div className="draw-picker" aria-label="Draw a card"><div className="pick-left">
+  {/* The same gold divider between the card and the choices (Astra, 2026-11-14) */}
+  <div className="pick-divider pick-divider-top" aria-hidden="true"><i/><span>✦</span><i/></div>
   <span className="pick-label pick-label-top">Subject</span>
   {/* Each circle with its subject's name to the right, in two columns (Astra, 2026-11-14) */}
   <div className="pick-types labeled" role="radiogroup" aria-label="Type">

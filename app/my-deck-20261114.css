@@ -1417,3 +1417,15 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 /* Card back headings underlined like the paper's section labels */
 .deck-back h4{text-decoration:underline;text-underline-offset:1cqw;text-decoration-thickness:.25cqw}
 .pick-draw{white-space:nowrap!important}
+.pick-divider-top{margin:4px 6px 8px!important;flex:none}
+/* The tagline as two centered lines; Papermon 10% smaller (Astra, 2026-11-14) */
+.pm-tagline span{display:block;text-align:center;white-space:nowrap}
+@media(max-width:620px){.pm-tagline span{white-space:normal}}
+.deck-mode .brand{font-size:clamp(36px,5.04vw,57.6px)!important}
+@media(max-width:520px){.deck-mode .brand{font-size:30.6px!important}}
+/* The logo cutout: its shape comes from the element's own mask-image (set in the page); the header's older
+   ".brand>span{background:none}" must not blank its gold */
+.deck-mode .brand>.pm-logo{background:var(--sheen)!important;background-size:var(--gold-size)!important;background-position:var(--gold-pos,0 0)!important;background-repeat:no-repeat!important;
+ -webkit-mask-size:contain;mask-size:contain;-webkit-mask-position:center;mask-position:center;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+/* Both tagline lines in the motto's handwriting */
+.pm-tagline span{font:inherit!important;letter-spacing:inherit!important}
