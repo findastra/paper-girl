@@ -16,15 +16,13 @@
 .deck-face>*{position:relative;z-index:1}
 .lv1 .deck-face{background:#f2ece8;--rc:#8d7f88}
 .lv2 .deck-face{background:linear-gradient(160deg,#eef3f7,#dde8f1);--rc:#4f7591}
-.lv3 .deck-face{background:linear-gradient(135deg,#fde8ef,#efe3fb 30%,#e1f3f6 55%,#fbf0d9 80%,#fde8ef);--rc:#b0398a}
+.lv3 .deck-face{background:linear-gradient(135deg,#eef0f7,#e6f1f0 40%,#f3efe2 75%,#eef0f7);--rc:#2f6f8f}
 .lv4 .deck-face{background:linear-gradient(125deg,#ffb3d6,#cfb0ff 16%,#9fdcff 32%,#b6ffd7 48%,#ffe99a 64%,#ffb3d6 80%,#cfb0ff);background-size:200% 200%;animation:deck-prism 8s ease-in-out infinite alternate;--rc:#6a3fb5}
 .lv5 .deck-face,.author .deck-face{background:linear-gradient(135deg,#fff1c4,#eec766 22%,#fff6da 42%,#e2b04a 62%,#fbe3a0 82%,#d9a53f);background-size:200% 200%;animation:deck-prism 8s ease-in-out infinite alternate;--rc:#8a5a10}
 .lv3 .deck-face::before,.lv4 .deck-face::before,.lv5 .deck-face::before,.author .deck-face::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 36%,#ffffffb0 48%,transparent 60%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:deck-sweep 5s ease-in-out infinite}
 .lv3 .deck-face::before{animation-duration:7s;opacity:.7}
-.author .deck-face::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(#fff .4cqw,transparent .6cqw),radial-gradient(#ffe08a .5cqw,transparent .75cqw);background-size:12cqw 14cqw,17cqw 19cqw;animation:deck-drift 6s linear infinite}
 @keyframes deck-prism{from{background-position:0% 30%}to{background-position:100% 70%}}
 @keyframes deck-sweep{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
-@keyframes deck-drift{from{background-position:0 0,3cqw 5cqw}to{background-position:0 -14cqw,3cqw -14cqw}}
 /* Front: top bar, a perfectly square picture (Astra, 2026-11-14), the headline, the rarity band. No links. */
 .deck-front{padding:3.4cqw 3.4cqw 0;gap:2.4cqw}
 .deck-top{display:flex;align-items:center;gap:2cqw;padding:0 .6cqw}
@@ -35,7 +33,10 @@
 .deck-lv b{font-size:7cqw}
 .deck-window{flex:none;width:100%;aspect-ratio:1/1;border-radius:2cqw;overflow:hidden;background:#d9c6d1;box-shadow:0 .6cqw 1.8cqw #2a1f2c33}
 .deck-window img{width:100%;height:100%;object-fit:cover;display:block}
-.deck-headline{margin:0;padding:0 .6cqw;font-size:4.4cqw;line-height:1.26;font-weight:500;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* Stats: only real facts about the paper */
+.deck-stats{display:grid;grid-template-columns:1fr .7fr 1fr;text-align:center;gap:1cqw}
+.deck-stats span{display:block;font-size:3.4cqw;text-transform:uppercase;letter-spacing:.3cqw;opacity:.65}
+.deck-stats b{display:block;font-size:4.4cqw;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .deck-band{margin:auto -3.4cqw 0;padding:2.2cqw 4.4cqw;display:flex;align-items:center;justify-content:space-between;gap:2cqw;background:color-mix(in srgb,var(--rc) 16%,transparent);border-top:.4cqw solid color-mix(in srgb,var(--rc) 40%,transparent)}
 .deck-rarity{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:4.6cqw;letter-spacing:.2cqw;color:var(--rc);white-space:nowrap;text-transform:uppercase}
 .deck-stars{display:flex;gap:.6cqw;font-size:4.6cqw;line-height:1}
@@ -43,7 +44,8 @@
 .deck-stars i.on{color:var(--rc)}
 .deck-back{gap:2.6cqw;padding:8.4cqw 8.4cqw 6.6cqw;justify-content:space-between}
 .deck-rim{position:absolute!important;inset:3cqw;border:.5cqw solid color-mix(in srgb,var(--rc) 70%,transparent);border-radius:2cqw;box-shadow:inset 0 0 0 1.45cqw color-mix(in srgb,var(--rc) 22%,transparent);pointer-events:none;z-index:2}
-.deck-back h4{margin:0 0 1.2cqw;font-family:'Space Grotesk',sans-serif;font-size:3.6cqw;letter-spacing:.35cqw;color:#a24f78}
+.deck-back h4{margin:0 0 1.2cqw;font-family:'Space Grotesk',sans-serif;font-size:3.6cqw;letter-spacing:.35cqw;color:var(--rc)}
+.deck-approved{font-weight:700;opacity:1!important;color:var(--rc)}
 .deck-back p{margin:0;font-size:5.8cqw;line-height:1.24;font-weight:500}
 .deck-bfoot{display:flex;flex-direction:column;align-items:flex-start;gap:1cqw;font-size:3.4cqw}
 .deck-bfoot span{opacity:.8}
