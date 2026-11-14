@@ -396,3 +396,27 @@ body:has(.deck-mode){background:#d9d4ca}
 .deck-mode .draw-bar{border-top-color:#c4bdb0}/* Small gray notes darker on the softer paper, so they stay easy to read (about 6:1) */
 .deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
 .deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#4f4a43}
+/* More gray than brown (Astra, 2026-11-14): neutral light gray paper, panels a shade lighter, black text */
+body:has(.deck-mode){background:#d5d5d3}
+.deck-mode{--n0:#d5d5d3;--n1:#e1e1df;--n2:#d0d0cd;--n3:#bdbdba;--n4:#a6a6a3}
+.deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #00000022}
+.deck-mode .reel-drum{background:#dadad7;border-color:#b3b3b0}
+.deck-mode .type-pill{background:#e9e9e7;border-color:#b3b3b0}
+.deck-mode .subject-tag{background:#d0d0cd;border-color:#b3b3b0}
+.deck-mode .research-details{background:#dadad7;border-color:#bdbdba}
+.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#bdbdba}
+.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
+.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#474746}
+/* Darker gray paper (Astra, 2026-11-14: "DARKER"); black text still about 11:1 */
+body:has(.deck-mode){background:#b8b8b5}
+.deck-mode{--n0:#b8b8b5;--n1:#c6c6c3;--n2:#b6b6b3;--n3:#9f9f9c;--n4:#8a8a87}
+.deck-mode .reel-drum{background:#bdbdba;border-color:#939390}
+.deck-mode .type-pill{background:#d0d0cd;border-color:#939390}
+.deck-mode .subject-tag{background:#b6b6b3;border-color:#939390}
+.deck-mode .research-details{background:#bdbdba;border-color:#9f9f9c}
+.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#9f9f9c}
+.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
+.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#353534}
+/* Gold words darker so they still read on the darker gray */
+.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .my-deck-head h2,.deck-mode .draw-deck-label,.deck-mode .research-details a,.deck-mode .research-details summary{color:#6e4a0a!important;-webkit-text-fill-color:#6e4a0a}
+.deck-mode .reel-stars{color:#7a520c}
