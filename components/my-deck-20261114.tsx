@@ -12,8 +12,8 @@ import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import '@/app/my-deck-20261114.css';
 
-type Card={lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;headline:string;hook:string;found:string;matters:string};
-const cards=sample as Card[];
+export type Card={lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+export const cards=sample as Card[];
 const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
 const SUBJECT:Record<string,{icon:LucideIcon;color:string}>={
@@ -21,6 +21,8 @@ const SUBJECT:Record<string,{icon:LucideIcon;color:string}>={
  Biology:{icon:Leaf,color:'#4f9a5e'},Psychology:{icon:Brain,color:'#d26a9a'},Chemistry:{icon:FlaskConical,color:'#d08a2e'},
  'Earth science':{icon:Globe2,color:'#3f8ccc'},Physics:{icon:Atom,color:'#d4664a'},Math:{icon:Sigma,color:'#2f9c95'}};
 const FALLBACK={icon:CircleHelp,color:'#6b6470'};
+/** The subject's color, so the page around a card can take it as its accent (Astra, 2026-11-14). */
+export function subjectColor(subject?:string){return (subject&&SUBJECT[subject]?.color)||'#d9a53f'}
 
 function Stars({n}:{n:number}){
  return <span className="deck-stars" aria-label={`Difficulty ${n} of 5`}><em>Difficulty</em>{[1,2,3,4,5].map(i=><i key={i} className={i<=n?'on':''} aria-hidden="true">★</i>)}</span>;
@@ -47,7 +49,7 @@ function useRead(no:string):[boolean,(v:boolean)=>void]{
  return [read,(v:boolean)=>{setRead(v);try{const m=JSON.parse(localStorage.getItem(READ_KEY)||'{}');if(v)m[no]=1;else delete m[no];localStorage.setItem(READ_KEY,JSON.stringify(m))}catch{}}];
 }
 
-function DeckCard({card}:{card:Card}){
+export function DeckCard({card}:{card:Card}){
  const [flipped,setFlipped]=useState(false);
  // The sheen that sweeps across the card while it turns, like light on a real card; flips toggle between two
  // identical animations so each flip plays it again.
@@ -64,6 +66,10 @@ function DeckCard({card}:{card:Card}){
  const gold=card.lv>=5||!!card.author;
  return <div className={'deck-slot '+(card.author?'author':'lv'+card.lv)+(gold?' gold-card':'')} style={{'--sc':type.color} as CSSProperties}>
   <div className={'deck-card'+(flipped?' flipped':'')+(sweep?` sweep${sweep}`:'')} role="button" tabIndex={0} aria-pressed={flipped}
+   // The sheen sits where the mouse is, like light on a real card (Astra, 2026-11-14); it drifts on its own otherwise.
+   onPointerMove={e=>{if(e.pointerType!=='mouse')return;const r=e.currentTarget.getBoundingClientRect(),el=e.currentTarget;
+    el.classList.add('lit');el.style.setProperty('--lx',`${((e.clientX-r.left)/r.width*100).toFixed(1)}%`);el.style.setProperty('--ly',`${((e.clientY-r.top)/r.height*100).toFixed(1)}%`)}}
+   onPointerLeave={e=>{e.currentTarget.classList.remove('lit')}}
    aria-label={`${card.name}, ${card.subject}, ${rarity}, level ${card.lv}. Tap to flip.`}
    onClick={flip} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&!own(e.target)){e.preventDefault();turn()}}}>
    <div className="deck-inner">
@@ -81,7 +87,7 @@ function DeckCard({card}:{card:Card}){
       <div><span>paper</span><a href={card.url} target="_blank" rel="noreferrer">Open ↗</a></div>
       <label className="deck-read"><span>read paper</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/><b>{read?'Read':'Not yet'}</b></label>
      </div>
-     <div className="deck-band"><span className="deck-rarity">{rarity}</span><Stars n={card.lv}/></div>
+     <div className="deck-band"><span className="deck-rarity">{rarity}<small>No. {card.no}</small></span><Stars n={card.lv}/></div>
     </div>
     <div className="deck-face deck-back">
      {gold&&<Glitter seed={card.no+':back'} gold count={16} whole/>}
@@ -89,11 +95,7 @@ function DeckCard({card}:{card:Card}){
      <div><h4>STRANGE HOOK</h4><p>{card.hook}</p></div>
      <div><h4>WHAT THEY FOUND</h4><p>{card.found}</p></div>
      <div><h4>WHY IT MATTERS</h4><p>{card.matters}</p></div>
-     <div className="deck-bfoot">
-      <a href={card.url} target="_blank" rel="noreferrer">Read the paper ↗</a>
-      {card.author&&<span className="deck-approved">✍ Approved by its author</span>}
-      <span>No. {card.no}</span>
-     </div>
+     {card.author&&<div className="deck-bfoot"><span className="deck-approved">✍ Approved by its author</span></div>}
     </div>
    </div>
   </div>
