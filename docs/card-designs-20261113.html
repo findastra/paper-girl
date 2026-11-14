@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paper Girl card designs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Fraunces:ital,wght@0,600;1,500&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+/* Draft for Astra, 2026-11-13: four card designs with the same paper, to pick one.
+   Each card is a fixed 5x7 shape and sizes everything in cqw (percent of the card's own width),
+   so it looks identical on a phone, an iPad and a computer: it only gets bigger or smaller. */
+:root{--bg:#281f2b;--ink:#f4e9ed;--soft:#c9b0c0;--pink:#efa9c5;--lilac:#c9aef5;--line:#5c475b}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:'DM Sans',Arial,sans-serif;display:flex;flex-direction:column;overflow:hidden}
+/* Floor: on a very short window the cards keep a readable size and the page may scroll, instead of shrinking to nothing. */
+@media (max-height:520px){body{overflow:auto}.row{flex:0 0 auto}.slot{width:250px}}
+header{padding:clamp(12px,2.2vh,22px) clamp(16px,3vw,32px) 0;display:flex;flex-direction:column;gap:6px}
+h1{margin:0;font-family:'Space Grotesk',sans-serif;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.5px;font-weight:600}
+h1 span{color:var(--pink)}
+.names{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:clamp(12px,1.25vw,14px);color:var(--soft);line-height:1.5}
+.names b{color:var(--ink);font-weight:600}
+/* The row: one screen tall, cards scroll sideways inside it on small screens (a mini scroll section). */
+.row{flex:1;min-height:0;display:flex;gap:clamp(14px,2vw,28px);align-items:center;overflow-x:auto;overflow-y:hidden;padding:clamp(12px,2vh,24px) clamp(16px,3vw,32px);scroll-snap-type:x mandatory}
+/* Card width: a quarter of the window on a computer (all four fit), at least 250px on a phone (swipe sideways),
+   and never taller than the window allows. Height follows from the 5x7 shape. The slot is the size container,
+   so every cqw inside the card (padding and gaps too) is a percent of the card's width. */
+.slot{flex:0 0 auto;width:min(max(250px,calc((100vw - 64px - 84px)/4)),calc((100dvh - 150px)*5/7),440px);container-type:inline-size;display:flex;flex-direction:column;align-items:center;gap:8px;scroll-snap-align:center;margin:auto}
+.label{font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--pink)}
+.label i{font-style:normal;color:var(--soft);letter-spacing:0}
+.card{width:100%;aspect-ratio:5/7;position:relative;overflow:hidden;border-radius:4.5cqw;cursor:pointer;transition:transform .25s}
+.card:hover{transform:translateY(-4px) rotate(-.6deg)}
+.card img{display:block}
+.pips{display:flex;gap:1.6cqw}
+.pips i{width:2.6cqw;height:2.6cqw;border-radius:50%;border:.4cqw solid currentColor}
+.pips i.on{background:currentColor}
+
+/* A: today's look, the dark mauve card she likes */
+.a{background:#372c3a;border:.5cqw solid #6b5268;color:var(--ink);display:flex;flex-direction:column;padding:6cqw;gap:3.2cqw;box-shadow:0 2cqw 6cqw #0006}
+.a .top{display:flex;justify-content:space-between;align-items:center;font-size:3.6cqw;color:#e4bdcf}
+.a .tag{border:.3cqw solid #705668;background:#493a49;border-radius:9cqw;padding:1cqw 3cqw}
+.a .art{border-radius:3cqw;overflow:hidden;background:#bb94a5;aspect-ratio:1.35}
+.a .art img{width:100%;height:100%;object-fit:cover;mix-blend-mode:multiply}
+.a .nick{font-family:'Space Grotesk',sans-serif;font-size:7.4cqw;line-height:1.05;letter-spacing:-.3cqw;font-weight:600;margin:0}
+.a .head{font-size:3.8cqw;line-height:1.35;color:#dfccd8;margin:0}
+.a .foot{margin-top:auto;display:flex;justify-content:space-between;font-size:3.1cqw;color:#b89cac;border-top:.3cqw solid #574356;padding-top:2.6cqw}
+.a .pips{color:var(--pink)}
+
+/* B: holo trading card, foil edge, rarity = difficulty */
+.b{padding:2.4cqw;background:linear-gradient(135deg,#f6b3d2,#c9aef5 30%,#a9e4f0 52%,#f7d79c 72%,#f6b3d2);box-shadow:0 2cqw 6cqw #0007}
+.b::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,#ffffff55 48%,transparent 60%);background-size:250% 100%;animation:shine 4s ease-in-out infinite;pointer-events:none}
+@keyframes shine{0%{background-position:120% 0}60%,100%{background-position:-60% 0}}
+.b .in{height:100%;border-radius:3cqw;background:#2d2230;display:flex;flex-direction:column;padding:4.4cqw;gap:2.6cqw}
+.b .top{display:flex;justify-content:space-between;align-items:baseline}
+.b .nick{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:6.6cqw;line-height:1.05;margin:0;letter-spacing:-.2cqw}
+.b .hp{font-family:'Space Grotesk',sans-serif;font-size:3.4cqw;color:var(--lilac);white-space:nowrap}
+.b .art{border-radius:2cqw;overflow:hidden;border:1cqw solid #f1c9dc;aspect-ratio:1.45;background:#bb94a5}
+.b .art img{width:100%;height:100%;object-fit:cover}
+.b .type{font-size:3.2cqw;color:#2d2230;background:var(--pink);border-radius:1.5cqw;padding:1cqw 2.6cqw;align-self:flex-start;font-weight:600}
+.b .head{font-size:3.9cqw;line-height:1.35;color:#f0d9e6;margin:0}
+.b .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;font-size:3cqw;color:#bfa3b5}
+.b .pips{color:#f7d79c}
+
+/* C: library card, cream paper and a due-date stamp */
+.c{background:#f3e8d6;color:#3b2a33;border-radius:2.4cqw;padding:5.6cqw;display:flex;flex-direction:column;gap:3cqw;box-shadow:0 2cqw 6cqw #0007;background-image:repeating-linear-gradient(#f3e8d6 0 8.6cqw,#d9c9e4 8.6cqw 8.9cqw)}
+.c .top{display:flex;justify-content:space-between;font-family:'Space Grotesk',sans-serif;font-size:3.4cqw;letter-spacing:.5cqw;color:#9c5a7c;font-weight:600}
+.c .nick{font-family:'Fraunces',Georgia,serif;font-size:8cqw;line-height:1.02;margin:0;color:#3b2a33}
+.c .art{aspect-ratio:1.5;border-radius:1.6cqw;overflow:hidden;border:.5cqw solid #3b2a33;background:#e9cfdc}
+.c .art img{width:100%;height:100%;object-fit:cover}
+.c .head{font-family:'Fraunces',Georgia,serif;font-style:italic;font-size:4.2cqw;line-height:1.35;margin:0;color:#5b4352}
+.c .stamp{position:absolute;right:6cqw;bottom:13cqw;transform:rotate(-12deg);border:.7cqw solid #c2507f;color:#c2507f;border-radius:2cqw;padding:1.4cqw 3cqw;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:3.6cqw;letter-spacing:.4cqw;opacity:.85}
+.c .foot{margin-top:auto;display:flex;justify-content:space-between;font-size:3.1cqw;color:#7d6573;font-family:'Space Grotesk',sans-serif}
+.c .pips{color:#c2507f}
+
+/* D: polaroid with a sticker and handwriting */
+.d{background:#fbf6f0;padding:5cqw 5cqw 0;display:flex;flex-direction:column;gap:3cqw;box-shadow:0 2cqw 6cqw #0007;border-radius:1.5cqw;transform:rotate(1.2deg)}
+.d:hover{transform:rotate(-.4deg) translateY(-4px)}
+.d .art{aspect-ratio:1;overflow:hidden;background:#e7cddb}
+.d .art img{width:100%;height:100%;object-fit:cover}
+.d .sticker{position:absolute;top:2.5cqw;right:2.5cqw;width:21cqw;height:21cqw;border-radius:50%;background:var(--pink);color:#3a2635;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:3cqw;line-height:1.1;text-align:center;transform:rotate(12deg);box-shadow:0 1cqw 2cqw #0003}
+.d .sticker b{font-size:6cqw}
+.d .nick{font-family:'Caveat',cursive;font-size:10.5cqw;line-height:.95;color:#3a2635;margin:0;text-align:center}
+.d .head{font-size:3.6cqw;line-height:1.35;color:#6a5462;margin:0;text-align:center}
+.d .foot{margin-top:auto;display:flex;justify-content:space-between;font-size:3cqw;color:#9a8090;padding:2.4cqw 0 3.4cqw}
+.d .pips{color:#c2507f}
+</style>
+</head>
+<body>
+<header>
+<h1>Pick a card <span>· same paper, four looks</span></h1>
+<div class="names">
+<span><b>Nickname</b> “The Pattern Listener”: short, cute, never used twice. The library checks every new one.</span>
+<span><b>Card No.</b> 000,128: counts up forever, so it’s always unique.</span>
+<span><b>Headline</b> says what the paper found.</span>
+<span><b>Dots</b> = difficulty, 2 of 5.</span>
+</div>
+</header>
+<main class="row">
+<div class="slot"><span class="label">A <i>· today’s look</i></span>
+<article class="card a">
+<div class="top"><span class="tag">Psychology</span><span class="pips"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+<div class="art"><img src="../public/art/curious-brain-20261113.webp" alt="A curious cartoon brain with a magnifying glass"></div>
+<p class="nick">The Pattern Listener</p>
+<p class="head">A newborn’s brain is already listening for the pattern.</p>
+<div class="foot"><span>eLife · 2025</span><span>No. 000,128</span></div>
+</article></div>
+
+<div class="slot"><span class="label">B <i>· holo trading card</i></span>
+<article class="card b"><div class="in">
+<div class="top"><p class="nick">The Pattern Listener</p><span class="hp">LV 2</span></div>
+<div class="art"><img src="../public/art/curious-brain-20261113.webp" alt="A curious cartoon brain with a magnifying glass"></div>
+<span class="type">Psychology</span>
+<p class="head">A newborn’s brain is already listening for the pattern.</p>
+<div class="foot"><span class="pips"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span><span>eLife 2025 · No. 000,128</span></div>
+</div></article></div>
+
+<div class="slot"><span class="label">C <i>· library card</i></span>
+<article class="card c">
+<div class="top"><span>PAPER GIRL LIBRARY</span><span>No. 000,128</span></div>
+<p class="nick">The Pattern Listener</p>
+<div class="art"><img src="../public/art/curious-brain-20261113.webp" alt="A curious cartoon brain with a magnifying glass"></div>
+<p class="head">A newborn’s brain is already listening for the pattern.</p>
+<span class="stamp">CHECKED OUT</span>
+<div class="foot"><span>Psychology · eLife 2025</span><span class="pips"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+</article></div>
+
+<div class="slot"><span class="label">D <i>· polaroid</i></span>
+<article class="card d">
+<div class="art"><img src="../public/art/curious-brain-20261113.webp" alt="A curious cartoon brain with a magnifying glass"></div>
+<span class="sticker"><b>LV2</b>psych</span>
+<p class="nick">The Pattern Listener</p>
+<p class="head">A newborn’s brain is already listening for the pattern.</p>
+<div class="foot"><span>No. 000,128</span><span class="pips"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span></div>
+</article></div>
+</main>
+</body>
+</html>

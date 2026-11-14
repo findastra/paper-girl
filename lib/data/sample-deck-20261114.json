@@ -1,0 +1,142 @@
+[
+ {
+  "lv": 1,
+  "name": "Discerning Solitary Salticid",
+  "subject": "Biology",
+  "src": "eLife 2025",
+  "art": "cards/jumping-spider-e-20261114.webp",
+  "no": "000,181",
+  "url": "https://doi.org/10.7554/elife.97146",
+  "headline": "A tiny spider may remember who it has met.",
+  "hook": "A tiny loner spider may remember who it has met.",
+  "found": "Jumping spiders told a familiar spider from a stranger.",
+  "matters": "Big social smarts can fit in a very small brain.",
+  "drawing": {
+   "slug": "jumping-spider",
+   "subject": "a cute jumping spider (Salticidae) with its two huge shiny front eyes, fuzzy round body and short legs, looking up curiously as if it recognizes a friend",
+   "scene": "Background: the sunny edge of a garden leaf and a stone wall where jumping spiders hunt, softly out of focus.",
+   "style": "e"
+  },
+  "pmcid": "PMC12604854",
+  "made": "2026-11-14",
+  "published": "2025-11-11",
+  "readMinutes": 33,
+  "paper": {
+   "hook": "A tiny loner spider may remember who it has met. Jumping spiders mostly live alone, yet they seem to keep track of the individuals around them.",
+   "found": "Jumping spiders told a familiar spider from a stranger. Seen through clear barriers, new spiders were approached, familiar ones were kept at a distance, and a different spider was approached again.",
+   "matters": "Big social smarts can fit in a very small brain. Brain size may be a poor shortcut for judging what an animal can remember about others."
+  }
+ },
+ {
+  "lv": 2,
+  "name": "Babbling Sac-winged Pup",
+  "subject": "Biology",
+  "src": "eLife 2025",
+  "art": "cards/bat-pup-e-20261114.webp",
+  "no": "000,140",
+  "url": "https://doi.org/10.7554/elife.99474",
+  "headline": "Baby bats may benefit from more than a song playlist.",
+  "hook": "Baby bats babble, just like human babies.",
+  "found": "Pups with more involved mothers practiced longer and sounded more grown-up.",
+  "matters": "Learning to talk may lean on caring parents in many animals.",
+  "drawing": {
+   "slug": "bat-pup",
+   "subject": "a cute baby bat pup hanging upside down from a branch, mouth open mid-babble, with two or three small curved sound lines coming from its mouth",
+   "scene": "Background: the inside of a cave roost at dusk with its mother and other bats hanging in soft shadow behind.",
+   "style": "e"
+  },
+  "pmcid": "PMC12074634",
+  "made": "2026-11-14",
+  "published": "2025-05-13",
+  "readMinutes": 39,
+  "paper": {
+   "hook": "Baby bats babble, just like human babies. Greater sac-winged bat pups practice long strings of sounds before they use them as adults.",
+   "found": "Pups with more involved mothers practiced longer and sounded more grown-up. In 19 wild pups, more time with their mothers went with longer practice and a wider range of mature song sounds.",
+   "matters": "Learning to talk may lean on caring parents in many animals. Social contact may shape vocal learning outside humans too."
+  }
+ },
+ {
+  "lv": 3,
+  "name": "Facilitative Weed-clipping Pika",
+  "subject": "Biology",
+  "src": "eLife 2026",
+  "art": "cards/pika-e-20261114.webp",
+  "no": "000,131",
+  "url": "https://doi.org/10.7554/elife.111340",
+  "headline": "A yak’s best friend might be a tiny gardener.",
+  "hook": "Pika, called pests, may be a yak’s best friend.",
+  "found": "Yaks gained more weight where some pika lived, because pika clip a poisonous plant.",
+  "matters": "Wiping out a “pest” can backfire on the animals we care about.",
+  "drawing": {
+   "slug": "pika",
+   "subject": "a cute pika (a small round-eared mountain mammal, like a tiny tailless rabbit) holding a clipped sprig of a poisonous purple-flowered plant in its mouth",
+   "scene": "Background: a high grassy alpine meadow of the Qinghai-Tibetan Plateau with rocks, short grass and a yak grazing far away.",
+   "style": "e"
+  },
+  "pmcid": "PMC13553068",
+  "made": "2026-11-14",
+  "published": "2026-09-08",
+  "readMinutes": 22,
+  "paper": {
+   "hook": "Pika, called pests, may be a yak’s best friend. On the Qinghai–Tibetan Plateau, grassland with some pika fed yaks better than grassland with none.",
+   "found": "Yaks gained more weight where some pika lived, because pika clip a poisonous plant. In summer field experiments yaks gained up to 42% more weight, most at moderate pika numbers; too many pika became competitors.",
+   "matters": "Wiping out a “pest” can backfire on the animals we care about. Managing the balance between species may help livestock more than removing one of them."
+  }
+ },
+ {
+  "lv": 4,
+  "name": "Synesthetic Pupillary Seven",
+  "subject": "Psychology",
+  "src": "eLife 2026",
+  "art": "cards/colored-seven-e-20261114.webp",
+  "no": "000,152",
+  "url": "https://doi.org/10.7554/elife.110390",
+  "headline": "A gray number can make an eye react to color.",
+  "hook": "For some people, a gray number looks colored.",
+  "found": "Their pupils reacted to the color they experienced, though the screen stayed gray.",
+  "matters": "The colors are real enough that the body responds to them.",
+  "drawing": {
+   "slug": "colored-seven",
+   "subject": "a cute gray number 7 character that glows warm orange around its edges, showing how a person with synesthesia sees a color in a gray number, with one big round curious eye beside it whose pupil is wide",
+   "scene": "Background: a calm lab table with a computer screen showing gray numbers, like a perception experiment.",
+   "style": "e"
+  },
+  "pmcid": "PMC13436957",
+  "made": "2026-11-14",
+  "published": "2026-08-04",
+  "readMinutes": 27,
+  "paper": {
+   "hook": "For some people, a gray number looks colored. In number–color synesthesia, digits automatically come with colors.",
+   "found": "Their pupils reacted to the color they experienced, though the screen stayed gray. In 16 people with synesthesia, pupils got smaller for numbers tied to brighter colors and larger for darker ones.",
+   "matters": "The colors are real enough that the body responds to them. Pupil measurements could add a check alongside people’s own descriptions of synesthesia."
+  }
+ },
+ {
+  "lv": 5,
+  "name": "Statistical Neonatal Listener",
+  "subject": "Psychology",
+  "src": "eLife 2025",
+  "art": "cards/newborn-eeg-e-20261114.webp",
+  "no": "000,128",
+  "url": "https://doi.org/10.7554/elife.101802",
+  "headline": "A newborn’s brain is already listening for the pattern.",
+  "hook": "Babies just days old already notice sound patterns.",
+  "found": "Their brains tracked repeats in syllables and in voices, even when the other kept changing.",
+  "matters": "We may be born with a pattern finder that helps us learn to talk.",
+  "drawing": {
+   "slug": "newborn-eeg",
+   "subject": "a cute sleeping newborn baby wearing a soft blue EEG cap with small round electrodes, with gentle sound waves reaching its ear",
+   "scene": "Background: a cozy hospital nursery with a crib and a soft monitor showing brain-wave lines.",
+   "style": "e"
+  },
+  "pmcid": "PMC11832168",
+  "made": "2026-11-14",
+  "published": "2025-02-17",
+  "readMinutes": 42,
+  "paper": {
+   "hook": "Babies just days old already notice sound patterns. Newborns’ brains responded to repeats in both speech sounds and voices.",
+   "found": "Their brains tracked repeats in syllables and in voices, even when the other kept changing. Researchers recorded brain activity while newborns heard carefully built streams of sounds.",
+   "matters": "We may be born with a pattern finder that helps us learn to talk. Language learning may start with a broad ability to spot patterns."
+  }
+ }
+]

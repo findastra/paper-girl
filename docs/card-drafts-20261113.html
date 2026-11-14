@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paper Girl deck</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<style>
+/* Draft for Astra, 2026-11-14 (fifth round): everyone's deck is a grid of their cards; tap a card to flip it.
+   Only things the system really knows are on a card: name, level, the picture, the paper's headline, subject,
+   read time, journal and year, rarity, card number, the author's answer, and a link to the paper. No made-up moves
+   or stages. Holo and gold get a sheen, no lines. A font picker on top compares three fonts.
+   Mirror Pool rules: the page is one screen tall and only the grid scrolls; cards are 5x7 and sized in cqw. */
+:root{--bg:#1d1720;--ink:#f4e9ed;--soft:#b9a3b2;--pink:#efa9c5;--line:#3e3142;
+  --t-small:clamp(12px,1.1vw,14px);--t-title:clamp(20px,2.4vw,28px);
+  --card-font:'Space Grotesk',sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:'DM Sans',Arial,sans-serif;
+  padding:0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+header{display:flex;flex-direction:column;align-items:center;gap:6px;padding:clamp(10px,2vh,18px) 16px clamp(8px,1.4vh,12px);text-align:center}
+h1{margin:0;font-family:var(--card-font);font-size:var(--t-title);font-weight:700}
+.sub{font-size:var(--t-small);color:var(--soft)}
+.fonts{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;font-size:var(--t-small);color:var(--soft);align-items:center}
+.fonts button{font-size:13px;min-height:32px;padding:4px 12px;border-radius:16px;border:1px solid var(--line);background:#2a2130;color:var(--ink);cursor:pointer}
+.fonts button[aria-pressed=true]{background:var(--pink);border-color:var(--pink);color:#2a1f2c;font-weight:700}
+.fonts button[data-f=a]{font-family:'Space Grotesk',sans-serif}
+.fonts button[data-f=b]{font-family:'Fraunces',Georgia,serif}
+.fonts button[data-f=c]{font-family:'Nunito',sans-serif}
+/* The one scrolling panel: the deck grid */
+.deck{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:clamp(8px,1.6vh,16px) clamp(16px,3vw,32px) 28px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(230px,22vw,300px),1fr));gap:clamp(16px,2vw,26px);align-content:start}
+@media (max-width:520px){.deck{grid-template-columns:1fr;justify-items:center}.deck .slot{width:min(86vw,360px)}}
+.slot{container-type:inline-size;width:100%}
+
+/* flip */
+.card{position:relative;width:100%;aspect-ratio:5/7;perspective:1600px;cursor:pointer;outline:none}
+.card:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:3cqw}
+.inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+.card.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3cqw;overflow:hidden;box-shadow:0 2cqw 5cqw #0008;display:flex;flex-direction:column;color:#2a1f2c}
+.back{transform:rotateY(180deg)}
+@media (prefers-reduced-motion:reduce){.inner{transition:none}}
+.face>*{position:relative;z-index:1}
+
+/* Rarity: 1-2 plain, 3 soft prism, 4 rainbow holo, 5 gold. Holo and gold get one moving sheen, no lines. */
+.lv1 .face{background:#f2ece8;--rc:#8d7f88}
+.lv2 .face{background:linear-gradient(160deg,#eef3f7,#dde8f1);--rc:#4f7591}
+.lv3 .face{background:linear-gradient(135deg,#fde8ef,#efe3fb 30%,#e1f3f6 55%,#fbf0d9 80%,#fde8ef);--rc:#b0398a}
+.lv4 .face{background:linear-gradient(125deg,#ffb3d6,#cfb0ff 16%,#9fdcff 32%,#b6ffd7 48%,#ffe99a 64%,#ffb3d6 80%,#cfb0ff);background-size:200% 200%;animation:prism 8s ease-in-out infinite alternate;--rc:#6a3fb5}
+.lv5 .face,.author .face{background:linear-gradient(135deg,#fff1c4,#eec766 22%,#fff6da 42%,#e2b04a 62%,#fbe3a0 82%,#d9a53f);background-size:200% 200%;animation:prism 8s ease-in-out infinite alternate;--rc:#8a5a10}
+.lv4 .face::before,.lv5 .face::before,.author .face::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 36%,#ffffffb0 48%,transparent 60%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:sweep 5s ease-in-out infinite}
+.lv3 .face::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,#ffffff80 48%,transparent 58%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:sweep 7s ease-in-out infinite}
+/* Author's Edition: gold plus its seal and drifting gold sparkles */
+.author .face::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(#fff 0.4cqw,transparent 0.6cqw),radial-gradient(#ffe08a 0.5cqw,transparent 0.75cqw);background-size:12cqw 14cqw,17cqw 19cqw;animation:drift 6s linear infinite}
+@keyframes prism{from{background-position:0% 30%}to{background-position:100% 70%}}
+@keyframes sweep{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
+@keyframes drift{from{background-position:0 0,3cqw 5cqw}to{background-position:0 -14cqw,3cqw -14cqw}}
+@media (prefers-reduced-motion:reduce){.face,.face::before,.face::after{animation:none!important}}
+
+/* Front: name + level, big picture, headline, facts, rarity band */
+.front{padding:4cqw 4cqw 0;gap:2.6cqw}
+.top{display:flex;align-items:baseline;justify-content:space-between;gap:2cqw;padding:0 1cqw}
+.name{margin:0;font-family:var(--card-font);font-weight:700;font-size:7.2cqw;line-height:1.02}
+.lv{font-family:var(--card-font);font-weight:700;font-size:4.2cqw;white-space:nowrap}
+.lv b{font-size:7.6cqw}
+.window{flex:1;min-height:0;border-radius:2cqw;overflow:hidden;background:#d9c6d1;box-shadow:0 .6cqw 1.8cqw #2a1f2c33}
+.window img{width:100%;height:100%;object-fit:cover;display:block}
+.seal{position:absolute;right:7cqw;top:15cqw;z-index:2;width:19cqw;height:19cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff6d6,#e3b047 60%,#b9862a);color:#4a3210;display:grid;place-items:center;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2.8cqw;line-height:1.1;box-shadow:0 .8cqw 2cqw #5a3c0e55;transform:rotate(-12deg)}
+.seal b{display:block;font-size:5cqw}
+.headline{margin:0;padding:0 1cqw;font-size:4.6cqw;line-height:1.28;font-weight:500}
+.facts{display:flex;flex-wrap:wrap;gap:1.4cqw 2.4cqw;padding:0 1cqw;font-size:3.8cqw;opacity:.85}
+.facts span{white-space:nowrap}
+.band{margin:0 -4cqw;padding:2.4cqw 5cqw;display:flex;align-items:center;justify-content:space-between;gap:2cqw;background:color-mix(in srgb,var(--rc) 16%,transparent);border-top:.4cqw solid color-mix(in srgb,var(--rc) 40%,transparent)}
+.rarity{font-family:var(--card-font);font-weight:800;font-size:5cqw;letter-spacing:.3cqw;color:var(--rc);white-space:nowrap}
+.band a{color:inherit;font-weight:700;font-size:3.8cqw;text-decoration:none;background:#2a1f2c14;border-radius:9cqw;padding:1.3cqw 3cqw;white-space:nowrap}
+.band a:hover,.band a:focus-visible{background:#2a1f2c26}
+
+/* Back: three sections in big text, double-line border tinted by rarity */
+.back{gap:3cqw;padding:9cqw 9cqw 7cqw;justify-content:space-between}
+.back .rim{position:absolute;inset:3cqw;border:.5cqw solid color-mix(in srgb,var(--rc) 70%,transparent);border-radius:2cqw;box-shadow:inset 0 0 0 1.45cqw color-mix(in srgb,var(--rc) 22%,transparent);pointer-events:none;z-index:2}
+.back h4{margin:0 0 1.2cqw;font-family:var(--card-font);font-size:3.6cqw;letter-spacing:.35cqw;color:#a24f78}
+.back p{margin:0;font-size:6.2cqw;line-height:1.25;font-weight:500}
+.back .bfoot{display:flex;justify-content:space-between;font-size:3.6cqw;opacity:.8}
+
+.toast{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:5;max-width:min(92vw,420px);font-size:14px;line-height:1.35;color:#2a1f2c;background:#ffe9a8;border-radius:14px;padding:10px 14px;box-shadow:0 6px 20px #0008;display:flex;gap:10px;align-items:center}
+.toast button{font:inherit;font-size:13px;border:0;background:#2a1f2c18;border-radius:10px;padding:6px 10px;min-height:32px;cursor:pointer}
+</style>
+</head>
+<body>
+<header>
+<h1>My deck</h1>
+<span class="sub" id="count"></span>
+<div class="fonts" role="group" aria-label="Try a font">Font: <button type="button" data-f="a" aria-pressed="true">Space Grotesk</button><button type="button" data-f="b" aria-pressed="false">Fraunces</button><button type="button" data-f="c" aria-pressed="false">Nunito</button></div>
+</header>
+<main class="deck" id="deck"></main>
+<div class="toast" role="status"><span>✨ Your card <b>Pattern Listener</b> was approved by its author.</span><button type="button" onclick="this.parentElement.remove()">OK</button></div>
+<script>
+'use strict';
+// Sample deck from Paper Girl's prepared papers. Headlines are the site's own; names and the short back lines are
+// draft text that Paper Patty will write for real cards. Pictures are placeholders until OpenAI draws one per paper.
+const ART=['curious-brain','ecology-friends','cosmic-curiosity'];
+const RAR={1:['COMMON','●'],2:['UNCOMMON','◆'],3:['RARE','★'],4:['HOLO RARE','★'],5:['LEGENDARY','✦']};
+const READ={1:'1 min',2:'2 min',3:'3 min',4:'5 min',5:'7 min'};
+const CARDS=[
+ {lv:3,author:true,name:'Pattern Listener',subject:'Psychology',src:'eLife 2025',art:0,no:'000,128',url:'https://doi.org/10.7554/elife.101802',headline:'A newborn’s brain is already listening for the pattern.',
+  hook:'Babies just days old already notice sound patterns.',found:'Their brains tracked repeats in syllables and in voices, even when the other kept changing.',matters:'We may be born with a pattern finder that helps us learn to talk.'},
+ {lv:1,name:'Tiny Gardener',subject:'Biology',src:'eLife 2026',art:1,no:'000,131',url:'https://doi.org/10.7554/elife.111340',headline:'A yak’s best friend might be a tiny gardener.',
+  hook:'Pika, called pests, may be a yak’s best friend.',found:'Yaks gained more weight where some pika lived, because pika clip a poisonous plant.',matters:'Wiping out a “pest” can backfire on the animals we care about.'},
+ {lv:2,name:'Babbling Bat',subject:'Biology',src:'eLife 2025',art:2,no:'000,140',url:'https://doi.org/10.7554/elife.99474',headline:'Baby bats may benefit from more than a song playlist.',
+  hook:'Baby bats babble, just like human babies.',found:'Pups with more involved mothers practiced longer and sounded more grown-up.',matters:'Learning to talk may lean on caring parents in many animals.'},
+ {lv:4,name:'Color Number',subject:'Psychology',src:'eLife 2026',art:0,no:'000,152',url:'https://doi.org/10.7554/elife.110390',headline:'A gray number can make an eye react to color.',
+  hook:'For some people, a gray number looks colored.',found:'Their pupils reacted to the color they experienced, though the screen stayed gray.',matters:'The colors are real enough that the body responds to them.'},
+ {lv:5,name:'Footprint Comeback',subject:'Earth science',src:'eLife 2026',art:1,no:'000,163',url:'https://doi.org/10.7554/elife.104205',headline:'Ancient footprints reveal life rebuilding after disaster.',
+  hook:'Ancient footprints show life bouncing back after disaster.',found:'Two million years after the worst mass extinction, rivers held a rich community again.',matters:'Recovery after catastrophe can be faster than we thought.'},
+ {lv:2,name:'Shark Toolbox',subject:'Biology',src:'eLife 2025',art:2,no:'000,170',url:'https://doi.org/10.7554/elife.107406',headline:'A shark’s whole toolbox tells more than one tooth.',
+  hook:'One shark tooth is a clue; the whole mouth tells the story.',found:'The mix of teeth across a jaw revealed where a shark lived.',matters:'Fossil hunters can read habitats from tooth sets, not single teeth.'},
+ {lv:3,name:'Neighbor Alarm',subject:'Chemistry',src:'eLife 2024',art:1,no:'000,177',url:'https://doi.org/10.7554/elife.89855',headline:'A plant can pick up its neighbor’s chemical alarm.',
+  hook:'A plant can hear its neighbor scream, by smell.',found:'An undamaged maize plant reacted to a chewed neighbor’s airborne chemicals.',matters:'Plants may warn each other before pests arrive.'},
+ {lv:1,name:'Spider Memory',subject:'Biology',src:'eLife 2025',art:0,no:'000,181',url:'https://doi.org/10.7554/elife.97146',headline:'A tiny spider may remember who it has met.',
+  hook:'A tiny loner spider may remember who it has met.',found:'Jumping spiders told a familiar spider from a stranger.',matters:'Big social smarts can fit in a very small brain.'},
+ {lv:4,name:'Striped Farm',subject:'Earth science',src:'eLife 2025',art:1,no:'000,190',url:'https://doi.org/10.7554/elife.104762',headline:'A striped farm can bring more beetles to the table.',
+  hook:'Stripes of crops can bring more beetles to dinner.',found:'Fields with alternating crop strips held a richer mix of ground beetles.',matters:'Simple planting changes can help helpful insects.'},
+ {lv:5,name:'Poison Cocktail',subject:'Chemistry',src:'eLife 2026',art:2,no:'000,196',url:'https://doi.org/10.7554/elife.109003',headline:'Even a poison specialist can struggle with the cocktail.',
+  hook:'Even a poison expert can choke on the cocktail.',found:'Monarch caterpillars that handle one milkweed poison struggled with a mixture.',matters:'Handling one danger is not the same as handling many.'},
+];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const deck=document.getElementById('deck');
+for(const c of CARDS){
+  const [rar,mark]=c.author?["AUTHOR'S EDITION",'✍']:RAR[c.lv];
+  const slot=document.createElement('div');slot.className='slot '+(c.author?'author':'lv'+c.lv);
+  slot.innerHTML=`<div class="card" role="button" tabindex="0" aria-pressed="false" aria-label="${esc(c.name)}, ${rar.toLowerCase()}, level ${c.lv}. Tap to flip."><div class="inner">
+   <div class="face front">
+    <div class="top"><p class="name">${esc(c.name)}</p><span class="lv">LV <b>${c.lv}</b></span></div>
+    <div class="window"><img src="../public/art/${ART[c.art]}-20261113.webp" alt="" loading="lazy"></div>
+    ${c.author?`<div class="seal" aria-hidden="true"><span><b>✍</b>AUTHOR'S<br>EDITION</span></div>`:''}
+    <p class="headline">${esc(c.headline)}</p>
+    <div class="facts"><span>${esc(c.subject)}</span><span>· ${READ[c.lv]} read</span><span>· ${esc(c.src)}</span></div>
+    <div class="band"><span class="rarity">${mark} ${rar}</span><a href="${c.url}" target="_blank" rel="noreferrer">Read the paper ↗</a></div>
+   </div>
+   <div class="face back">
+    <div class="rim" aria-hidden="true"></div>
+    <div><h4>STRANGE HOOK</h4><p>${esc(c.hook)}</p></div>
+    <div><h4>WHAT THEY FOUND</h4><p>${esc(c.found)}</p></div>
+    <div><h4>WHY IT MATTERS</h4><p>${esc(c.matters)}</p></div>
+    <div class="bfoot"><span>${c.author?'Approved by its author':'Not yet seen by the authors'}</span><span>No. ${c.no}</span></div>
+   </div></div></div>`;
+  const card=slot.querySelector('.card');
+  const flip=()=>{const on=card.classList.toggle('flipped');card.setAttribute('aria-pressed',String(on))};
+  card.addEventListener('click',e=>{if(e.target.closest('a'))return;flip()});
+  card.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&!e.target.closest('a')){e.preventDefault();flip()}});
+  deck.append(slot);
+}
+document.getElementById('count').textContent=`${CARDS.length} cards · tap a card to flip it`;
+const FONTS={a:"'Space Grotesk',sans-serif",b:"'Fraunces',Georgia,serif",c:"'Nunito',sans-serif"};
+document.querySelectorAll('.fonts button').forEach(b=>b.addEventListener('click',()=>{
+  document.documentElement.style.setProperty('--card-font',FONTS[b.dataset.f]);
+  document.querySelectorAll('.fonts button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+}));
+</script>
+</body>
+</html>

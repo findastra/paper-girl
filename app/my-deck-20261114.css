@@ -1,0 +1,602 @@
+/* "My deck" at the bottom of the main page. 5x7 cards sized in container units (cqw), so each card scales as one
+   piece on any screen. Astra, 2026-11-14: the card's color comes from its SUBJECT (like a trading card's type); the
+   picture sits in a metal frame; rarity shows in the frame and the foil ON THE PICTURE, not the border:
+   1-3 silver frame, 4 rainbow frame + rainbow holographic flakes, Legendary gold frame + gold flakes. */
+.my-deck{margin-top:28px;border-top:1px solid #4d394e;padding:26px 3px 6px}
+.my-deck-head{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:18px;text-align:center}
+.my-deck-head h2{margin:0;font-family:'Space Grotesk',sans-serif;font-size:clamp(22px,2.4vw,28px);font-weight:700;color:#f4e9ed}
+.my-deck-head span{font-size:13px;color:#b89cac}
+.my-deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(220px,22vw,280px),1fr));gap:clamp(16px,2vw,24px)}
+@media(max-width:520px){.my-deck-grid{grid-template-columns:1fr;justify-items:center}.my-deck-grid .deck-slot{width:min(86vw,360px)}}
+.deck-slot{container-type:inline-size;width:100%;--sc:#8a8a8a}
+.deck-card{position:relative;width:100%;aspect-ratio:5/7;perspective:1600px;cursor:pointer;outline:none}
+.deck-card:focus-visible{outline:2px solid #efa9c5;outline-offset:4px;border-radius:3cqw}
+.deck-inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+.deck-card.flipped .deck-inner{transform:rotateY(180deg)}
+/* Card body: the subject's color */
+.deck-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3cqw;overflow:hidden;box-shadow:0 2cqw 5cqw #0008;display:flex;flex-direction:column;color:#232025;
+ background:linear-gradient(165deg,color-mix(in srgb,var(--sc) 20%,#fbf8f2),color-mix(in srgb,var(--sc) 42%,#f1ece4))}
+.deck-back{transform:rotateY(180deg)}
+.deck-face>*{position:relative;z-index:1}
+/* Rarity accent (band word, stars, back titles) and the frame metal */
+.lv1{--rc:#6f6a72;--frame:linear-gradient(135deg,#e9e9ec,#a9abb2 45%,#f4f4f6 60%,#9a9ca3)}
+.lv2{--rc:#3f6a87;--frame:linear-gradient(135deg,#eef2f6,#9fb0c0 45%,#f6f8fa 60%,#8d9fb0)}
+.lv3{--rc:#1f5f86;--frame:linear-gradient(135deg,#f2f4f7,#a8b4c4 40%,#ffffff 55%,#8797ab)}
+.lv4{--rc:#5b34a8;--frame:linear-gradient(135deg,#ffb3d6,#cfb0ff 20%,#9fdcff 40%,#b6ffd7 60%,#ffe99a 80%,#ffb3d6)}
+.lv5,.author{--rc:#8a5a10;--frame:linear-gradient(135deg,#fff1c4,#e8bb52 30%,#fff6da 50%,#d29a32 70%,#fbe3a0)}
+
+.deck-front{padding:3cqw 3.4cqw 0;gap:1.6cqw}
+/* Name centered at the top, type icon on the left, level on the right */
+.deck-top{display:grid;grid-template-columns:10.5cqw 1fr 10.5cqw;align-items:center;gap:1.4cqw;padding:0 .6cqw}
+.deck-top .deck-lv{justify-self:end}
+.deck-type{flex:none;width:7.4cqw;height:7.4cqw;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--sc);box-shadow:0 .4cqw 1cqw #2a1f2c40,inset 0 0 0 .5cqw #ffffff55}
+.deck-type svg{width:4.4cqw;height:4.4cqw;stroke-width:2.4}
+/* Names are about three words now, so they may take two centered lines */
+.deck-name{min-width:0;margin:0;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:5.4cqw;line-height:1.05;text-wrap:balance;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* The picture: a perfect square inside a metal frame */
+.deck-frame{flex:none;padding:1.2cqw;border-radius:2.6cqw;background:var(--frame);box-shadow:0 .8cqw 2cqw #2a1f2c44,inset 0 0 0 .3cqw #ffffff80}
+.deck-window{position:relative;width:100%;aspect-ratio:1/1;border-radius:1.6cqw;overflow:hidden;background:#efe9df;box-shadow:inset 0 0 0 .3cqw #00000030}
+.deck-window img{width:100%;height:100%;object-fit:cover;display:block}
+/* Holographic foil on the picture of rare cards: a moving rainbow (or gold) sheen plus flakes like a sparkly bowling
+   ball. Two layers of flakes twinkle out of step. */
+/* Sparkles: the same four-point twinkle as on Astra's portfolio portrait (findastra.github.io cyber.css). Rainbow ones
+   drift round the hues like hers; gold ones stay gold. */
+.deck-glitter{position:absolute;inset:0;pointer-events:none;z-index:2;animation:deck-rainbow-drift 14s linear infinite}
+.deck-glitter.gold{animation:none}
+.deck-glitter i{position:absolute;left:var(--x);top:var(--y);width:var(--s);aspect-ratio:1;translate:-50% -50%;background:var(--c);
+ clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);filter:drop-shadow(0 0 .6cqw #fff8);
+ animation:deck-twinkle 2.6s ease-in-out var(--d) infinite}
+/* Every card is shiny (Astra, 2026-11-14), without changing its colors: one soft, wide patch of white light that only
+   brightens (plain alpha, no color blending). With a mouse it sits where the pointer is, like a lamp on a real card;
+   otherwise it drifts very slowly on its own path, at a different, uneven pace per card, so it never looks looped. */
+.deck-face::before{content:"";position:absolute;inset:0;pointer-events:none;z-index:2;border-radius:inherit;
+ background:radial-gradient(60cqw 46cqw at var(--lx,30%) var(--ly,22%),#ffffff2e,#ffffff10 45%,transparent 72%);
+ transition:background .25s ease-out}
+.deck-card:not(.lit) .deck-face::before{animation:deck-drift var(--drift,23s) ease-in-out infinite alternate}
+.deck-slot:nth-child(2n) .deck-card{--drift:31s}
+.deck-slot:nth-child(3n) .deck-card{--drift:37s}
+@property --lx{syntax:'<percentage>';inherits:true;initial-value:30%}
+@property --ly{syntax:'<percentage>';inherits:true;initial-value:22%}
+@keyframes deck-drift{0%{--lx:22%;--ly:18%}33%{--lx:64%;--ly:30%}61%{--lx:40%;--ly:58%}100%{--lx:74%;--ly:76%}}
+.gold-card .deck-face::before{background:radial-gradient(60cqw 46cqw at var(--lx,30%) var(--ly,22%),#fff7dd55,#fff3cc18 45%,transparent 72%)}
+/* Gold card: the whole card is gold, whatever the subject, with a slow sheen and sparkles over all of it */
+.gold-card .deck-face{background:linear-gradient(135deg,#fff3cc,#efc65e 20%,#fff8e0 38%,#dcae48 56%,#fbe6a6 74%,#cf9c38);background-size:220% 220%;animation:deck-prism 9s ease-in-out infinite alternate}
+.gold-card .deck-band{background:#ffffff40;border-top-color:#b8862e80}
+.gold-card .deck-type{box-shadow:0 0 0 .6cqw #fff3cc,0 .4cqw 1cqw #2a1f2c40}
+.deck-glitter.whole{z-index:2}
+.deck-glitter.whole i{filter:drop-shadow(0 0 .8cqw #fff6)}
+/* The type symbol: a colored circle with the subject's icon, the subject's name in black beside it */
+.deck-type-stat{display:inline-flex!important;align-items:center;justify-content:center;gap:1.2cqw;color:#1c1a1e}
+.deck-type-stat i{display:grid;place-items:center;width:6.2cqw;height:6.2cqw;border-radius:50%;background:var(--sc);color:#fff;flex:none;box-shadow:inset 0 0 0 .45cqw #ffffff60,0 .3cqw .8cqw #2a1f2c40}
+.deck-type-stat i svg{width:3.8cqw;height:3.8cqw;stroke-width:2.6}
+@keyframes deck-sweep{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
+@keyframes deck-prism{from{background-position:0% 30%}to{background-position:100% 70%}}
+@keyframes deck-twinkle{0%,100%{transform:scale(.35) rotate(0deg);opacity:.35}50%{transform:scale(1.15) rotate(45deg);opacity:1}}
+@keyframes deck-rainbow-drift{0%,100%{filter:hue-rotate(-70deg)}50%{filter:hue-rotate(70deg)}}
+
+/* A sheen that sweeps across the card while it flips, like light catching a real card as it turns. */
+.deck-face::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;border-radius:inherit;opacity:0;
+ background:linear-gradient(105deg,transparent 30%,#ffffffb8 46%,#fff5d6 50%,#ffffff70 54%,transparent 70%);background-size:300% 100%;background-position:120% 0;mix-blend-mode:soft-light}
+.deck-card.sweep1 .deck-face::after{animation:deck-flip-sheen-a .65s ease-out}
+.deck-card.sweep2 .deck-face::after{animation:deck-flip-sheen-b .65s ease-out}
+@keyframes deck-flip-sheen-a{0%{opacity:0;background-position:120% 0}25%{opacity:1}100%{opacity:0;background-position:-20% 0}}
+@keyframes deck-flip-sheen-b{0%{opacity:0;background-position:120% 0}25%{opacity:1}100%{opacity:0;background-position:-20% 0}}
+
+/* Stats: only real facts about the paper; the last one opens it */
+.deck-stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center;gap:1cqw;align-items:end}
+.deck-read{display:grid;justify-items:center;cursor:pointer}
+.deck-read input{position:absolute;opacity:0;width:1px;height:1px}
+.deck-read b::before{content:"";display:inline-block;width:3.6cqw;height:3.6cqw;margin-right:1.2cqw;vertical-align:-.5cqw;border-radius:.8cqw;border:.5cqw solid currentColor;background:transparent}
+.deck-read input:checked+b::before{background:var(--sc);border-color:var(--sc);box-shadow:inset 0 0 0 .7cqw #fff}
+.deck-read input:focus-visible+b{outline:2px solid #efa9c5;outline-offset:2px;border-radius:4px}
+.deck-stats span{display:block;font-size:3.2cqw;text-transform:uppercase;letter-spacing:.25cqw;opacity:.65}
+.deck-stats b{display:block;font-size:4.2cqw;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deck-stats a{display:block;font-size:4.2cqw;font-weight:700;color:inherit;white-space:nowrap;text-decoration:underline;text-underline-offset:.8cqw}
+.deck-band{margin:auto -3.4cqw 0;padding:1.4cqw 4.4cqw;display:flex;align-items:center;justify-content:space-between;gap:2cqw;background:color-mix(in srgb,var(--sc) 30%,#ffffff60);border-top:.4cqw solid color-mix(in srgb,var(--sc) 45%,transparent)}
+.deck-rarity{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:4.6cqw;letter-spacing:.2cqw;color:var(--rc);white-space:nowrap;text-transform:uppercase}
+.deck-rarity small{display:block;font-family:'DM Sans',sans-serif;font-weight:600;font-size:2.8cqw;letter-spacing:.1cqw;color:#2a1f2c;opacity:.6;text-transform:none;margin-top:.3cqw}
+.deck-stars{display:flex;align-items:center;gap:.6cqw;font-size:4.6cqw;line-height:1}
+.deck-stars em{font-style:normal;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:3.2cqw;letter-spacing:.2cqw;text-transform:uppercase;color:var(--rc);opacity:.85;margin-right:1cqw}
+.deck-stars i{font-style:normal;color:color-mix(in srgb,var(--rc) 25%,transparent)}
+.deck-stars i.on{color:var(--rc)}
+
+/* Back: the three sections, a double-line border in the rarity metal */
+.deck-back{gap:2.6cqw;padding:8.4cqw 8.4cqw 6.6cqw;justify-content:space-between}
+.deck-rim{position:absolute!important;inset:3cqw;border-radius:2cqw;padding:.6cqw;background:var(--frame);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:2}
+.deck-back h4{margin:0 0 1.2cqw;font-family:'Space Grotesk',sans-serif;font-size:3.6cqw;letter-spacing:.35cqw;color:var(--rc)}
+.deck-approved{font-weight:700;opacity:1!important;color:var(--rc)}
+.deck-back p{margin:0;font-size:5.8cqw;line-height:1.24;font-weight:500}
+.deck-bfoot{display:flex;flex-direction:column;align-items:flex-start;gap:1cqw;font-size:3.4cqw}
+.deck-bfoot span{opacity:.8}
+.deck-bfoot a{font-weight:700;font-size:4cqw;color:inherit;background:#2a1f2c14;border-radius:9cqw;padding:1.3cqw 3.4cqw;margin-bottom:.6cqw}
+.deck-bfoot a:hover,.deck-bfoot a:focus-visible{background:#2a1f2c26}
+@media(prefers-reduced-motion:reduce){.deck-inner{transition:none}.deck-window::before,.deck-window::after{animation:none!important}}
+
+/* ---------------- Deck mode (?deck): the card-collecting site (Astra, 2026-11-14) ----------------
+   Not girly any more: gray, black and white, with the cards' gold and rainbow shimmer as the only accents.
+   The top box is the CARD OF THE DAY: the paper's full write-up on the left (everything the card leaves out), its card
+   on the right, and "Your next rabbit hole" inside the same box. */
+body:has(.deck-mode){background:#2e2f33}
+/* Accents follow the card's subject color (set on .cotd-box); gold stays the brand. */
+.deck-mode{--accent:#d9a53f;--n0:#2e2f33;--n1:#3f4046;--n2:#43444a;--n3:#53545b;--n4:#65666e;--t1:#f5f5f3;--t2:#dcdcd8;--t3:#b2b2ae;
+ --gold:linear-gradient(110deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c);
+ --rainbow:linear-gradient(90deg,#ff8fc8,#ffd27a,#9dffc9,#7fd3ff,#c49bff,#ff8fc8);color:var(--t1)}
+.deck-mode .header-note,.deck-mode .art-panel,.deck-mode .shuffle-row>p,.deck-mode .status>span,.deck-mode .library{display:none!important}
+/* Header: the brand gets a gold shimmer, the rest neutral */
+.deck-mode .brand{color:var(--t1)}
+.deck-mode .brand>span,.deck-mode .my-deck-head h2,.deck-mode .above-card>span:first-child{background:var(--gold);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:deck-text-shine 6s ease-in-out infinite}
+.deck-mode .brand>svg,.deck-mode .above-card svg{color:#e8c46a}
+.deck-mode .daily-link{color:var(--t3)}.deck-mode .daily-link:hover,.deck-mode .daily-link.active{color:var(--t1)}
+.deck-mode .above-card{color:var(--t3)}
+@keyframes deck-text-shine{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
+/* The card-of-the-day box, with a slow rainbow shimmer along its top edge */
+.cotd-box{position:relative}
+.deck-mode .cotd-box{background:var(--n1);border:1px solid var(--n3);border-radius:18px;overflow:hidden;box-shadow:0 18px 50px #0008}
+.deck-mode .cotd-box::before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:linear-gradient(90deg,var(--accent),color-mix(in srgb,var(--accent) 45%,#fff),var(--accent));background-size:200% 100%;animation:deck-rainbow-line 9s linear infinite}
+@keyframes deck-rainbow-line{to{background-position:200% 0}}
+.deck-mode .paper-card{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(250px,330px);gap:28px;background:transparent;border:0;border-radius:0;box-shadow:none;padding:6px 28px 0 0}
+.deck-mode .cotd-card{align-self:start;padding:30px 0 10px;container-type:normal}
+.deck-mode .cotd-card .deck-slot{width:100%}
+.cotd-nocard{aspect-ratio:5/7;border:2px dashed var(--n4);border-radius:14px;display:grid;place-items:center;text-align:center;padding:20px;color:var(--t3);font-size:14px;line-height:1.6}
+/* Write-up text, neutral */
+.deck-mode .paper-meta{color:var(--t3)}
+.deck-mode .subject-tag{background:var(--n2);border-color:var(--n4);color:var(--t2)}
+.deck-mode .read-time{color:var(--t3)}
+.deck-mode h1{color:var(--t1)}
+.deck-mode .section-label{color:color-mix(in srgb,var(--accent) 70%,#fff)}.deck-mode .section-label>span{color:var(--t3)}
+.deck-mode .story-section p{color:var(--t2)}.deck-mode .hook p{color:var(--t1)}
+.deck-mode .significance{border-left-color:var(--accent)}
+.deck-mode .reality-check,.deck-mode .reality-check p{color:var(--t3)}.deck-mode .reality-check svg{color:var(--t3)}.deck-mode .reality-check strong{color:var(--t2)}
+.deck-mode .attribution{color:var(--t3)}.deck-mode .attribution button{color:var(--t2)}
+.deck-mode .research-details{background:var(--n2);border-color:var(--n3)}.deck-mode .research-details p{color:var(--t2)}.deck-mode .research-details a,.deck-mode .research-details summary{color:color-mix(in srgb,var(--accent) 70%,#fff)}
+.deck-mode .original-link{color:var(--t1);border-top-color:var(--n3)}.deck-mode .original-link>span{color:var(--t3)}
+/* Your next rabbit hole, inside the box */
+.deck-mode .controls{padding:22px 28px 22px;border-top:1px solid var(--n3);margin-top:8px}
+.deck-mode .controls h2{color:var(--t1)}
+.deck-mode .date-toggle{color:var(--t3)}
+.deck-mode .subject{background:var(--n2);border-color:var(--n4);color:var(--t2)}
+.deck-mode .subject:hover{background:var(--n3);color:var(--t1)}
+.deck-mode .subject.active{background:var(--accent);border-color:var(--accent);color:#fff;text-shadow:0 1px 2px #0005}
+.deck-mode .shuffle-row{justify-content:center}
+.deck-mode .shuffle-button{background:linear-gradient(110deg,var(--accent),color-mix(in srgb,var(--accent) 60%,#fff) 50%,var(--accent));background-size:250% 100%;color:#fff;text-shadow:0 1px 2px #0006;box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000),0 0 24px color-mix(in srgb,var(--accent) 30%,transparent);animation:deck-text-shine 6s ease-in-out infinite}
+.deck-mode .shuffle-button:hover{filter:brightness(1.06)}
+.deck-mode .status{color:var(--t3)}
+.deck-mode .error{background:#2a1c1c;border-color:#6b3a3a;color:#f1d0d0}
+/* My deck and footer, neutral */
+.deck-mode .my-deck{border-top-color:var(--n3)}
+.deck-mode .my-deck-head span{color:var(--t3)}
+.deck-mode footer{color:var(--t3);border-top-color:var(--n3)}
+.deck-mode footer button:hover{color:var(--t1)}
+/* Phone: the card comes first, then its write-up, then the controls */
+@media(max-width:760px){
+ .deck-mode .paper-card{grid-template-columns:1fr;padding:0;gap:0}
+ .deck-mode .cotd-card{order:-1;padding:22px 22px 0;justify-self:center;width:min(100%,360px)}
+ .deck-mode .controls{padding:20px 18px}
+}
+@media(prefers-reduced-motion:reduce){.deck-mode *{animation:none!important}}
+
+/* The motto under the card of the day: the site's little logo line, centered, tilted like a margin note */
+.cotd-motto{margin:26px auto 6px;text-align:center;transform:rotate(-5deg);color:var(--t2,#ddd)}
+.cotd-motto svg{margin:0 auto 4px;color:var(--accent,#d9a53f)}
+.cotd-motto p{margin:0;font-family:'Space Grotesk',sans-serif;font-size:20px;line-height:1.35}
+.cotd-motto em{font-family:Georgia,'Times New Roman',serif;font-size:25px;font-style:italic;background:var(--gold);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:deck-text-shine 6s ease-in-out infinite}
+
+/* White-paper type (Astra, 2026-11-14: "all of the font on this whole page should just be the typical font that you
+   would see on a white paper ... Times New Roman"): every word on the deck page, cards included. */
+.deck-mode,.deck-mode :where(h1,h2,h3,h4,p,span,b,em,small,a,button,label,input,div,li){font-family:'Times New Roman',Times,Georgia,serif!important;letter-spacing:normal}
+.deck-mode h1{font-weight:700}
+.deck-mode .deck-name{font-weight:700}
+/* No sparkle by the logo; the motto has none either */
+.deck-mode .brand>svg{display:none}
+/* The motto sits in the middle of the space under the card */
+.deck-mode .cotd-card{align-self:stretch;display:flex;flex-direction:column}
+.deck-mode .cotd-motto{margin:auto;padding:24px 0}
+.deck-mode .cotd-motto p{font-size:21px}
+.deck-mode .cotd-motto em{font-size:26px}
+
+/* Astra's unified footer, as on Spoonfed: a soft fading line, By Astra, sparkle, star, sparkle, Find Out More, GitHub */
+.astra-footer{display:flex;justify-content:center;padding:6px 16px 26px}
+.af-row{position:relative;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;padding:18px 30px 0;max-width:100%}
+.af-row::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,#f3f3f159 20%,#f3f3f159 80%,transparent)}
+.af-title{font-family:Georgia,'Times New Roman',Times,serif;font-size:11px;letter-spacing:.2px;color:var(--t1,#f3f3f1)}
+.af-sparkle{width:14px;height:14px}
+.af-star{display:block;width:48px;height:48px}.af-star img{width:100%;height:100%;object-fit:contain;display:block}
+.af-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:6px;color:var(--t1,#f3f3f1)}
+.af-icon svg{width:22px;height:22px}.af-icon:hover{opacity:.8}
+@media(max-width:520px){.af-row{flex-wrap:nowrap;gap:8px;padding:18px 4px 0}.af-sparkle{width:12px;height:12px}.af-star{width:40px;height:40px}}
+/* 2026-11-14 (Astra): no "Card of the day" date row and no "Today's paper" link above the box */
+.deck-mode .above-card,.deck-mode .daily-link{display:none!important}
+.deck-mode main{padding-top:6px}
+/* The card number sits at the top, under the name, big enough to read */
+.deck-title{min-width:0;display:flex;flex-direction:column;align-items:center;gap:0}
+.deck-no{font-size:4.6cqw;font-weight:700;letter-spacing:.2cqw;opacity:.8;white-space:nowrap}
+/* Back footer: the author's stamp (on approved cards) and the day the card was made */
+.deck-back .deck-bfoot{flex-direction:row;align-items:center;justify-content:flex-start;gap:3cqw}
+.deck-made{display:flex;flex-direction:column;gap:.6cqw;font-size:3.8cqw}
+.deck-made span{opacity:.75}
+.deck-stamp{flex:none;width:15cqw;height:15cqw;border-radius:50%;border:.6cqw double var(--rc);color:var(--rc);display:grid;place-items:center;align-content:center;text-align:center;transform:rotate(-10deg);line-height:1}
+.deck-stamp span{font-size:5cqw}
+.deck-stamp small{font-size:2.4cqw;font-weight:700;text-transform:uppercase;letter-spacing:.15cqw}
+/* The draw bar (Astra, 2026-11-14) replaces "Your next rabbit hole" in deck mode: Draw a card, the type pills (each
+   exactly like a card's type chip: its colored circle and symbol, the name capitalized), and a difficulty dial. */
+.deck-mode .controls{display:none!important}
+.draw-bar{border-top:1px solid var(--n3,#53545b);padding:20px 28px 22px;display:flex;flex-direction:column;gap:14px}
+.type-pill{--tc:#8a8a90;display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:999px;border:1px solid var(--n4,#65666e);background:var(--n2,#43444a);color:var(--t1,#f5f5f3);font-size:15px;font-weight:700;cursor:pointer}
+.type-pill i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--tc);color:#fff;font-style:normal;font-size:14px;box-shadow:inset 0 0 0 2px #ffffff60,0 1px 3px #0005}
+.type-pill i svg{width:16px;height:16px;stroke-width:2.6}
+.type-pill:hover{background:var(--n3,#53545b)}
+.type-pill.active{background:color-mix(in srgb,var(--tc) 30%,var(--n2,#43444a));border-color:var(--tc)}
+.type-pill.random i{background:linear-gradient(135deg,#d26a9a,#e0a43a,#4f9a5e,#3f8ccc,#8d6bc8)}
+.draw-status{font-size:14px;color:var(--t3,#b2b2ae)}
+@media(max-width:760px){.draw-bar{padding:18px}.draw-button{width:100%;justify-content:center}}
+/* Three wheels like Spoonfed's reels: each shows the item before and after, faded, around the chosen one */
+.reels{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:14px}
+.reel{display:flex;flex-direction:column;align-items:center;gap:6px}
+.reel-name{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--t3,#b2b2ae)}
+.reel-drum{display:flex;flex-direction:column;align-items:center;width:190px;border-radius:16px;background:var(--n2,#43444a);border:1px solid var(--n4,#65666e);
+ box-shadow:inset 0 10px 14px -10px #0007,inset 0 -10px 14px -10px #0007;outline:none;user-select:none;touch-action:none}
+.reel-drum:focus-visible{border-color:var(--accent)}
+.reel-arrow{border:0;background:none;color:var(--t3,#b2b2ae);height:20px;width:100%;display:grid;place-items:center;cursor:pointer}
+.reel-arrow:hover{color:var(--t1,#f5f5f3)}
+.reel-window{display:flex;flex-direction:column;align-items:center;gap:4px;padding:2px 0;width:100%;
+ -webkit-mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent);mask-image:linear-gradient(transparent,#000 30%,#000 70%,transparent)}
+.reel-item{height:32px;display:grid;place-items:center;transition:opacity .2s}
+.reel-item.dim{opacity:.4;transform:scale(.88)}
+.reel-item.now{animation:reel-settle .25s ease-out}
+.reel.spinning .reel-window{animation:reel-spin .65s cubic-bezier(.2,.7,.2,1)}
+@keyframes reel-settle{from{transform:translateY(8px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes reel-spin{0%{transform:translateY(0)}20%{transform:translateY(-14px);filter:blur(1.5px)}45%{transform:translateY(12px);filter:blur(1px)}70%{transform:translateY(-5px)}100%{transform:none}}
+.reel-text{font-size:16px;font-weight:700;color:var(--t1,#f5f5f3)}
+.reel-stars em{font-style:normal;font-size:18px;color:var(--accent);opacity:.3}.reel-stars em.on{opacity:1}
+.reel .type-pill{cursor:inherit;pointer-events:none}
+.draw-bar{align-items:center}
+.draw-bar .draw-button{align-self:flex-end;margin-bottom:22px}
+@media(max-width:760px){.reels{gap:10px}.reel-drum{width:min(44vw,190px)}.draw-bar .draw-button{align-self:stretch;margin:4px 0 0}}
+/* Level written out again, "LV 3", no star (Astra, 2026-11-14) */
+.deck-lv{justify-self:end;font-weight:700;font-size:3.6cqw;white-space:nowrap;color:var(--rc)}
+.deck-lv b{font-size:6.6cqw}
+/* Common, Uncommon and Rare look clearly different (Astra, 2026-11-14): the bottom band is filled in the rarity's own
+   color and the frame metal steps up. Common: plain gray. Uncommon: pale blue silver. Rare: deep blue chrome with a
+   slow shine on the frame. Holo: rainbow band. Legendary and author cards: gold band. */
+.lv1 .deck-band{background:#d8d6d2;border-top-color:#b9b6b0}
+.lv2 .deck-band{background:linear-gradient(90deg,#cfe2ee,#e4f0f7);border-top-color:#9cbbd0}
+.lv3 .deck-band{background:linear-gradient(90deg,#1f4e79,#2f6f9f);border-top-color:#163a5c}
+.lv3 .deck-band .deck-rarity,.lv3 .deck-band .deck-stars em,.lv3 .deck-band .deck-stars i.on{color:#fff}
+.lv3 .deck-band .deck-stars i{color:#ffffff55}
+.lv3{--frame:linear-gradient(135deg,#dbe8f5,#2f6f9f 35%,#e9f3fb 50%,#1f4e79 70%,#a9c6e0)}
+.lv3 .deck-frame{background-size:220% 220%;animation:deck-prism 7s ease-in-out infinite alternate}
+.lv4 .deck-band{background:linear-gradient(90deg,#ffd1e6,#e0ccff,#c7ecff,#d6ffe9,#fff2c2);border-top-color:#c9aef5}
+.gold-card .deck-band{background:linear-gradient(90deg,#e8bb52,#fff1c4 50%,#d29a32);border-top-color:#b8862e}
+.lv1 .deck-frame{--frame:linear-gradient(135deg,#d9d9dc,#9d9fa6)}
+/* The Draw button (restored) */
+.draw-button{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;border:0;cursor:pointer;font-size:17px;font-weight:700;color:#fff;text-shadow:0 1px 2px #0006;
+ background:linear-gradient(110deg,var(--accent),color-mix(in srgb,var(--accent) 60%,#fff) 50%,var(--accent));background-size:250% 100%;animation:deck-text-shine 6s ease-in-out infinite;
+ box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000),0 0 22px color-mix(in srgb,var(--accent) 30%,transparent)}
+.draw-button:disabled{opacity:.7;cursor:wait}
+/* Long two-line names stay inside the card */
+.deck-name{font-size:5cqw}
+/* Rare is silver (Astra, 2026-11-14): a polished silver band and frame with a slow shine; dark text on it */
+.lv3{--rc:#4a4f57;--frame:linear-gradient(135deg,#f4f5f7,#a7abb3 30%,#ffffff 48%,#8d929b 66%,#e3e5e9)}
+.lv3 .deck-band{background:linear-gradient(100deg,#c9ccd2,#f7f8fa 35%,#aeb2ba 55%,#eef0f3 80%,#c2c5cc);background-size:220% 100%;border-top-color:#9a9ea6;animation:deck-prism 8s ease-in-out infinite alternate}
+.lv3 .deck-band .deck-rarity,.lv3 .deck-band .deck-stars em{color:#3a3e45}
+.lv3 .deck-band .deck-stars i{color:#3a3e4540}
+.lv3 .deck-band .deck-stars i.on{color:#3a3e45}
+/* Read paper: the same circle as the Type stat; empty until tapped, then filled in the subject's color with a tick */
+.deck-read b::before{display:none!important}
+.deck-type-stat i.read-dot{background:transparent;border:.6cqw solid color-mix(in srgb,var(--sc) 80%,#000);box-shadow:none;box-sizing:border-box}
+.deck-type-stat i.read-dot.on{background:var(--sc);border-color:var(--sc);box-shadow:inset 0 0 0 .45cqw #ffffff60,0 .3cqw .8cqw #2a1f2c40}
+.deck-read input:focus-visible+b i.read-dot{outline:2px solid #efa9c5;outline-offset:2px}
+/* Card-of-the-day box (Astra, 2026-11-14): one even gold border all the way around, no colored top line, and gold
+   instead of the subject's color for its own accents. Only the type pills and the card keep their subject colors. */
+.deck-mode .cotd-box{--accent:#d9a53f!important;border:2px solid transparent;background:linear-gradient(var(--n1),var(--n1)) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
+.deck-mode .cotd-box::before{display:none}
+.deck-mode .cotd-box .section-label{color:#e8c46a}
+/* Stars: only the filled ones */
+.reel-stars{font-size:18px;letter-spacing:2px;color:#e8c46a}
+/* The draw deck: three face-down cards stacked, gold edged; the top one lifts on hover and slides off when drawing */
+.draw-deck{display:flex;flex-direction:column;align-items:center;gap:8px;border:0;background:none;cursor:pointer;padding:0 6px;color:var(--t1,#f5f5f3);align-self:flex-end}
+.draw-deck:disabled{cursor:wait}
+.draw-deck-cards{position:relative;width:74px;height:104px}
+.draw-deck-cards span{position:absolute;inset:0;border-radius:8px;border:2px solid #d9a53f;
+ background:repeating-linear-gradient(45deg,#3c3d43 0 6px,#45464c 6px 12px);box-shadow:0 3px 8px #0006}
+.draw-deck-cards span:nth-child(1){transform:translate(6px,6px) rotate(4deg)}
+.draw-deck-cards span:nth-child(2){transform:translate(3px,3px) rotate(2deg)}
+.draw-deck-cards .top{display:grid;place-items:center;transition:transform .25s ease}
+.draw-deck-cards .top b{font-size:34px;line-height:1;background:linear-gradient(110deg,#a8761c,#f3d27a 40%,#fff3c4 50%,#d9a53f 60%,#a8761c);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:deck-text-shine 6s ease-in-out infinite}
+.draw-deck:hover .top,.draw-deck:focus-visible .top{transform:translateY(-8px) rotate(-3deg)}
+.draw-deck.busy .top{animation:deck-draw .6s ease-in}
+@keyframes deck-draw{to{transform:translate(40px,-30px) rotate(18deg);opacity:0}}
+.draw-deck-label{font-size:17px;font-weight:700;letter-spacing:.05em;color:#e8c46a}
+.draw-deck:focus-visible{outline:2px solid #e8c46a;outline-offset:4px;border-radius:10px}
+@media(max-width:760px){.draw-deck{align-self:center}}
+/* "More about this paper": the extra facts the card leaves out, under a line, in one place (Astra, 2026-11-14).
+   The old scattered notes (small print, attribution line, "OPEN ACCESS" link) are hidden in deck mode. */
+.deck-mode .reality-check,.deck-mode .attribution,.deck-mode .research-details,.deck-mode .original-link{display:none!important}
+.cotd-more{border-top:1px solid #d9a53f80;margin:6px 0 22px;padding-top:18px}
+.cotd-more h3{margin:0 0 12px;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#e8c46a}
+.cotd-more dl{display:grid;grid-template-columns:minmax(110px,160px) 1fr;gap:10px 16px;margin:0}
+.cotd-more dt{font-weight:700;color:var(--t3,#b2b2ae);font-size:14px}
+.cotd-more dd{margin:0;color:var(--t2,#dcdcd8);font-size:15px;line-height:1.5}
+.cotd-more dd a{color:#e8c46a;text-decoration:underline;text-underline-offset:3px}
+.cotd-original{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:9px 16px;border-radius:999px;border:1px solid #d9a53f;color:#f3e3b5;font-weight:700}
+.cotd-original:hover{background:#d9a53f22}
+@media(max-width:520px){.cotd-more dl{grid-template-columns:1fr;gap:2px}.cotd-more dd{margin-bottom:8px}}
+.my-deck .deck-card{cursor:pointer}
+/* Footer all gold on this site (Astra, 2026-11-14): gold line and sparkles, and the star picture warmed to gold */
+.deck-mode .af-row::before{background:linear-gradient(90deg,transparent,#d9a53f 20%,#f3d27a 50%,#d9a53f 80%,transparent)}
+.deck-mode .af-star img{filter:sepia(1) saturate(2.4) hue-rotate(-8deg) brightness(1.05)}
+.deck-mode .af-title,.deck-mode .af-icon{color:#f3e3b5}
+/* No "Made for curious minds. Always free." line */
+.deck-mode footer>span{display:none}
+.deck-mode footer{justify-content:center;border-top:0;margin-top:10px}
+/* Your deck is a panel like the card-of-the-day box: the same gold border, just cards inside */
+.deck-mode .my-deck{margin-top:26px;border:2px solid transparent;border-radius:18px;padding:18px 24px 26px;
+ background:linear-gradient(var(--n1),var(--n1)) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box;box-shadow:0 18px 50px #0007}
+.deck-mode .my-deck-head{align-items:flex-start;margin-bottom:14px}
+.deck-mode .my-deck-head h2{font-size:15px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;animation:none;background:none;color:#e8c46a;-webkit-text-fill-color:#e8c46a}
+@media(max-width:520px){.deck-mode .my-deck{padding:16px 12px 20px}}
+/* The write-up inside the box goes back to the original Paper Girl layout, which read more easily (Astra, 2026-11-14):
+   DM Sans text, a Space Grotesk headline, the original sizes and spacing, the small print, the attribution line and
+   the "Read the original paper" link. Colors stay gray and gold. The cards keep Times New Roman. */
+.deck-mode .cotd-box .paper-copy,.deck-mode .cotd-box .paper-copy :where(p,span,b,em,strong,a,button,div,h2,summary){font-family:'DM Sans',Arial,sans-serif!important}
+.deck-mode .cotd-box .paper-copy h1{font-family:'Space Grotesk',sans-serif!important;font-weight:500;letter-spacing:-1.35px}
+.deck-mode .cotd-box .paper-copy .section-label>span{font-family:'Space Grotesk',sans-serif!important}
+.deck-mode .reality-check{display:flex!important}
+.deck-mode .attribution{display:block!important}
+.deck-mode .original-link{display:flex!important}
+.deck-mode .research-details{display:block!important}
+/* Footer star: her picture unchanged; only the rim (the overlay) and the sparkles are gold */
+.deck-mode .af-star img{filter:none!important}
+.af-star{position:relative}
+.af-star-rim{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+
+/* ---------------- White paper theme (Astra, 2026-11-14: "text being in black and the page being in white,
+   because this is white paper") ----------------
+   White page and panels, black text, gold borders and gold accents. Overrides the gray tokens above. */
+body:has(.deck-mode){background:#ffffff}
+.deck-mode{--n0:#ffffff;--n1:#ffffff;--n2:#f3f2ef;--n3:#e2dfd8;--n4:#cbc7be;--t1:#111111;--t2:#2b2b2b;--t3:#6b6b6b;color:#111}
+.deck-mode .brand{color:#111}
+.deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #00000014}
+.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .my-deck-head h2,.cotd-more h3{color:#9a6b12!important;-webkit-text-fill-color:#9a6b12}
+.deck-mode .section-label>span{color:#8a8a8a}
+.deck-mode .significance{border-left-color:#d9a53f}
+.deck-mode .story-section p{color:#2b2b2b}.deck-mode .hook p{color:#111}
+.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg{color:#6b6b6b}.deck-mode .reality-check strong{color:#2b2b2b}
+.deck-mode .attribution{color:#6b6b6b}.deck-mode .attribution button{color:#2b2b2b}
+.deck-mode .research-details{background:#f7f5f0;border-color:#e2dfd8}.deck-mode .research-details p{color:#2b2b2b}.deck-mode .research-details a,.deck-mode .research-details summary{color:#9a6b12}
+.deck-mode .original-link{color:#111;border-top-color:#e2dfd8}.deck-mode .original-link>span{color:#8a8a8a}
+.deck-mode .subject-tag{background:#f3f2ef;border-color:#d6d2c8;color:#2b2b2b}
+.deck-mode .paper-meta,.deck-mode .read-time{color:#6b6b6b}
+.deck-mode .draw-bar{border-top-color:#e2dfd8}
+.deck-mode .reel-drum{background:#f7f6f3;border-color:#d6d2c8;box-shadow:inset 0 10px 14px -10px #0002,inset 0 -10px 14px -10px #0002}
+.deck-mode .reel-name{color:#6b6b6b}.deck-mode .reel-text{color:#111}.deck-mode .reel-arrow{color:#8a8a8a}.deck-mode .reel-arrow:hover{color:#111}
+.deck-mode .type-pill{background:#ffffff;border-color:#d6d2c8;color:#111}
+.deck-mode .reel-stars{color:#b8861e}
+.deck-mode .draw-deck-cards span{background:repeating-linear-gradient(45deg,#2b2b2e 0 6px,#38383c 6px 12px)}
+.deck-mode .draw-deck-label{color:#9a6b12}
+.deck-mode .draw-status{color:#6b6b6b}
+.deck-mode .cotd-motto,.deck-mode .cotd-motto p{color:#2b2b2b}
+.deck-mode .cotd-motto em{background:linear-gradient(110deg,#8a5a10,#c48a24 40%,#e8b850 50%,#8a5a10);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.deck-mode .brand>span{background:linear-gradient(110deg,#8a5a10,#c48a24 40%,#e8b850 50%,#8a5a10);background-size:250% 100%;-webkit-background-clip:text;background-clip:text}
+.deck-mode footer{color:#6b6b6b}.deck-mode footer button{color:#2b2b2b}
+.deck-mode .af-title,.deck-mode .af-icon{color:#111}
+.cotd-nocard{border-color:#cbc7be;color:#6b6b6b}
+/* Softer white paper (Astra, 2026-11-14: "too bright ... light enough that the text has to be black, dark enough that
+   it doesn't hurt your eyes ... colorless, so I guess gray, or maybe more like brown"): a warm light gray-brown page,
+   panels a shade lighter, black text. */
+body:has(.deck-mode){background:#d9d4ca}
+.deck-mode{--n0:#d9d4ca;--n1:#e4dfd6;--n2:#d6d0c5;--n3:#c4bdb0;--n4:#aea698;--t3:#5c574f}
+.deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #3a301f22}
+.deck-mode .reel-drum{background:#ddd7cc;border-color:#b9b1a3}
+.deck-mode .type-pill{background:#ebe6dd;border-color:#b9b1a3}
+.deck-mode .subject-tag{background:#d6d0c5;border-color:#b9b1a3}
+.deck-mode .research-details{background:#ddd7cc;border-color:#c4bdb0}
+.deck-mode .original-link{border-top-color:#c4bdb0}
+.deck-mode .draw-bar{border-top-color:#c4bdb0}/* Small gray notes darker on the softer paper, so they stay easy to read (about 6:1) */
+.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
+.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#4f4a43}
+/* More gray than brown (Astra, 2026-11-14): neutral light gray paper, panels a shade lighter, black text */
+body:has(.deck-mode){background:#d5d5d3}
+.deck-mode{--n0:#d5d5d3;--n1:#e1e1df;--n2:#d0d0cd;--n3:#bdbdba;--n4:#a6a6a3}
+.deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #00000022}
+.deck-mode .reel-drum{background:#dadad7;border-color:#b3b3b0}
+.deck-mode .type-pill{background:#e9e9e7;border-color:#b3b3b0}
+.deck-mode .subject-tag{background:#d0d0cd;border-color:#b3b3b0}
+.deck-mode .research-details{background:#dadad7;border-color:#bdbdba}
+.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#bdbdba}
+.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
+.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#474746}
+/* Darker gray paper (Astra, 2026-11-14: "DARKER"); black text still about 11:1 */
+body:has(.deck-mode){background:#b8b8b5}
+.deck-mode{--n0:#b8b8b5;--n1:#c6c6c3;--n2:#b6b6b3;--n3:#9f9f9c;--n4:#8a8a87}
+.deck-mode .reel-drum{background:#bdbdba;border-color:#939390}
+.deck-mode .type-pill{background:#d0d0cd;border-color:#939390}
+.deck-mode .subject-tag{background:#b6b6b3;border-color:#939390}
+.deck-mode .research-details{background:#bdbdba;border-color:#9f9f9c}
+.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#9f9f9c}
+.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
+.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#353534}
+/* Gold words darker so they still read on the darker gray */
+.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .my-deck-head h2,.deck-mode .draw-deck-label,.deck-mode .research-details a,.deck-mode .research-details summary{color:#6e4a0a!important;-webkit-text-fill-color:#6e4a0a}
+.deck-mode .reel-stars{color:#7a520c}
+/* Pure neutral gray, darker (Astra, 2026-11-14: "more gray, it looks kind of green, and darker"): the earlier grays had a
+   faint yellow tint (less blue), which read as green. These have equal or slightly higher blue. Black text about 9:1. */
+body:has(.deck-mode){background:#a7a8aa}
+.deck-mode{--n0:#a7a8aa;--n1:#b6b7b9;--n2:#a9aaac;--n3:#929395;--n4:#7d7e80}
+.deck-mode .reel-drum{background:#adaeb0;border-color:#87888a}
+.deck-mode .type-pill{background:#c2c3c5;border-color:#87888a}
+.deck-mode .subject-tag{background:#a9aaac;border-color:#87888a}
+.deck-mode .research-details{background:#adaeb0;border-color:#929395}
+.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#929395}
+.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
+.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#2b2b2d}
+.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .my-deck-head h2,.deck-mode .draw-deck-label,.deck-mode .research-details a,.deck-mode .research-details summary{color:#5a3c06!important;-webkit-text-fill-color:#5a3c06}
+.deck-mode .reel-stars{color:#5a3c06}
+.deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #0000002e}
+/* Counter the green look (Astra, 2026-11-14: "still looks really green"): the gray is a hair low in green (R and B a
+   few steps above G), which cancels a green cast next to the gold, without looking purple. */
+body:has(.deck-mode){background:#aba7ad}
+.deck-mode{--n0:#aba7ad;--n1:#bab6bc;--n2:#adaaaf;--n3:#96929a;--n4:#817d85}
+.deck-mode .reel-drum{background:#b1adb3;border-color:#8b878e}
+.deck-mode .type-pill{background:#c6c2c8;border-color:#8b878e}
+.deck-mode .subject-tag{background:#adaaaf;border-color:#8b878e}
+.deck-mode .research-details{background:#b1adb3;border-color:#96929a}
+.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#96929a}
+.deck-mode .brand>span,.deck-mode .cotd-motto em{background:linear-gradient(110deg,#5a3c06,#8a5a10 40%,#b07a18 50%,#5a3c06);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+/* The card-of-the-day box a little lighter than the page and the deck panel (Astra, 2026-11-14) */
+.deck-mode .cotd-box{background:linear-gradient(#cbc7cd,#cbc7cd) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
+.deck-mode .cotd-box .reel-drum{background:#c0bcc2}
+/* The picker under the motto replaces the wheels (Astra, 2026-11-14): type circles, five stars, the deck to draw */
+.deck-mode .draw-bar{display:none!important}
+.cotd-below{margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:16px;padding:22px 0 8px}
+.deck-mode .cotd-motto{margin:0;padding:0}
+.draw-picker{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
+.pick-types{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;max-width:300px}
+.pick-dot{--tc:#888;width:32px;height:32px;padding:0;border-radius:50%;border:2px solid transparent;background:none;cursor:pointer;display:grid;place-items:center}
+.pick-dot i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--tc);color:#fff;box-shadow:inset 0 0 0 2px #ffffff60,0 1px 3px #0004}
+.pick-dot i svg{width:15px;height:15px;stroke-width:2.6}
+.pick-dot.any i{background:conic-gradient(#d26a9a,#e0a43a,#4f9a5e,#3f8ccc,#8d6bc8,#d26a9a)}
+.pick-dot.on{border-color:#a8761c;box-shadow:0 0 0 2px #f3d27a80}
+.pick-dot:hover i{transform:scale(1.08)}
+.pick-stars{display:flex;align-items:center;gap:2px}
+.pick-star{border:0;background:none;cursor:pointer;font-size:24px;line-height:1;padding:0 1px;color:#00000030}
+.pick-star.on{color:#a8761c;text-shadow:0 0 6px #f3d27a90}
+.pick-star:hover{transform:scale(1.12)}
+.pick-any{margin-left:8px;font-size:13px;color:#2b2b2d}
+.draw-picker .draw-deck{align-self:center}
+.draw-picker .draw-status{text-align:center;max-width:280px}
+
+/* "Where the science comes from" sits inside the box now */
+.deck-mode .cotd-box footer{display:flex;justify-content:center;border-top:1px solid var(--n3);margin:0;padding:12px 20px 14px}
+.deck-mode .cotd-box footer>span{display:none}
+.deck-mode .cotd-box footer button{color:#2b2b2d;font-size:13px}
+
+/* Your deck: no label; an "Order my deck" button at the top right */
+.order-deck{display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin:0 0 14px}
+.order-deck-button{border:2px solid transparent;border-radius:999px;padding:8px 18px;font-weight:700;font-size:15px;cursor:pointer;color:#3a2606;
+ background:linear-gradient(110deg,#d9a53f,#f3d27a 40%,#fff3c4 50%,#d9a53f 60%,#b8862e) ;background-size:250% 100%;animation:deck-text-shine 6s ease-in-out infinite;box-shadow:0 2px 0 #8a5a10}
+.order-deck-note{margin:0;font-size:14px;color:#2b2b2d}
+/* The card-of-the-day box a little lighter again (Astra, 2026-11-14) */
+.deck-mode .cotd-box{background:linear-gradient(#d6d2d8,#d6d2d8) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
+/* The write-up about the card sits on a sheet of white paper inside the box (Astra, 2026-11-14): headline and the three
+   sections; the other info stays around it on the box, and the card beside it. */
+.deck-mode .paper-sheet{background:#fbfaf6;color:#111;margin:14px 0 18px;padding:24px 28px 8px;border-radius:3px;
+ box-shadow:0 1px 1px #00000018,0 6px 16px #0000001f,0 18px 30px -18px #0000002e}
+.deck-mode .paper-sheet h1{margin-top:2px}
+.deck-mode .paper-sheet .story-section p{color:#222}.deck-mode .paper-sheet .hook p{color:#111}
+@media(max-width:520px){.deck-mode .paper-sheet{padding:18px 16px 4px;margin:10px 0 14px}}
+/* Picker: types and stars on the left, a smaller deck on the right (Astra, 2026-11-14) */
+.draw-picker{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;gap:16px}
+.pick-left{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.pick-types{justify-content:flex-start;max-width:240px}
+.pick-dot.any i{color:#fff;font-style:normal;font-weight:700;font-size:16px;text-shadow:0 1px 2px #0007}
+.draw-picker .draw-deck-cards{width:46px;height:64px}
+.draw-picker .draw-deck-cards .top b{font-size:22px}
+.draw-picker .draw-deck-label{font-size:14px}
+.draw-picker .draw-status{flex-basis:100%}
+.cotd-below{gap:12px}
+/* The motto lives at the top right of the site now, in shiny gold */
+.deck-mode header{align-items:center}
+.site-motto{margin:0 0 0 auto;font-family:Georgia,'Times New Roman',serif!important;font-size:clamp(17px,2vw,22px);font-weight:700;text-align:right;
+ background:linear-gradient(110deg,#7a520c,#c48a24 25%,#f3d27a 40%,#fff3c4 50%,#d9a53f 62%,#8a5a10 85%);background-size:250% 100%;
+ -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:deck-text-shine 5s ease-in-out infinite}
+.site-motto em{font-style:italic;font-family:inherit!important}
+@media(max-width:520px){.site-motto{font-size:15px}}
+/* Fonts (Astra, 2026-11-14): Times New Roman only on the paper sheet; everything else back to the site's own type
+   (DM Sans, Space Grotesk for names and headings). */
+.deck-mode,.deck-mode :where(h1,h2,h3,h4,p,span,b,em,small,a,button,label,input,div,li){font-family:'DM Sans',Arial,sans-serif!important}
+.deck-mode :where(.deck-name,.deck-rarity,.deck-lv,.deck-lv b,.site-motto,.site-motto em){font-family:'Space Grotesk',sans-serif!important}
+.deck-mode .site-motto,.deck-mode .site-motto em{font-family:Georgia,'Times New Roman',serif!important}
+.deck-mode .paper-sheet,.deck-mode .paper-sheet *{font-family:'Times New Roman',Times,Georgia,serif!important;letter-spacing:normal!important}
+.deck-mode .paper-sheet h1{font-weight:700}
+
+/* The sheet: pure white paper with slightly wavy left and right edges and a faint crinkled texture. The wrapper carries
+   the shadow because a clip-path cuts off the element's own shadow. */
+.deck-mode .paper-sheet-wrap{margin:14px 0 14px;filter:drop-shadow(0 1px 1px #00000022) drop-shadow(0 8px 14px #00000026)}
+.deck-mode .paper-sheet{margin:0;border-radius:0;box-shadow:none;background-color:#ffffff;
+ clip-path:polygon(0.5% 0,99.6% 0,100% 6%,99.5% 14%,99.9% 23%,99.4% 33%,99.9% 43%,99.5% 52%,100% 62%,99.4% 72%,99.8% 81%,99.5% 90%,99.9% 100%,0.3% 100%,0 91%,0.5% 82%,0.1% 72%,0.6% 62%,0 52%,0.4% 43%,0.1% 33%,0.6% 24%,0 14%,0.4% 6%);
+ background-image:
+  linear-gradient(162deg,transparent 30%,#00000008 30.3%,transparent 31.2%,transparent 62%,#ffffff 62.2%,#0000000a 62.6%,transparent 63.6%),
+  linear-gradient(28deg,transparent 44%,#00000007 44.4%,transparent 45.4%,transparent 78%,#0000000a 78.3%,transparent 79.2%),
+  linear-gradient(95deg,transparent 18%,#00000006 18.3%,transparent 19.4%),
+  radial-gradient(ellipse at 20% 10%,#00000006,transparent 55%),radial-gradient(ellipse at 85% 80%,#00000008,transparent 50%),
+  url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+ padding:26px 32px 10px}
+.deck-mode .paper-sheet .story-section p{color:#1a1a1a}.deck-mode .paper-sheet .hook p{color:#111}
+/* The meta line now sits under the paper */
+.deck-mode .paper-copy .paper-meta{margin:4px 0 14px}
+@media(max-width:520px){.deck-mode .paper-sheet{padding:20px 18px 6px}}
+/* Times New Roman on the sheet must beat the older write-up font rule (higher specificity) */
+.deck-mode .cotd-box .paper-copy .paper-sheet,.deck-mode .cotd-box .paper-copy .paper-sheet *{font-family:'Times New Roman',Times,Georgia,serif!important;letter-spacing:normal!important}
+.deck-mode .cotd-box .paper-copy .paper-sheet h1{font-weight:700;letter-spacing:-.3px!important}
+.deck-name{font-size:4.8cqw}
+
+/* Logo and motto: the same shiny gold, both words of the logo, with a thin black outline to help reading (Astra, 2026-11-14) */
+.deck-mode .brand,.deck-mode .brand>span,.deck-mode .site-motto,.deck-mode .site-motto em{
+ background:linear-gradient(110deg,#7a520c,#c48a24 25%,#f3d27a 40%,#fff3c4 50%,#d9a53f 62%,#8a5a10 85%)!important;background-size:250% 100%!important;
+ -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;
+ -webkit-text-stroke:.6px #1a1206;animation:deck-text-shine 5s ease-in-out infinite!important}
+.deck-mode .brand>span{background:none!important;-webkit-text-stroke:0}
+.deck-mode .brand{font-weight:700}
+
+/* Deck back: light gray with small dark sparkles instead of dark stripes */
+.deck-mode .draw-deck-cards span{background-color:#cfcfd1!important;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Cpath d='M5 2l1 3 3 1-3 1-1 3-1-3-3-1 3-1z' fill='%23222'/%3E%3Cpath d='M16 12l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z' fill='%23333'/%3E%3Ccircle cx='17' cy='4' r='.8' fill='%23444'/%3E%3Ccircle cx='7' cy='17' r='.7' fill='%23444'/%3E%3C/svg%3E")!important;
+ background-size:22px 22px!important}
+.deck-mode .draw-deck-cards .top b{-webkit-text-stroke:.5px #3a2606}
+
+/* The card starts at the same height as the paper */
+.deck-mode .cotd-card{padding-top:44px}
+/* Crumpled paper (Astra, 2026-11-14: "wrinkled in a ball, not folded"): a lit noise surface (feTurbulence +
+   feDiffuseLighting) gives soft, irregular creases all over; light enough that the paper stays white. A cool white so
+   it never reads yellow next to the gray. */
+.deck-mode .paper-sheet{background-color:#fdfeff!important;background-blend-mode:multiply;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='c' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .022' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23ffffff' surfaceScale='7' diffuseConstant='1.05'%3E%3CfeDistantLight azimuth='225' elevation='58'/%3E%3C/feDiffuseLighting%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='.42' intercept='.64'/%3E%3CfeFuncG type='linear' slope='.42' intercept='.64'/%3E%3CfeFuncB type='linear' slope='.42' intercept='.65'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E")!important;
+ background-size:420px 420px!important}
+/* Pure white paper (Astra, 2026-11-14: "still kind of yellow") */
+.deck-mode .paper-sheet{background-color:#ffffff!important}
+/* Logo and motto: shiny gold, no black outline, Times New Roman like the paper (Astra, 2026-11-14) */
+.deck-mode .brand,.deck-mode .brand>span,.deck-mode .site-motto,.deck-mode .site-motto em{-webkit-text-stroke:0!important;font-family:'Times New Roman',Times,Georgia,serif!important}
+.deck-mode .brand{letter-spacing:-.5px;font-size:34px}
+/* Paper sections (Astra, 2026-11-14): titles underlined in dark ink, all three bodies the same size */
+.deck-mode .paper-sheet .section-label{color:#1a1a1a!important;-webkit-text-fill-color:#1a1a1a;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;font-weight:700;letter-spacing:.06em!important}
+.deck-mode .paper-sheet .section-label>span{color:#1a1a1a!important}
+.deck-mode .paper-sheet .story-section p,.deck-mode .paper-sheet .hook p,.deck-mode .paper-sheet .significance p{font-size:17px!important;line-height:1.7;color:#1a1a1a}
+/* Facts under the paper */
+.paper-facts{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:4px 0 16px;font-size:15px}
+.paper-facts dt{font-weight:700;color:#2b2b2d}
+.paper-facts dd{margin:0;color:#111}
+/* The deck to draw from: back to the stacked size, with a real card back on top; "Draw" in the shiny gold */
+.draw-picker .draw-deck-cards{width:60px;height:84px}
+.deck-mode .draw-deck-cards span{background:#e9e7ea!important;background-image:none!important;border:1.5px solid #b8862e}
+.deck-mode .draw-deck-cards .card-back{display:grid;place-items:center;align-content:center;gap:2px;
+ background:radial-gradient(circle at 50% 40%,#ffffff,#e4e1e6 70%)!important}
+.card-back .cb-rim{position:absolute;inset:4px;border:1px solid #d9a53f;border-radius:5px;box-shadow:inset 0 0 0 2px #e9e7ea,inset 0 0 0 3px #d9a53f80}
+.card-back b{font-size:22px;line-height:1;background:linear-gradient(110deg,#7a520c,#c48a24 30%,#f3d27a 45%,#fff3c4 52%,#d9a53f 65%,#8a5a10);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.card-back small{font-family:'Times New Roman',Times,serif!important;font-size:9px;font-weight:700;color:#8a5a10;letter-spacing:.04em}
+.deck-mode .draw-deck-label{background:linear-gradient(110deg,#7a520c,#c48a24 25%,#f3d27a 40%,#fff3c4 50%,#d9a53f 62%,#8a5a10 85%);background-size:250% 100%;
+ -webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent!important;animation:deck-text-shine 5s ease-in-out infinite;font-family:'Times New Roman',Times,serif!important;font-size:17px;font-weight:700}
+/* Darker grays (Astra, 2026-11-14), still a hair low in green */
+body:has(.deck-mode){background:#8f8b91}
+.deck-mode{--n0:#8f8b91;--n1:#9f9ba1}
+.deck-mode .cotd-box{background:linear-gradient(#b8b4ba,#b8b4ba) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
+/* Cooler white paper so it never reads yellow */
+.deck-mode .paper-sheet{background-color:#f8fafd!important}
+/* Everything on the paper in black; its one accent, the side line, in the card's subject color (Astra, 2026-11-14) */
+.deck-mode .cotd-box .paper-copy .paper-sheet h1,.deck-mode .paper-sheet .story-section p,.deck-mode .paper-sheet .hook p,.deck-mode .paper-sheet .significance p,
+.deck-mode .paper-sheet .section-label,.deck-mode .paper-sheet .section-label>span{color:#000!important;-webkit-text-fill-color:#000}
+.deck-mode .paper-sheet .significance{border-left:3px solid var(--sub,#555)!important}
+/* Read the original paper, left of the read time, under the paper; the old link line is not needed here */
+.deck-mode .original-link{display:none!important}
+.facts-top{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin-bottom:4px}
+.facts-original{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;border:1.5px solid #b8862e;color:#111;font-weight:700;font-size:14px;background:#ffffff40}
+.facts-original:hover{background:#ffffff80}
+.facts-top span{font-size:15px;color:#111}.facts-top b{font-weight:700}
+/* Your deck panel the same gray as the card-of-the-day box */
+.deck-mode .my-deck{background:linear-gradient(#b8b4ba,#b8b4ba) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
+/* Order my deck sits beside the Draw deck */
+.draw-picker .order-deck{margin:0;align-items:center}
+.draw-picker .order-deck-button{font-size:14px;padding:7px 14px}
+.draw-picker .order-deck-note{max-width:180px;text-align:center;font-size:13px}/* "Draw" in a deeper shiny gold so it reads on the gray */
+.deck-mode .draw-deck-label{background:linear-gradient(110deg,#4a3104,#8a5a10 30%,#c48a24 45%,#e8b850 52%,#a8761c 65%,#4a3104)!important;background-size:250% 100%!important;-webkit-background-clip:text!important;background-clip:text!important}
