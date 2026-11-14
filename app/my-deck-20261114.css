@@ -883,3 +883,18 @@ body:has(.deck-mode){background:#8f8b91}
 .deck-made span{opacity:.85}
 .deck-made b{font-weight:700}
 .pm-seal{flex:none;width:19cqw;height:19cqw;filter:drop-shadow(0 .4cqw .8cqw #5a3c0666)}
+
+/* Card colors by rarity (Astra, 2026-11-14): Common white, Uncommon copper, Rare silver, Holo rare rainbow, Legendary
+   gold. The card no longer takes its subject's color; the subject circle still shows it. */
+.lv1 .deck-face{background:linear-gradient(165deg,#ffffff,#f4f3f0)}
+.lv1 .deck-band{background:#ecebe7;border-top-color:#d6d3cc}
+.lv2{--rc:#6e3416;--frame:linear-gradient(135deg,#fbe0cc,#c47a4e 35%,#fde9da 52%,#a85a30 72%,#efb994)}
+.lv2 .deck-face{background:linear-gradient(135deg,#f9dcc6,#e9a77e 22%,#fbe6d6 40%,#d4865a 60%,#f6cdb0 80%,#e09a70);
+ background-size:220% 220%;animation:deck-prism 12s ease-in-out infinite alternate}
+.lv2 .deck-band{background:linear-gradient(100deg,#c97b4e,#f7d2b6 35%,#b8683c 60%,#efb994 85%);border-top-color:#a85a30}
+.lv3 .deck-face{background:linear-gradient(135deg,#f7f8fa,#cfd2d8 22%,#ffffff 40%,#b9bdc5 60%,#eef0f3 80%,#c8ccd2);
+ background-size:220% 220%;animation:deck-prism 12s ease-in-out infinite alternate}
+/* The rarity chart's scale uses the same colors */
+.rc-t1{background:#ffffff}
+.rc-t2{background:linear-gradient(100deg,#e9a77e,#fbe6d6 45%,#d4865a)}
+.rc-t3{background:linear-gradient(100deg,#c9ccd2,#ffffff 50%,#b9bdc5)}
