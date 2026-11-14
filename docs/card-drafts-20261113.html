@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paper Girl card drafts</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Draft for Astra, 2026-11-13: collectible card fronts and backs, three rarities, same layout.
+   Picture is a placeholder (OpenAI will draw one per paper). Follows Mirror Pool's "build for every screen":
+   one screen tall, cards are a fixed 5x7 shape sized in cqw, the row swipes on a phone. Tap a card to flip it. */
+:root{--bg:#211a24;--ink:#f4e9ed;--soft:#c9b0c0;--pink:#efa9c5;--lilac:#c9aef5;--gold:#f3cf7a;--line:#4f3f52;
+  --t-small:clamp(12px,1.1vw,14px);--t-title:clamp(19px,2.2vw,26px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:'DM Sans',Arial,sans-serif}
+header{padding:clamp(10px,2vh,18px) clamp(16px,3vw,32px) 0;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px}
+h1{margin:0;font-family:'Space Grotesk',sans-serif;font-size:var(--t-title);font-weight:600}
+h1 span{color:var(--pink)}
+.hint{font-size:var(--t-small);color:var(--soft)}
+.row{flex:1;min-height:0;display:flex;gap:clamp(16px,2.5vw,36px);overflow-x:auto;overflow-y:hidden;padding:clamp(10px,2vh,20px) clamp(16px,3vw,32px);scroll-snap-type:x mandatory}
+.slot{flex:0 0 auto;margin:auto;width:min(max(280px,calc((100vw - 64px - 72px)/3)),calc((100dvh - 190px)*5/7),460px);container-type:inline-size;display:flex;flex-direction:column;gap:10px;scroll-snap-align:center}
+@media (max-width:620px){.slot{width:min(82vw,calc((100dvh - 200px)*5/7))}}
+@media (max-height:480px){body{overflow:auto;height:auto}.row{flex:none}.slot{width:280px}}
+.label{font-family:'Space Grotesk',sans-serif;font-size:13px;letter-spacing:1.5px;color:var(--pink);text-align:center}
+.label i{font-style:normal;color:var(--soft);letter-spacing:0}
+
+/* The flip */
+.card{width:100%;aspect-ratio:5/7;perspective:1600px;cursor:pointer;border:0;padding:0;background:none;font:inherit;color:inherit;display:block}
+.card:focus-visible{outline:2px solid var(--pink);outline-offset:4px;border-radius:5cqw}
+.inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
+.card.flipped .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:4.6cqw;overflow:hidden;box-shadow:0 2.4cqw 6cqw #0008;text-align:left}
+.back{transform:rotateY(180deg)}
+@media (prefers-reduced-motion:reduce){.inner{transition:none}}
+
+/* Frame by rarity: the outer border is the rarity */
+.frame{position:absolute;inset:0;padding:2.6cqw}
+.common .frame{background:#cfc6cc}
+.rare .frame{background:linear-gradient(135deg,#f6dc95,#d6a94e 40%,#fbe7b0 60%,#c9973f)}
+.legend .frame{background:linear-gradient(135deg,#f6b3d2,#c9aef5 25%,#a9e4f0 45%,#f7d79c 65%,#f6b3d2 85%,#c9aef5)}
+.legend .frame::after,.rare .frame::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 38%,#ffffff70 48%,transparent 58%);background-size:260% 100%;animation:shine 4.5s ease-in-out infinite;pointer-events:none}
+.rare .frame::after{animation-duration:6s;opacity:.6}
+@keyframes shine{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
+@media (prefers-reduced-motion:reduce){.frame::after{animation:none}}
+.panel{height:100%;border-radius:2.6cqw;display:flex;flex-direction:column;padding:3.2cqw 3.6cqw;gap:1.8cqw;background:#2e2431}
+.common .panel{background:#f3eef0;color:#2c2230}
+.legend .panel{background:linear-gradient(170deg,#3a2a46,#2a2035 60%,#352446)}
+
+/* Front: name bar */
+.namebar{display:flex;align-items:center;gap:2cqw}
+.stage{font-size:2.6cqw;font-weight:700;letter-spacing:.3cqw;padding:.6cqw 1.6cqw;border-radius:1.2cqw;background:#00000022;white-space:nowrap}
+.name{flex:1;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:6cqw;line-height:1;letter-spacing:-.2cqw;margin:0}
+.lv{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:3.4cqw;white-space:nowrap}
+.lv b{font-size:6cqw}
+.icon{width:7cqw;height:7cqw;border-radius:50%;display:grid;place-items:center;font-size:4cqw;background:var(--pink);color:#2c2230;flex:none}
+/* Art window */
+.art{position:relative;aspect-ratio:1.5;border-radius:1.4cqw;overflow:hidden;border:1cqw solid;border-color:#d8c9a1 #a88e55 #a88e55 #d8c9a1;background:repeating-linear-gradient(45deg,#d9b9c9 0 3cqw,#e6cbd8 3cqw 6cqw);display:grid;place-items:center}
+.common .art{border-color:#bdb3b9}
+.legend .art{border-color:#f6d6ec #b48cd8 #b48cd8 #f6d6ec}
+.art span{font-size:3cqw;color:#5b4352;background:#ffffffb0;padding:1cqw 2.4cqw;border-radius:5cqw}
+.strip{font-size:2.6cqw;font-style:italic;text-align:center;padding:.8cqw 2cqw;border-radius:1cqw;background:linear-gradient(90deg,#c9a55e,#f3dd9e,#c9a55e);color:#3a2a20;margin-top:-.6cqw}
+.common .strip{background:#d9d0d5;color:#3b2f38}
+.legend .strip{background:linear-gradient(90deg,#c9aef5,#f6b3d2,#a9e4f0);color:#2c2230}
+/* Powers: the hook and the finding, with a power score */
+.power{display:grid;grid-template-columns:auto 1fr auto;gap:.4cqw 2cqw;align-items:baseline;border-bottom:.3cqw solid #ffffff1c;padding-bottom:1.4cqw}
+.common .power{border-color:#00000018}
+.power .cost{font-size:3.2cqw;letter-spacing:-.2cqw}
+.power h3{margin:0;font-family:'Space Grotesk',sans-serif;font-size:4.2cqw;font-weight:700}
+.power .dmg{font-family:'Space Grotesk',sans-serif;font-size:5cqw;font-weight:700}
+.power p{grid-column:1/4;margin:0;font-size:3.05cqw;line-height:1.32;opacity:.92}
+/* Bottom stats: like weakness / resistance / retreat */
+.stats{margin-top:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:1.4cqw;text-align:center}
+.stats div{font-size:2.4cqw;line-height:1.2;opacity:.85}
+.stats b{display:block;font-size:2.9cqw;opacity:1}
+.foot{display:flex;justify-content:space-between;align-items:center;font-size:2.3cqw;opacity:.8;border-top:.3cqw solid #ffffff1c;padding-top:1.2cqw}
+.common .foot{border-color:#00000018}
+.rarity{font-size:3.2cqw;opacity:1}
+
+/* Back: the whole paper, condensed */
+.back .panel{gap:2.2cqw}
+.back h4{margin:0;font-family:'Space Grotesk',sans-serif;font-size:2.6cqw;letter-spacing:.4cqw;color:var(--pink)}
+.common .back h4{color:#a24f78}
+.back .title{font-family:'Space Grotesk',sans-serif;font-size:4.6cqw;line-height:1.12;font-weight:700;margin:0}
+.back p.t{margin:.4cqw 0 0;font-size:3.2cqw;line-height:1.36}
+.back .small{font-size:2.7cqw;line-height:1.35;opacity:.85;border-left:.6cqw solid var(--pink);padding-left:2cqw}
+.back .links{margin-top:auto;display:flex;flex-direction:column;gap:1.2cqw}
+.back .links a{display:flex;justify-content:space-between;font-size:3cqw;font-weight:600;color:inherit;background:#ffffff14;border-radius:1.6cqw;padding:1.6cqw 2.4cqw;text-decoration:none}
+.common .back .links a{background:#0000000d}
+
+/* Buttons around the card (on the website, not printed on it) */
+.actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.actions button{font:inherit;font-size:13px;min-height:40px;padding:6px 12px;border-radius:20px;border:1px solid var(--line);background:#2e2431;color:var(--ink);cursor:pointer}
+.actions button.main{background:var(--pink);border-color:var(--pink);color:#2c2230;font-weight:700}
+</style>
+</head>
+<body>
+<header>
+<h1>Card drafts <span>· front and back</span></h1>
+<span class="hint">Tap a card to flip it. The edge shows how rare it is: harder paper, rarer card. The picture is a placeholder for OpenAI’s drawing.</span>
+</header>
+<main class="row" id="row"></main>
+<script>
+'use strict';
+// One paper, three made-up difficulty levels, so the three rarities can be compared. Text from today's daily card.
+const paper={name:'The Pattern Listener',headline:'A newborn’s brain is already listening for the pattern.',subject:'Psychology',icon:'🧠',
+  hook:'Babies only a few days old showed brain responses to repeating patterns in speech sounds and voices.',
+  found:'Newborns heard carefully built sound streams while their brain activity was recorded. Their brains tracked repeating syllable patterns even when the voice changed, and voice patterns even when the syllables changed.',
+  matters:'Learning language may start with a broad pattern detector we are born with.',
+  small:'Brain responses to artificial sounds don’t show that newborns understand words.',
+  journal:'eLife',year:2025,studied:'Newborns · brain recordings (EEG)',no:'000,128',set:'Brains & Babies'};
+const tiers=[
+  {cls:'common',label:'COMMON',level:1,rarity:'●',stage:'BASIC',read:'1 min'},
+  {cls:'rare',label:'RARE',level:3,rarity:'★',stage:'STAGE 1',read:'3 min'},
+  {cls:'legend',label:'LEGENDARY',level:5,rarity:'✦',stage:'STAGE 2',read:'6 min'}];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const row=document.getElementById('row');
+for(const t of tiers){
+  const slot=document.createElement('div');slot.className='slot';
+  slot.innerHTML=`<div class="label">${t.label} <i>· level ${t.level} of 5</i></div>
+  <button class="card ${t.cls}" aria-label="${esc(paper.name)}, ${t.label.toLowerCase()} card. Tap to flip." aria-pressed="false"><div class="inner">
+    <div class="face front"><div class="frame"><div class="panel">
+      <div class="namebar"><span class="stage">${t.stage}</span><p class="name">${esc(paper.name)}</p><span class="lv">LV <b>${t.level}</b></span><span class="icon" aria-hidden="true">${paper.icon}</span></div>
+      <div class="art"><span>OpenAI drawing goes here</span></div>
+      <div class="strip">${esc(paper.subject)} · ${esc(paper.studied)}</div>
+      <div class="power"><span class="cost">⚡</span><h3>Strange hook</h3><span class="dmg">${20+t.level*10}</span><p>${esc(paper.hook)}</p></div>
+      <div class="power"><span class="cost">⚡⚡</span><h3>Big finding</h3><span class="dmg">${40+t.level*20}</span><p>${esc(paper.matters)}</p></div>
+      <div class="stats"><div><b>Limit</b>one study</div><div><b>Evidence</b>★★★☆☆</div><div><b>Read</b>${t.read}</div></div>
+      <div class="foot"><span>${esc(paper.journal)} ${paper.year} · Set: ${esc(paper.set)}</span><span><span class="rarity">${t.rarity}</span> No. ${paper.no}</span></div>
+    </div></div></div>
+    <div class="face back"><div class="frame"><div class="panel">
+      <h4>THE WHOLE PAPER, ON ONE CARD</h4>
+      <p class="title">${esc(paper.headline)}</p>
+      <div><h4>STRANGE HOOK</h4><p class="t">${esc(paper.hook)}</p></div>
+      <div><h4>WHAT THEY FOUND</h4><p class="t">${esc(paper.found)}</p></div>
+      <div><h4>WHY IT MATTERS</h4><p class="t">${esc(paper.matters)}</p></div>
+      <p class="small">Small print: ${esc(paper.small)}</p>
+      <div class="links"><a href="#" onclick="event.stopPropagation()">Read the paper <span>eLife ↗</span></a><a href="#" onclick="event.stopPropagation()">Open on Paper Girl <span>↗</span></a></div>
+      <div class="foot"><span>Words: Paper Patty · Art: OpenAI · By Astra</span><span>No. ${paper.no}</span></div>
+    </div></div></div>
+  </div></button>
+  <div class="actions"><button class="main" type="button">Send to a friend</button><button type="button">Keep</button><button type="button" aria-label="Good card">👍</button><button type="button" aria-label="Something is off">👎</button></div>`;
+  const card=slot.querySelector('.card');
+  card.addEventListener('click',()=>{const on=card.classList.toggle('flipped');card.setAttribute('aria-pressed',String(on))});
+  row.append(slot);
+}
+</script>
+</body>
+</html>
