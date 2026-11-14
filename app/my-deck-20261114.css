@@ -906,3 +906,7 @@ body:has(.deck-mode){background:#8f8b91}
  -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;
  animation:deck-text-shine 5s ease-in-out infinite!important;text-decoration-color:#a8761c}
 .gold-card .deck-stats a,.gold-card .deck-no-stat b.deck-no{background:none!important;color:#4a3104!important;-webkit-text-fill-color:#4a3104!important;animation:none!important}
+
+/* Common cards are the paper itself (Astra, 2026-11-14): the same cool white as the paper sheet and the same crumpled
+   texture */
+.lv1 .deck-face{background-color:#f8fafd;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='420'%3E%3Cfilter id='c' x='0' y='0'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .022' numOctaves='5' seed='7' stitchTiles='stitch'/%3E%3CfeDiffuseLighting lighting-color='%23ffffff' surfaceScale='7' diffuseConstant='1.05'%3E%3CfeDistantLight azimuth='225' elevation='58'/%3E%3C/feDiffuseLighting%3E%3CfeComponentTransfer%3E%3CfeFuncR type='linear' slope='.42' intercept='.64'/%3E%3CfeFuncG type='linear' slope='.42' intercept='.64'/%3E%3CfeFuncB type='linear' slope='.42' intercept='.65'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");background-size:420px 420px;background-blend-mode:multiply}
