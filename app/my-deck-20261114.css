@@ -1582,3 +1582,5 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 .rc-t2{background:linear-gradient(90deg,#4f9a5e,#d26a9a,#16a3c4,#3f8ccc,#d4664a,#2f9c95,#7a5ec8)!important}
 /* The Any subject circle's rainbow without an amber (gold-looking) slice */
 .pick-dot.any i{background:conic-gradient(#d26a9a,#16a3c4,#4f9a5e,#3f8ccc,#8d6bc8,#d26a9a) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important}
+/* A date on the card back never breaks in the middle */
+.deck-made .deck-date{font-style:normal;white-space:nowrap}
