@@ -600,3 +600,179 @@ body:has(.deck-mode){background:#8f8b91}
 .draw-picker .order-deck-button{font-size:14px;padding:7px 14px}
 .draw-picker .order-deck-note{max-width:180px;text-align:center;font-size:13px}/* "Draw" in a deeper shiny gold so it reads on the gray */
 .deck-mode .draw-deck-label{background:linear-gradient(110deg,#4a3104,#8a5a10 30%,#c48a24 45%,#e8b850 52%,#a8761c 65%,#4a3104)!important;background-size:250% 100%!important;-webkit-background-clip:text!important;background-clip:text!important}
+/* ---------------- 2026-11-14 night (Astra) ---------------- */
+/* Article information: a fourth section on the paper with no number and no side line. Every fact about the article
+   lives here; nothing else sits on the gray box around the paper. */
+.deck-mode .paper-sheet .story-section p+p{margin-top:12px}
+.deck-mode .paper-info{margin:28px 0 20px;color:#000}
+.deck-mode .paper-info .section-label{display:block;margin-bottom:12px}
+.deck-mode .paper-info dl{display:grid;grid-template-columns:max-content 1fr;gap:7px 18px;margin:0;font-size:16px;line-height:1.5}
+.deck-mode .paper-info dt{font-weight:700}
+.deck-mode .paper-info dd{margin:0}
+.deck-mode .paper-info a{color:#000;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.deck-mode .paper-credit{margin:16px 0 0;font-size:14px;line-height:1.6;color:#333}
+.deck-mode .paper-credit button{background:none;border:0;padding:0;font:inherit;color:#000;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.deck-mode .paper-sheet .research-details{margin:14px 0 0;background:#f2f3f6;border:1px solid #d6d8de;border-radius:4px}
+.deck-mode .paper-sheet .research-details h2,.deck-mode .paper-sheet .research-details p{color:#111}
+.deck-mode .paper-sheet .research-details a,.deck-mode .paper-sheet .research-details summary{color:#000}
+.deck-mode .paper-sheet-wrap{margin-bottom:22px}
+@media(max-width:520px){.deck-mode .paper-info dl{grid-template-columns:1fr;gap:0}.deck-mode .paper-info dd{margin-bottom:8px}}
+
+/* Card front: no number under the name. The stats (Subject, Article, Completion) and the card number sit centered in
+   the space between the picture and the band, with clear room above them. */
+.deck-front{gap:0}
+.deck-top{margin-bottom:2.2cqw}
+.deck-frame{margin:0 2.4cqw}
+.deck-lower{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1.8cqw;padding:2.8cqw 0 2.2cqw}
+.deck-stats{width:100%;grid-template-columns:repeat(3,auto);justify-content:space-evenly;align-items:start;gap:0 2cqw}
+.deck-stats>*{display:flex;flex-direction:column;align-items:center;gap:1.1cqw;min-width:0}
+.deck-stats span{font-size:3cqw;line-height:1}
+.deck-stats b,.deck-stats a{font-size:4cqw;line-height:5.6cqw;height:5.6cqw}
+.deck-type-stat i{width:5.6cqw;height:5.6cqw}
+.deck-type-stat i svg{width:3.4cqw;height:3.4cqw}
+.deck-no{font-size:3.3cqw;font-weight:700;letter-spacing:.3cqw;opacity:.7}
+/* Completion: the circle fills in gold */
+.deck-type-stat i.read-dot{border-color:#a8761c}
+.deck-type-stat i.read-dot.on{background:linear-gradient(135deg,#fff3c4,#e8bb52 45%,#b8862e);border-color:#a8761c;color:#3a2606}
+
+/* Draw picker, redone: centered under the card; type circles in two rows of six, the stars, then two matching buttons,
+   Draw a card (shiny gold) and Order my deck (light, gold edge). */
+.draw-picker{flex-direction:column;flex-wrap:nowrap;align-items:center;gap:14px;width:100%}
+.pick-left{align-items:center;gap:10px}
+.pick-types{justify-content:center;max-width:230px}
+.pick-stars{justify-content:center}
+.pick-actions{display:grid;grid-template-columns:1.2fr 1fr;gap:10px;width:100%;max-width:330px}
+.pick-draw,.pick-order{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 12px;border-radius:10px;cursor:pointer;
+ font-family:'Times New Roman',Times,Georgia,serif!important;font-size:17px;font-weight:700;color:#2a1a02;white-space:nowrap;transition:transform .15s ease,filter .15s ease,background-color .15s ease}
+.pick-draw{border:1px solid #8a5a10;background:linear-gradient(110deg,#b8862e,#f3d27a 28%,#fff3c4 42%,#e8bb52 58%,#b8862e 80%,#d9a53f);background-size:220% 100%;
+ box-shadow:inset 0 1px 0 #ffffffa0,0 2px 0 #7a520c,0 6px 14px #00000026;animation:deck-text-shine 6s ease-in-out infinite}
+.pick-draw:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}
+.pick-draw:active:not(:disabled){transform:translateY(1px)}
+.pick-draw:disabled{cursor:wait;opacity:.85}
+.pick-draw-icon{display:inline-block;font-size:18px;line-height:1;color:#5a3c06}
+.pick-draw.busy .pick-draw-icon{animation:pick-spin 1s linear infinite}
+@keyframes pick-spin{to{transform:rotate(360deg)}}
+.pick-order{border:1.5px solid #a8761c;background:#f2f0f3;box-shadow:0 2px 0 #00000026}
+.pick-order:hover{background:#ffffff;transform:translateY(-1px)}
+.pick-order svg{color:#7a520c}
+.pick-order-note{grid-column:1/-1;margin:2px 0 0;font-size:13px;line-height:1.4;text-align:center;color:#2b2b2d}
+.pick-draw:focus-visible,.pick-order:focus-visible{outline:2px solid #5a3c06;outline-offset:3px}
+@media(max-width:380px){.pick-draw,.pick-order{font-size:15px;padding:0 8px}}
+/* The paper is long now, so the card and the draw buttons stay together at the top of the column and stay in view
+   while you read (not on phones, where the card comes first above the paper). */
+@media(min-width:761px){.deck-mode .cotd-card{align-self:start;position:sticky;top:16px}}
+.deck-mode .cotd-below{margin:20px 0 0;padding:0 0 8px}
+/* overflow:hidden on the box would stop the card from staying in view; clip keeps the rounded corners without that */
+@media(min-width:761px){.deck-mode .cotd-box{overflow:clip}}
+
+/* ---------------- 2026-11-14 late night (Astra) ---------------- */
+/* Even spacing in the card-of-the-day box: the same gap above and left of the paper, between paper and card, and to
+   the right of the card */
+@media(min-width:761px){
+ .deck-mode .paper-card{padding:28px!important;gap:28px;overflow:clip}
+ .deck-mode .paper-copy{padding:0!important}
+ .deck-mode .paper-sheet-wrap{margin:0!important}
+ .deck-mode .cotd-card{padding:0!important}
+}
+/* Logo and motto much bigger, outlined in black */
+.deck-mode .brand,.deck-mode .brand>span{-webkit-text-stroke:1.3px #000!important}
+.deck-mode .brand{font-size:clamp(40px,5.6vw,64px)!important;line-height:1}
+.deck-mode .site-motto,.deck-mode .site-motto em{-webkit-text-stroke:.9px #000!important}
+.deck-mode .site-motto{font-size:clamp(22px,3vw,38px)!important;line-height:1.15}
+@media(max-width:520px){.deck-mode .brand{font-size:34px!important}.deck-mode .site-motto{font-size:17px!important}}
+
+/* Section 03: the title lines up with 01 and 02; the side line runs only beside the body */
+.deck-mode .paper-sheet .significance{border-left:0!important;padding:0!important}
+.deck-mode .paper-sheet .matters-body{border-left:3px solid var(--sub,#555);padding-left:16px;margin-top:10px}
+.deck-mode .paper-sheet .matters-body p:first-child{margin-top:0}
+.deck-mode .paper-sheet .story-section p.paper-smallprint{font-size:15px!important;font-style:italic;line-height:1.6;margin:14px 0 0}
+/* 04 Bibliography: the entry with a hanging indent, as in a reference list */
+.deck-mode .paper-sheet .paper-bib p.bib-entry{padding-left:2em;text-indent:-2em;font-size:16px!important;line-height:1.7}
+.deck-mode .paper-bib a{color:#000;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+.deck-mode .paper-sheet .paper-bib p.bib-note{font-size:14px!important;color:#333!important}
+
+/* Card: second row of stats (published, minted), the number lower and apart from them, the picture a little smaller
+   to make room */
+.deck-frame{margin:0 6cqw}
+.deck-lower{gap:0;padding:2cqw 0 1.6cqw}
+.deck-stats-years{margin-top:1.8cqw;grid-template-columns:repeat(2,auto);justify-content:center;gap:0 16cqw}
+.deck-no{margin-top:3.4cqw}
+/* Sparkles turn half as fast */
+.deck-glitter i{animation-duration:5.2s}
+/* Reading difficulty: the label above the stars */
+.deck-stars{flex-direction:column;align-items:flex-end;gap:.5cqw}
+.deck-stars em{margin-right:0;font-size:2.5cqw;line-height:1;white-space:nowrap}
+.deck-star-row{display:flex;gap:.5cqw;font-size:4.2cqw;line-height:1}
+/* Rarity words: Common and Uncommon in black; Rare silver, Holo rare rainbow, Legendary gold, as shiny text */
+.lv1 .deck-rarity,.lv2 .deck-rarity{color:#111!important;-webkit-text-fill-color:#111}
+.deck-slot .deck-band .deck-rarity.shiny{color:transparent!important;-webkit-text-fill-color:transparent;-webkit-background-clip:text;background-clip:text;background-size:250% 100%;animation:deck-text-shine 5s ease-in-out infinite}
+.lv3 .deck-band .deck-rarity.shiny{background-image:linear-gradient(100deg,#2b2f36,#7d848e 25%,#e9ecf0 45%,#9aa1ab 60%,#2b2f36 85%);-webkit-text-stroke:.14cqw #2b2f36}
+.lv4 .deck-band .deck-rarity.shiny{background-image:linear-gradient(90deg,#d81b74,#ef7a12,#c9a400,#1f9a45,#1a7fd0,#6e35c8,#d81b74);-webkit-text-stroke:.12cqw #2a1440}
+.gold-card .deck-band .deck-rarity.shiny{background-image:linear-gradient(110deg,#5a3c06,#a8761c 25%,#f3d27a 42%,#fff3c4 50%,#d9a53f 62%,#7a520c 85%);-webkit-text-stroke:.16cqw #3a2606}
+/* Completion: shiny moving gold, like the other gold on the page */
+.deck-type-stat i.read-dot.on{background:linear-gradient(110deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c);background-size:250% 100%;
+ animation:deck-text-shine 5s ease-in-out infinite;border-color:#8a5a10;box-shadow:inset 0 0 0 .4cqw #ffffff70,0 0 1.6cqw #f3d27a90;color:#3a2606}
+/* Buttons on the card back */
+.deck-back p{font-size:5.3cqw}
+.deck-back-actions{display:flex;flex-wrap:wrap;gap:2cqw}
+.deck-back-actions>*{font:inherit;font-size:3.6cqw!important;font-weight:700;line-height:1.2;padding:1.4cqw 3cqw;border-radius:5cqw;border:.4cqw solid var(--rc);
+ background:#ffffff8c;color:#1c1a1e;cursor:pointer;text-decoration:none;white-space:nowrap}
+.deck-back-actions>*:hover{background:#fff}
+
+/* The deck tally: cards by subject (symbols; hover for the name), cards read, minutes of reading */
+.deck-tally{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;margin:0 0 16px;padding:0 2px 12px;border-bottom:1px solid #96929a}
+.tally-subjects{display:flex;flex-wrap:wrap;gap:8px}
+.tally-sub{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 3px;border-radius:999px;background:#ffffff55;border:1px solid #8b878e;cursor:default}
+.tally-sub i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sc);color:#fff;box-shadow:inset 0 0 0 2px #ffffff60}
+.tally-sub i svg{width:14px;height:14px;stroke-width:2.6}
+.tally-sub b{font-size:15px;color:#111}
+.tally-stats{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:15px;color:#2b2b2d}
+.tally-stats b{font-size:18px;color:#111;margin-right:3px}
+
+/* Picker: published-year bands, and the buttons: Draw a card across the top, then the others two by two */
+.pick-years{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:300px}
+.pick-year{border:1px solid #8b878e;background:#c6c2c8;border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700;color:#1a1a1a;cursor:pointer;line-height:1.2}
+.pick-year:hover{background:#d6d2d8}
+.pick-year.on{background:linear-gradient(110deg,#b8862e,#f3d27a 35%,#fff3c4 50%,#e8bb52 65%,#b8862e);border-color:#8a5a10;color:#2a1a02}
+.pick-actions{grid-template-columns:1fr 1fr}
+.pick-draw{grid-column:1/-1}
+.pick-more{display:inline-flex;align-items:center;justify-content:center;min-height:44px;border-radius:10px;cursor:pointer;border:1.5px solid #a8761c;background:#f2f0f3;box-shadow:0 2px 0 #00000026;
+ font-family:'Times New Roman',Times,Georgia,serif!important;font-weight:700;color:#2a1a02;transition:transform .15s ease,background-color .15s ease}
+.pick-more:hover{background:#fff;transform:translateY(-1px)}
+.pick-more:focus-visible{outline:2px solid #5a3c06;outline-offset:3px}
+.pick-order,.pick-more{white-space:normal;line-height:1.15;text-align:center;font-size:15px;padding:6px 10px}
+
+/* How to play pop-up */
+.howto ul{margin:6px 0 12px;padding-left:20px}
+.howto li{margin:4px 0;line-height:1.5}
+.howto-rarity{list-style:none;padding-left:0!important}
+.howto-stars{display:inline-block;min-width:5.6em;color:#a8761c;letter-spacing:1px}
+.howto-rarity span:last-child{opacity:.75}
+.howto-subjects{list-style:none;padding-left:0!important;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 12px}
+.howto-subjects li{display:flex;align-items:center;gap:8px}
+.howto-subjects i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sc);color:#fff;flex:none}
+.howto-subjects i svg{width:14px;height:14px;stroke-width:2.6}
+
+/* ---------------- Logo and rarity score (Astra, 2026-11-14) ---------------- */
+/* The logo: three gold cards fanned out, before the word Papermon */
+.deck-mode .brand{display:inline-flex;align-items:center;gap:0}
+.brand-logo{height:1.1em;width:auto;flex:none;margin-right:.14em;filter:drop-shadow(0 2px 3px #0004)}
+@media(max-width:520px){.brand-logo{height:1em}}
+/* The rarity score under the rarity word on the card band */
+.deck-rarity-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:.5cqw;min-width:0}
+.deck-score{font-size:2.5cqw;font-weight:700;letter-spacing:.15cqw;text-transform:uppercase;line-height:1;color:#1c1a1e;opacity:.8;white-space:nowrap}
+/* The rarity chart in How to play */
+.rarity-chart{display:flex;flex-direction:column;gap:12px;margin:8px 0 14px}
+.rarity-chart table{width:100%;border-collapse:collapse;font-size:14px}
+.rarity-chart th{text-align:left;font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.7;padding:4px 8px;border-bottom:1px solid #00000033}
+.rarity-chart td{padding:6px 8px;border-bottom:1px solid #00000014;vertical-align:top;line-height:1.4}
+.rc-scale{display:flex;border-radius:10px;overflow:hidden;border:1px solid #00000033}
+.rc-seg{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;gap:2px;color:#111;text-align:center}
+.rc-seg b{font-size:13px;line-height:1.15}
+.rc-seg span{font-size:12px;font-variant-numeric:tabular-nums}
+.rc-t1{background:#d8d6d2}
+.rc-t2{background:linear-gradient(90deg,#cfe2ee,#e4f0f7)}
+.rc-t3{background:linear-gradient(100deg,#c9ccd2,#f7f8fa 50%,#aeb2ba)}
+.rc-t4{background:linear-gradient(90deg,#ffd1e6,#e0ccff,#c7ecff,#d6ffe9,#fff2c2)}
+.rc-t5{background:linear-gradient(90deg,#e8bb52,#fff1c4 50%,#d29a32)}
+.rc-examples{margin:0;padding-left:18px;font-size:14px;line-height:1.5}

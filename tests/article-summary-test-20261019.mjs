@@ -74,7 +74,7 @@ test('edited prose is labeled differently and partial editorial fields do not mi
   assert.equal(result.kind, 'edited');
   assert.equal(result.hook, input.hook);
   assert.equal(result.explanation, input.explanation);
-  assert.match(result.attribution, /Plain-English take by Paper Girl/);
+  assert.match(result.attribution, /Plain-English take by Papermon/);
   assert.equal(formatArticleSummary({...input, importance: undefined}).kind, 'publisher-excerpts');
 });
 

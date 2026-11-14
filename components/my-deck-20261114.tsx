@@ -12,9 +12,24 @@ import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import '@/app/my-deck-20261114.css';
 
-export type Card={made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+export type Card={cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
-const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
+export const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
+/**
+ * The Papermon rarity score (Astra, 2026-11-14: "our own type of rank for rarity ... a number score ... all the stuff
+ * added up, weighted"). Points: 10 for each reading-difficulty star, 1 for every year since the paper came out (no
+ * limit, so a card gets rarer every year), 50 when the paper's author has checked the card. The total picks the tier.
+ */
+export const SCORE={perStar:10,perYear:1,author:50};
+export const TIERS=[{tier:1,min:0,max:29},{tier:2,min:30,max:49},{tier:3,min:50,max:69},{tier:4,min:70,max:89},{tier:5,min:90,max:null}];
+export function ageYears(published?:string,now=new Date()){
+ if(!published)return 0;const p=new Date(published+'T12:00:00');let y=now.getFullYear()-p.getFullYear();
+ if(now.getMonth()<p.getMonth()||(now.getMonth()===p.getMonth()&&now.getDate()<p.getDate()))y--;return Math.max(0,y);
+}
+export function rarityOf(card:{lv:number;published?:string;author?:boolean}){
+ const age=ageYears(card.published),score=card.lv*SCORE.perStar+age*SCORE.perYear+(card.author?SCORE.author:0);
+ const tier=[...TIERS].reverse().find(t=>score>=t.min)!.tier;return {score,tier,age};
+}
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
 const SUBJECT:Record<string,{icon:LucideIcon;color:string}>={
  // Each subject always has the same symbol and color (Astra, 2026-11-14: "psychology, which is always a brain in pink").
@@ -30,8 +45,9 @@ export const TYPES=Object.entries(SUBJECT).map(([name,t])=>({name,label:name.rep
 export function subjectColor(subject?:string){return (subject&&SUBJECT[subject]?.color)||'#d9a53f'}
 
 function Stars({n}:{n:number}){
- // Only the filled stars: 1 to 5 (Astra, 2026-11-14: "I don't want to see the non-filled stars").
- return <span className="deck-stars" aria-label={`Difficulty ${n} of 5`}><em>Difficulty</em>{Array.from({length:n},(_,i)=><i key={i} className="on" aria-hidden="true">★</i>)}</span>;
+ // Only the filled stars: 1 to 5 (Astra, 2026-11-14: "I don't want to see the non-filled stars"). The stars are the
+ // READING difficulty: how hard the original paper is to understand (Astra, 2026-11-14).
+ return <span className="deck-stars" aria-label={`Reading difficulty ${n} of 5`}><em>Reading difficulty</em><span className="deck-star-row">{Array.from({length:n},(_,i)=><i key={i} className="on" aria-hidden="true">★</i>)}</span></span>;
 }
 
 // Sparkles from Astra's portfolio (findastra.github.io, the twinkles over her portrait): four-point stars that grow,
@@ -56,13 +72,26 @@ function Glitter({seed,gold,count=14,whole=false}:{seed:string;gold:boolean;coun
 
 const fmtDate=(d:string)=>new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
 
-// "Read it?" tick, kept in this browser per card.
-const READ_KEY='paper-girl:read:v1';
-function useRead(no:string):[boolean,(v:boolean)=>void]{
- const [read,setRead]=useState(false);
- useEffect(()=>{try{setRead(!!JSON.parse(localStorage.getItem(READ_KEY)||'{}')[no])}catch{}},[no]);
- return [read,(v:boolean)=>{setRead(v);try{const m=JSON.parse(localStorage.getItem(READ_KEY)||'{}');if(v)m[no]=1;else delete m[no];localStorage.setItem(READ_KEY,JSON.stringify(m))}catch{}}];
+// "Read it?" tick (Completion), kept in this browser per card. One shared list, so the deck's tally (minutes read)
+// updates the moment any card is ticked. Ticks saved under the old name are carried over once.
+const READ_KEY='papermon:read:v1',OLD_READ_KEY='paper-girl:read:v1',READ_EVENT='papermon-read';
+// Cards are numbered in the order they were minted (Astra, 2026-11-14), so the five starter cards became 1 to 5;
+// ticks saved under their old numbers follow them.
+const RENUMBERED:Record<string,string>={'000,181':'000,001','000,140':'000,002','000,131':'000,003','000,152':'000,004','000,128':'000,005'};
+function loadRead():Record<string,1>{try{const now=localStorage.getItem(READ_KEY);if(now)return JSON.parse(now);
+ const old=JSON.parse(localStorage.getItem(OLD_READ_KEY)||'{}') as Record<string,1>;return Object.fromEntries(Object.keys(old).map(k=>[RENUMBERED[k]||k,1]))}catch{return {}}}
+function saveRead(no:string,v:boolean){const m=loadRead();if(v)m[no]=1;else delete m[no];
+ try{localStorage.setItem(READ_KEY,JSON.stringify(m))}catch{}window.dispatchEvent(new Event(READ_EVENT))}
+export function useReadMap(){
+ const [m,setM]=useState<Record<string,1>>({});
+ useEffect(()=>{const f=()=>setM(loadRead());f();window.addEventListener(READ_EVENT,f);window.addEventListener('storage',f);
+  return()=>{window.removeEventListener(READ_EVENT,f);window.removeEventListener('storage',f)}},[]);
+ return m;
 }
+function useRead(no:string):[boolean,(v:boolean)=>void]{const m=useReadMap();return [!!m[no],v=>saveRead(no,v)]}
+
+/** Every subject with its symbol, name and color, for places that list them (the How to play rules). */
+export const SUBJECTS=Object.entries(SUBJECT).map(([name,t])=>({name,icon:t.icon,color:t.color}));
 
 export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
  const [flipped,setFlipped]=useState(false);
@@ -71,41 +100,52 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
  const [sweep,setSweep]=useState(0);
  const [read,setRead]=useRead(card.no);
  const turn=()=>{setFlipped(f=>!f);setSweep(s=>s===1?2:1)};
- // An author-approved card is Legendary (Astra, 2026-11-14); the stars still show how hard the paper is.
- const rarity=card.author?'Legendary':RARITY[card.lv];
+ // Rarity comes from the rarity score (difficulty, age and the author's check, weighted); the stars still show how
+ // hard the paper is to read.
+ const {score,tier}=rarityOf(card),rarity=RARITY[tier];
  const type=SUBJECT[card.subject]||FALLBACK;const TypeIcon=type.icon;
- const own=(t:EventTarget)=>!!(t as HTMLElement).closest('a,label,input');
- // In My deck a click opens the card up top with its full write-up (onPick); in the top box a click flips it.
- const flip=(e:{target:EventTarget})=>{if(own(e.target))return;if(onPick)onPick(card);else turn()};
- // Gold card (Astra, 2026-11-14): Legendary or verified by its author = the whole card is gold, whatever the subject,
- // with sparkles over the whole card. The Type stat's colored chip still tells the subject.
- const gold=card.lv>=5||!!card.author;
- return <div className={'deck-slot '+(card.author?'author':'lv'+card.lv)+(gold?' gold-card':'')} style={{'--sc':type.color} as CSSProperties}>
+ const own=(t:EventTarget)=>!!(t as HTMLElement).closest('a,label,input,button');
+ // A click always flips the card (Astra, 2026-11-14). In My deck its back has a button that opens the write-up up top.
+ const flip=(e:{target:EventTarget})=>{if(own(e.target))return;turn()};
+ // Gold card (Astra, 2026-11-14): a Legendary card is gold all over, whatever the subject, with sparkles over the
+ // whole card. The Subject stat's colored chip still tells the subject.
+ const gold=tier>=5;
+ const journal=card.src.replace(/\s*\d{4}$/,'');
+ return <div className={'deck-slot lv'+tier+(card.author?' author':'')+(gold?' gold-card':'')} style={{'--sc':type.color} as CSSProperties}>
   <div className={'deck-card'+(flipped?' flipped':'')+(sweep?` sweep${sweep}`:'')} role="button" tabIndex={0} aria-pressed={flipped}
    // The sheen sits where the mouse is, like light on a real card (Astra, 2026-11-14); it drifts on its own otherwise.
    onPointerMove={e=>{if(e.pointerType!=='mouse')return;const r=e.currentTarget.getBoundingClientRect(),el=e.currentTarget;
     el.classList.add('lit');el.style.setProperty('--lx',`${((e.clientX-r.left)/r.width*100).toFixed(1)}%`);el.style.setProperty('--ly',`${((e.clientY-r.top)/r.height*100).toFixed(1)}%`)}}
    onPointerLeave={e=>{e.currentTarget.classList.remove('lit')}}
-   aria-label={`${card.name}, ${card.subject}, ${rarity}, level ${card.lv}. Tap to flip.`}
+   aria-label={`${card.name}, ${card.subject}, ${rarity}, rarity score ${score}, reading difficulty ${card.lv}. Tap to flip.`}
    onClick={flip} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&!own(e.target)){e.preventDefault();turn()}}}>
    <div className="deck-inner">
     <div className="deck-face deck-front">
      {gold&&<Glitter seed={card.no+':card'} gold count={22} whole/>}
      <div className="deck-top">
       <span className="deck-type" title={card.subject}><TypeIcon aria-hidden="true"/></span>
-      <div className="deck-title"><p className="deck-name">{card.name}</p><span className="deck-no">No. {card.no}</span></div>
+      <div className="deck-title"><p className="deck-name">{card.name}</p></div>
       <span className="deck-lv" aria-label={`Level ${card.lv}`}>LV <b>{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
-      {(card.lv>=4||gold)&&<Glitter seed={card.no} gold={gold} count={30}/>}</div></div>
-     <div className="deck-stats">
-      <div><span>type</span><b className="deck-type-stat"><i aria-hidden="true"><TypeIcon/></i>{card.subject}</b></div>
-      <div><span>paper</span><a href={card.url} target="_blank" rel="noreferrer">Open ↗</a></div>
-      <label className="deck-read"><span>read paper</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/>
-       {/* Looks like the Type stat: a circle that fills in when you tap it (Astra, 2026-11-14) */}
-       <b className="deck-type-stat"><i className={'read-dot'+(read?' on':'')} aria-hidden="true">{read&&<Check/>}</i>{read?'Read':'Not read'}</b></label>
+      {(tier>=4||gold)&&<Glitter seed={card.no} gold={gold} count={30}/>}</div></div>
+     {/* Stats (Astra, 2026-11-14): Subject, Article (the journal's name, linked) and Completion (a gold circle that
+         fills in), centered in the space under the picture, with the card number centered under them. */}
+     <div className="deck-lower">
+      <div className="deck-stats">
+       <div><span>subject</span><b className="deck-type-stat"><i aria-hidden="true"><TypeIcon/></i>{card.subject}</b></div>
+       <div><span>article</span><a href={card.url} target="_blank" rel="noreferrer">{journal} ↗</a></div>
+       <label className="deck-read"><span>completion</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/>
+        <b className="deck-type-stat"><i className={'read-dot'+(read?' on':'')} aria-hidden="true">{read&&<Check/>}</i>{read?'Read':'Unread'}</b></label>
+      </div>
+      {/* Second row (Astra, 2026-11-14): the year the paper came out and the year this card was minted */}
+      <div className="deck-stats deck-stats-years">
+       <div><span>published</span><b>{card.published?.slice(0,4)||card.src.match(/\d{4}/)?.[0]||'—'}</b></div>
+       <div><span>minted</span><b>{card.made?.slice(0,4)||'—'}</b></div>
+      </div>
+      <span className="deck-no">No. {card.no}</span>
      </div>
-     <div className="deck-band"><span className="deck-rarity">{rarity}</span><Stars n={card.lv}/></div>
+     <div className="deck-band"><span className="deck-rarity-wrap"><span className={'deck-rarity'+(tier>=3?' shiny':'')}>{rarity}</span><small className="deck-score">Rarity score {score}</small></span><Stars n={card.lv}/></div>
     </div>
     <div className="deck-face deck-back">
      {gold&&<Glitter seed={card.no+':back'} gold count={16} whole/>}
@@ -113,6 +153,11 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
      <div><h4>STRANGE HOOK</h4><p>{card.hook}</p></div>
      <div><h4>WHAT THEY FOUND</h4><p>{card.found}</p></div>
      <div><h4>WHY IT MATTERS</h4><p>{card.matters}</p></div>
+     {/* Two buttons on the back (Astra, 2026-11-14): the longer write-up on the paper up top, and the original article. */}
+     <div className="deck-back-actions">
+      {onPick&&<button type="button" onClick={()=>onPick(card)}>Read the write-up ↑</button>}
+      <a href={card.url} target="_blank" rel="noreferrer">Original article ↗</a>
+     </div>
      {/* Back footer (Astra, 2026-11-14): the day the card was made; on an author-approved card, the author's own
          signature or their lab's logo as a stamp (they send it with their answer; this one is a placeholder). */}
      <div className="deck-bfoot">
@@ -128,17 +173,29 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
  </div>;
 }
 
-// Order printed cards of your deck (Astra, 2026-11-14), shown next to the Draw deck. Printing is not set up yet, so it
-// says so instead of taking an order.
-export function OrderDeck(){
- const [open,setOpen]=useState(false);
- return <div className="order-deck"><button type="button" className="order-deck-button" aria-expanded={open} onClick={()=>setOpen(o=>!o)}>Order my deck</button>
-  {open&&<p className="order-deck-note" role="status">Printed decks are coming soon. Your cards are saved here until then.</p>}</div>;
+/**
+ * The collection's tally at the top of My deck (Astra, 2026-11-14): how many cards of each subject (the symbol only;
+ * hover it for the name), how many are read, and the minutes of reading those read articles add up to.
+ */
+function DeckTally(){
+ const read=useReadMap();
+ const bySubject=Object.entries(cards.reduce<Record<string,number>>((m,c)=>{m[c.subject]=(m[c.subject]||0)+1;return m},{}));
+ const done=cards.filter(c=>read[c.no]),minutes=done.reduce((n,c)=>n+(c.readMinutes||0),0);
+ return <div className="deck-tally">
+  <div className="tally-subjects" aria-label="Cards by subject">{bySubject.map(([s,n])=>{const t=SUBJECT[s]||FALLBACK,Icon=t.icon;
+   return <span key={s} className="tally-sub" title={s} aria-label={`${n} ${s}`} style={{'--sc':t.color} as CSSProperties}><i aria-hidden="true"><Icon/></i><b>{n}</b></span>})}</div>
+  <div className="tally-stats">
+   <span><b>{cards.length}</b> {cards.length===1?'card':'cards'}</span>
+   <span><b>{done.length}</b> read</span>
+   <span><b>{minutes}</b> {minutes===1?'minute':'minutes'} of reading</span>
+  </div>
+ </div>;
 }
 
 export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
  return <section className="my-deck" aria-labelledby="my-deck-title">
   <h2 id="my-deck-title" className="sr-only">Your deck</h2>
+  <DeckTally/>
   <div className="my-deck-grid">{cards.map(c=><DeckCard key={c.no} card={c} onPick={onPick}/>)}</div>
  </section>;
 }

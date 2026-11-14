@@ -2,9 +2,9 @@
 // The draw bar inside the card-of-the-day box (Astra, 2026-11-14): two wheels like Spoonfed's reels (Type and
 // Difficulty), each turned by the mouse wheel, the arrows, a swipe or the keyboard, and a face-down deck of cards you
 // click to draw from. The Type wheel shows the same pills as a card's type chip: colored circle, symbol, name capitalized.
-import {useEffect,useRef,type ReactNode,type CSSProperties} from 'react';
-import {ChevronUp,ChevronDown} from 'lucide-react';
-import {TYPES,OrderDeck} from '@/components/my-deck-20261114';
+import {useEffect,useRef,useState,type ReactNode,type CSSProperties} from 'react';
+import {ChevronUp,ChevronDown,Printer} from 'lucide-react';
+import {TYPES} from '@/components/my-deck-20261114';
 
 type Item={key:string;view:ReactNode;label:string};
 
@@ -47,9 +47,19 @@ export const LEVEL_ITEMS:Item[]=[{key:'0',label:'Any difficulty',view:<span clas
  * rainbow, click the stars out of 5, and then click the draw"): a row of type circles (rainbow = any type), five stars
  * (click the same star again for any difficulty), and the face-down deck to draw from.
  */
-export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status}:{busy:boolean;type:number;level:number;
- onType:(i:number)=>void;onLevel:(i:number)=>void;onDraw:()=>void;status:string}){
- // Types and stars on the left, the deck on the right (Astra, 2026-11-14)
+/** Published-year bands for drawing (Astra, 2026-11-14): this year, then five-year steps back to 50, then "50+ yrs"
+ * with no upper limit on age. 0 = any year. */
+export const YEAR_BANDS:{label:string;ago:[number,number]}[]=[{label:'This year',ago:[0,0]},{label:'1–5 yrs',ago:[1,5]},
+ ...Array.from({length:9},(_,i)=>({label:`${(i+1)*5}–${(i+2)*5} yrs`,ago:[(i+1)*5+1,(i+2)*5] as [number,number]})),
+ {label:'50+ yrs',ago:[51,1000]}];
+export function yearRange(i:number){if(!i)return null;const y=new Date().getFullYear(),[a,b]=YEAR_BANDS[i-1].ago;return {from:Math.max(1600,y-b),to:y-a}}
+
+export function DrawPicker({busy,type,level,year,onType,onLevel,onYear,onDraw,status,children}:{busy:boolean;type:number;level:number;year:number;
+ onType:(i:number)=>void;onLevel:(i:number)=>void;onYear:(i:number)=>void;onDraw:()=>void;status:string;children?:ReactNode}){
+ // Order printed cards of your deck. Printing is not set up yet, so it says so instead of taking an order.
+ const [ordering,setOrdering]=useState(false);
+ // Redone 2026-11-14 (Astra did not like the little deck with "Draw" or the "Order my deck" pill): everything centered
+ // under the card, type circles, then stars, then two matching buttons side by side: Draw a card (gold) and Order my deck.
  return <div className="draw-picker" aria-label="Draw a card"><div className="pick-left">
   <div className="pick-types" role="radiogroup" aria-label="Type">
    <button role="radio" aria-checked={type===0} title="Random type" aria-label="Random type" className={'pick-dot any'+(type===0?' on':'')} disabled={busy} onClick={()=>onType(0)}><i aria-hidden="true">?</i></button>
@@ -57,17 +67,21 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status}:{busy:
     className={'pick-dot'+(type===i+1?' on':'')} style={{'--tc':t.color} as CSSProperties} disabled={busy} onClick={()=>onType(i+1)}><i aria-hidden="true"><Icon/></i></button>})}
   </div>
   <div className="pick-stars" role="radiogroup" aria-label="Difficulty">
-   {[1,2,3,4,5].map(n=><button key={n} role="radio" aria-checked={level===n} aria-label={`Difficulty ${n} of 5`} title={`Difficulty ${n}`}
+   {[1,2,3,4,5].map(n=><button key={n} role="radio" aria-checked={level===n} aria-label={`Reading difficulty ${n} of 5`} title={`Reading difficulty ${n}`}
     className={'pick-star'+(level>=n?' on':'')} disabled={busy} onClick={()=>onLevel(level===n?0:n)}>★</button>)}
-   <span className="pick-any">{level?`${level} of 5`:'any difficulty'}</span>
+   <span className="pick-any">{level?`reading difficulty ${level} of 5`:'any reading difficulty'}</span>
+  </div>
+  {/* Published: tap a band, tap it again for any year */}
+  <div className="pick-years" role="radiogroup" aria-label="Published">
+   {YEAR_BANDS.map((b,i)=><button key={b.label} role="radio" aria-checked={year===i+1} className={'pick-year'+(year===i+1?' on':'')} disabled={busy}
+    onClick={()=>onYear(year===i+1?0:i+1)}>{b.label}</button>)}
   </div></div>
-  <button className={'draw-deck'+(busy?' busy':'')} disabled={busy} onClick={onDraw} aria-label="Draw a card">
-   {/* A real card back on the deck (Astra, 2026-11-14): light card with the gold double rim, a gold star seal and the
-       name, like the back of a printed card */}
-   <span className="draw-deck-cards" aria-hidden="true"><span/><span/><span className="top card-back"><i className="cb-rim"/><b>✦</b><small>papergirl</small></span></span>
-   <span className="draw-deck-label">{busy?'Drawing…':'Draw'}</span>
-  </button>
-  <OrderDeck/>
+  <div className="pick-actions">
+   <button type="button" className={'pick-draw'+(busy?' busy':'')} disabled={busy} onClick={onDraw}><span className="pick-draw-icon" aria-hidden="true">✦</span>{busy?'Drawing…':'Draw a card'}</button>
+   <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>setOrdering(o=>!o)}><Printer size={16} aria-hidden="true"/>Order my deck</button>
+   {children}
+   {ordering&&<p className="pick-order-note" role="status">Printed decks are coming soon. Your cards are saved here until then.</p>}
+  </div>
   <span className="draw-status" role="status" aria-live="polite">{status}</span>
  </div>;
 }
