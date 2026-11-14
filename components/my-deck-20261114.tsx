@@ -6,7 +6,7 @@
 // Back: the three sections, the "Read the paper" link, the source, the author status and the card number.
 // DRAFT: shows ten sample cards and only when the address has ?deck (for example /paper-girl/?deck), so the live site
 // is unchanged until real cards exist. Card rules: docs/card-plan-20261113.md.
-import {useState} from 'react';
+import {useState,type CSSProperties} from 'react';
 import {Atom,Brain,CircleHelp,FlaskConical,Globe2,Leaf,Sigma,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
@@ -18,8 +18,8 @@ const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rar
 const READ:Record<number,string>={1:'1 min',2:'2 min',3:'3 min',4:'5 min',5:'7 min'};
 // Subject = the card's type: one icon and color each, like a trading card's type symbol.
 const SUBJECT:Record<string,{icon:LucideIcon;color:string}>={
- Biology:{icon:Leaf,color:'#4f9a5e'},Psychology:{icon:Brain,color:'#d9709f'},Chemistry:{icon:FlaskConical,color:'#8a68d6'},
- 'Earth science':{icon:Globe2,color:'#3f8ccc'},Physics:{icon:Atom,color:'#e0843a'},Math:{icon:Sigma,color:'#2f9c95'}};
+ Biology:{icon:Leaf,color:'#4f9a5e'},Psychology:{icon:Brain,color:'#8d6bc8'},Chemistry:{icon:FlaskConical,color:'#d08a2e'},
+ 'Earth science':{icon:Globe2,color:'#3f8ccc'},Physics:{icon:Atom,color:'#d4664a'},Math:{icon:Sigma,color:'#2f9c95'}};
 const FALLBACK={icon:CircleHelp,color:'#6b6470'};
 
 function Stars({n}:{n:number}){
@@ -32,22 +32,23 @@ function DeckCard({card}:{card:Card}){
  const rarity=card.author?'Legendary':RARITY[card.lv];
  const type=SUBJECT[card.subject]||FALLBACK;const TypeIcon=type.icon;
  const flip=(e:{target:EventTarget})=>{if((e.target as HTMLElement).closest('a'))return;setFlipped(f=>!f)};
- return <div className={'deck-slot '+(card.author?'author':'lv'+card.lv)}>
+ return <div className={'deck-slot '+(card.author?'author':'lv'+card.lv)} style={{'--sc':type.color} as CSSProperties}>
   <div className={'deck-card'+(flipped?' flipped':'')} role="button" tabIndex={0} aria-pressed={flipped}
    aria-label={`${card.name}, ${card.subject}, ${rarity}, level ${card.lv}. Tap to flip.`}
    onClick={flip} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&!(e.target as HTMLElement).closest('a')){e.preventDefault();setFlipped(f=>!f)}}}>
    <div className="deck-inner">
     <div className="deck-face deck-front">
      <div className="deck-top">
-      <span className="deck-type" style={{background:type.color}} title={card.subject}><TypeIcon aria-hidden="true"/></span>
+      <span className="deck-type" title={card.subject}><TypeIcon aria-hidden="true"/></span>
       <p className="deck-name">{card.name}</p>
       <span className="deck-lv">LV <b>{card.lv}</b></span>
      </div>
-     <div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/></div>
+     <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/></div></div>
      <div className="deck-stats">
       <div><span>subject</span><b>{card.subject}</b></div>
       <div><span>read</span><b>{READ[card.lv]}</b></div>
       <div><span>from</span><b>{card.src}</b></div>
+      <div><span>paper</span><a href={card.url} target="_blank" rel="noreferrer">Open ↗</a></div>
      </div>
      <div className="deck-band"><span className="deck-rarity">{rarity}</span><Stars n={card.lv}/></div>
     </div>

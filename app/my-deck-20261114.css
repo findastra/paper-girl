@@ -1,55 +1,80 @@
-/* "My deck" at the bottom of the main page. Same card rules as docs/card-drafts-20261113.html: 5x7 cards sized in
-   container units (cqw), so each card scales as one piece on any screen. */
+/* "My deck" at the bottom of the main page. 5x7 cards sized in container units (cqw), so each card scales as one
+   piece on any screen. Astra, 2026-11-14: the card's color comes from its SUBJECT (like a trading card's type); the
+   picture sits in a metal frame; rarity shows in the frame and the foil ON THE PICTURE, not the border:
+   1-3 silver frame, 4 rainbow frame + rainbow holographic flakes, Legendary gold frame + gold flakes. */
 .my-deck{margin-top:28px;border-top:1px solid #4d394e;padding:26px 3px 6px}
 .my-deck-head{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:18px;text-align:center}
 .my-deck-head h2{margin:0;font-family:'Space Grotesk',sans-serif;font-size:clamp(22px,2.4vw,28px);font-weight:700;color:#f4e9ed}
 .my-deck-head span{font-size:13px;color:#b89cac}
 .my-deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(220px,22vw,280px),1fr));gap:clamp(16px,2vw,24px)}
 @media(max-width:520px){.my-deck-grid{grid-template-columns:1fr;justify-items:center}.my-deck-grid .deck-slot{width:min(86vw,360px)}}
-.deck-slot{container-type:inline-size;width:100%}
+.deck-slot{container-type:inline-size;width:100%;--sc:#8a8a8a}
 .deck-card{position:relative;width:100%;aspect-ratio:5/7;perspective:1600px;cursor:pointer;outline:none}
 .deck-card:focus-visible{outline:2px solid #efa9c5;outline-offset:4px;border-radius:3cqw}
 .deck-inner{position:relative;width:100%;height:100%;transition:transform .6s cubic-bezier(.3,.7,.3,1);transform-style:preserve-3d}
 .deck-card.flipped .deck-inner{transform:rotateY(180deg)}
-.deck-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3cqw;overflow:hidden;box-shadow:0 2cqw 5cqw #0008;display:flex;flex-direction:column;color:#2a1f2c}
+/* Card body: the subject's color */
+.deck-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:3cqw;overflow:hidden;box-shadow:0 2cqw 5cqw #0008;display:flex;flex-direction:column;color:#232025;
+ background:linear-gradient(165deg,color-mix(in srgb,var(--sc) 20%,#fbf8f2),color-mix(in srgb,var(--sc) 42%,#f1ece4))}
 .deck-back{transform:rotateY(180deg)}
 .deck-face>*{position:relative;z-index:1}
-.lv1 .deck-face{background:#f2ece8;--rc:#8d7f88}
-.lv2 .deck-face{background:linear-gradient(160deg,#eef3f7,#dde8f1);--rc:#4f7591}
-.lv3 .deck-face{background:linear-gradient(135deg,#eef0f7,#e6f1f0 40%,#f3efe2 75%,#eef0f7);--rc:#2f6f8f}
-.lv4 .deck-face{background:linear-gradient(125deg,#ffb3d6,#cfb0ff 16%,#9fdcff 32%,#b6ffd7 48%,#ffe99a 64%,#ffb3d6 80%,#cfb0ff);background-size:200% 200%;animation:deck-prism 8s ease-in-out infinite alternate;--rc:#6a3fb5}
-.lv5 .deck-face,.author .deck-face{background:linear-gradient(135deg,#fff1c4,#eec766 22%,#fff6da 42%,#e2b04a 62%,#fbe3a0 82%,#d9a53f);background-size:200% 200%;animation:deck-prism 8s ease-in-out infinite alternate;--rc:#8a5a10}
-.lv3 .deck-face::before,.lv4 .deck-face::before,.lv5 .deck-face::before,.author .deck-face::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 36%,#ffffffb0 48%,transparent 60%);background-size:260% 100%;mix-blend-mode:overlay;pointer-events:none;animation:deck-sweep 5s ease-in-out infinite}
-.lv3 .deck-face::before{animation-duration:7s;opacity:.7}
-/* Very subtle shimmer on the rainbow (holo) and gold cards: tiny glints that slowly twinkle (Astra, 2026-11-14). */
-.lv4 .deck-face::after,.lv5 .deck-face::after,.author .deck-face::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;mix-blend-mode:screen;
- background-image:radial-gradient(circle,#ffffffe0 0 .22cqw,transparent .5cqw),radial-gradient(circle,#ffffffb0 0 .16cqw,transparent .4cqw),radial-gradient(circle,#fff6d0c0 0 .18cqw,transparent .45cqw);
- background-size:13cqw 17cqw,19cqw 11cqw,23cqw 29cqw;background-position:2cqw 3cqw,9cqw 6cqw,5cqw 14cqw;opacity:.35;animation:deck-glint 3.6s ease-in-out infinite alternate}
-.lv5 .deck-face::after,.author .deck-face::after{animation-delay:-1.8s}
-@keyframes deck-glint{0%{opacity:.18;background-position:2cqw 3cqw,9cqw 6cqw,5cqw 14cqw}100%{opacity:.5;background-position:3cqw 2cqw,8cqw 7cqw,6cqw 13cqw}}
-@keyframes deck-prism{from{background-position:0% 30%}to{background-position:100% 70%}}
-@keyframes deck-sweep{0%{background-position:130% 0}55%,100%{background-position:-70% 0}}
-/* Front: top bar, a perfectly square picture (Astra, 2026-11-14), the headline, the rarity band. No links. */
-.deck-front{padding:3.4cqw 3.4cqw 0;gap:2.4cqw}
+/* Rarity accent (band word, stars, back titles) and the frame metal */
+.lv1{--rc:#6f6a72;--frame:linear-gradient(135deg,#e9e9ec,#a9abb2 45%,#f4f4f6 60%,#9a9ca3)}
+.lv2{--rc:#3f6a87;--frame:linear-gradient(135deg,#eef2f6,#9fb0c0 45%,#f6f8fa 60%,#8d9fb0)}
+.lv3{--rc:#1f5f86;--frame:linear-gradient(135deg,#f2f4f7,#a8b4c4 40%,#ffffff 55%,#8797ab)}
+.lv4{--rc:#5b34a8;--frame:linear-gradient(135deg,#ffb3d6,#cfb0ff 20%,#9fdcff 40%,#b6ffd7 60%,#ffe99a 80%,#ffb3d6)}
+.lv5,.author{--rc:#8a5a10;--frame:linear-gradient(135deg,#fff1c4,#e8bb52 30%,#fff6da 50%,#d29a32 70%,#fbe3a0)}
+
+.deck-front{padding:3.4cqw 3.4cqw 0;gap:2.2cqw}
 .deck-top{display:flex;align-items:center;gap:2cqw;padding:0 .6cqw}
-.deck-type{flex:none;width:7.4cqw;height:7.4cqw;border-radius:50%;display:grid;place-items:center;color:#fff;box-shadow:0 .4cqw 1cqw #2a1f2c40,inset 0 0 0 .5cqw #ffffff55}
+.deck-type{flex:none;width:7.4cqw;height:7.4cqw;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--sc);box-shadow:0 .4cqw 1cqw #2a1f2c40,inset 0 0 0 .5cqw #ffffff55}
 .deck-type svg{width:4.4cqw;height:4.4cqw;stroke-width:2.4}
 .deck-name{flex:1;min-width:0;margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:6.6cqw;line-height:1.02;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .deck-lv{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:4cqw;white-space:nowrap}
 .deck-lv b{font-size:7cqw}
-.deck-window{flex:none;width:100%;aspect-ratio:1/1;border-radius:2cqw;overflow:hidden;background:#d9c6d1;box-shadow:0 .6cqw 1.8cqw #2a1f2c33}
+
+/* The picture: a perfect square inside a metal frame */
+.deck-frame{flex:none;padding:1.2cqw;border-radius:2.6cqw;background:var(--frame);box-shadow:0 .8cqw 2cqw #2a1f2c44,inset 0 0 0 .3cqw #ffffff80}
+.deck-window{position:relative;width:100%;aspect-ratio:1/1;border-radius:1.6cqw;overflow:hidden;background:#efe9df;box-shadow:inset 0 0 0 .3cqw #00000030}
 .deck-window img{width:100%;height:100%;object-fit:cover;display:block}
-/* Stats: only real facts about the paper */
-.deck-stats{display:grid;grid-template-columns:1fr .7fr 1fr;text-align:center;gap:1cqw}
-.deck-stats span{display:block;font-size:3.4cqw;text-transform:uppercase;letter-spacing:.3cqw;opacity:.65}
-.deck-stats b{display:block;font-size:4.4cqw;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.deck-band{margin:auto -3.4cqw 0;padding:2.2cqw 4.4cqw;display:flex;align-items:center;justify-content:space-between;gap:2cqw;background:color-mix(in srgb,var(--rc) 16%,transparent);border-top:.4cqw solid color-mix(in srgb,var(--rc) 40%,transparent)}
+/* Holographic foil on the picture of rare cards: a moving rainbow (or gold) sheen plus flakes like a sparkly bowling
+   ball. Two layers of flakes twinkle out of step. */
+.lv4 .deck-window::before,.lv5 .deck-window::before,.author .deck-window::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:color-dodge;opacity:.42;
+ background:linear-gradient(115deg,#ff8fc8 0%,#ffe27a 18%,#8dffc4 36%,#7fd3ff 54%,#c49bff 72%,#ff8fc8 90%);background-size:300% 300%;animation:deck-holo 6s ease-in-out infinite alternate}
+.lv5 .deck-window::before,.author .deck-window::before{background:linear-gradient(115deg,#fff3c2 0%,#e2a93a 25%,#fffbe6 45%,#c98a22 65%,#ffe7a0 85%);mix-blend-mode:soft-light;opacity:.75}
+.lv4 .deck-window::after,.lv5 .deck-window::after,.author .deck-window::after{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+ background-image:
+  radial-gradient(circle,#ffffff 0 .35cqw,transparent .6cqw),
+  radial-gradient(circle,#ff9fd6 0 .45cqw,transparent .75cqw),
+  radial-gradient(circle,#8fe8ff 0 .4cqw,transparent .7cqw),
+  radial-gradient(circle,#fff08a 0 .38cqw,transparent .65cqw),
+  radial-gradient(circle,#b9ffcf 0 .3cqw,transparent .55cqw),
+  radial-gradient(circle,#ffffff 0 .25cqw,transparent .45cqw);
+ background-size:7cqw 9cqw,11cqw 8cqw,9cqw 13cqw,13cqw 10cqw,6cqw 7cqw,5cqw 6cqw;
+ background-position:1cqw 2cqw,5cqw 4cqw,3cqw 7cqw,8cqw 1cqw,2cqw 5cqw,4cqw 3cqw;
+ animation:deck-flakes 2.4s steps(2,jump-none) infinite alternate}
+.lv5 .deck-window::after,.author .deck-window::after{background-image:
+  radial-gradient(circle,#ffffff 0 .35cqw,transparent .6cqw),radial-gradient(circle,#ffe08a 0 .45cqw,transparent .75cqw),
+  radial-gradient(circle,#fff6d6 0 .4cqw,transparent .7cqw),radial-gradient(circle,#f2c14e 0 .38cqw,transparent .65cqw),
+  radial-gradient(circle,#ffffff 0 .3cqw,transparent .55cqw),radial-gradient(circle,#ffd36a 0 .25cqw,transparent .45cqw)}
+@keyframes deck-holo{from{background-position:0% 40%}to{background-position:100% 60%}}
+@keyframes deck-flakes{0%{opacity:.55;background-position:1cqw 2cqw,5cqw 4cqw,3cqw 7cqw,8cqw 1cqw,2cqw 5cqw,4cqw 3cqw}
+ 100%{opacity:.95;background-position:1.6cqw 1.4cqw,4.2cqw 4.8cqw,3.8cqw 6.2cqw,7.2cqw 1.8cqw,2.8cqw 4.4cqw,4.6cqw 2.4cqw}}
+
+/* Stats: only real facts about the paper; the last one opens it */
+.deck-stats{display:grid;grid-template-columns:1.1fr .7fr 1fr .8fr;text-align:center;gap:1cqw;align-items:end}
+.deck-stats span{display:block;font-size:3.2cqw;text-transform:uppercase;letter-spacing:.25cqw;opacity:.65}
+.deck-stats b{display:block;font-size:4.2cqw;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deck-stats a{display:block;font-size:4.2cqw;font-weight:700;color:inherit;white-space:nowrap;text-decoration:underline;text-underline-offset:.8cqw}
+.deck-band{margin:auto -3.4cqw 0;padding:2.2cqw 4.4cqw;display:flex;align-items:center;justify-content:space-between;gap:2cqw;background:color-mix(in srgb,var(--sc) 30%,#ffffff60);border-top:.4cqw solid color-mix(in srgb,var(--sc) 45%,transparent)}
 .deck-rarity{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:4.6cqw;letter-spacing:.2cqw;color:var(--rc);white-space:nowrap;text-transform:uppercase}
 .deck-stars{display:flex;gap:.6cqw;font-size:4.6cqw;line-height:1}
-.deck-stars i{font-style:normal;color:color-mix(in srgb,var(--rc) 28%,transparent)}
+.deck-stars i{font-style:normal;color:color-mix(in srgb,var(--rc) 25%,transparent)}
 .deck-stars i.on{color:var(--rc)}
+
+/* Back: the three sections, a double-line border in the rarity metal */
 .deck-back{gap:2.6cqw;padding:8.4cqw 8.4cqw 6.6cqw;justify-content:space-between}
-.deck-rim{position:absolute!important;inset:3cqw;border:.5cqw solid color-mix(in srgb,var(--rc) 70%,transparent);border-radius:2cqw;box-shadow:inset 0 0 0 1.45cqw color-mix(in srgb,var(--rc) 22%,transparent);pointer-events:none;z-index:2}
+.deck-rim{position:absolute!important;inset:3cqw;border-radius:2cqw;padding:.6cqw;background:var(--frame);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;z-index:2}
 .deck-back h4{margin:0 0 1.2cqw;font-family:'Space Grotesk',sans-serif;font-size:3.6cqw;letter-spacing:.35cqw;color:var(--rc)}
 .deck-approved{font-weight:700;opacity:1!important;color:var(--rc)}
 .deck-back p{margin:0;font-size:5.8cqw;line-height:1.24;font-weight:500}
@@ -57,4 +82,11 @@
 .deck-bfoot span{opacity:.8}
 .deck-bfoot a{font-weight:700;font-size:4cqw;color:inherit;background:#2a1f2c14;border-radius:9cqw;padding:1.3cqw 3.4cqw;margin-bottom:.6cqw}
 .deck-bfoot a:hover,.deck-bfoot a:focus-visible{background:#2a1f2c26}
-@media(prefers-reduced-motion:reduce){.deck-inner{transition:none}.deck-face,.deck-face::before,.deck-face::after{animation:none!important}}
+@media(prefers-reduced-motion:reduce){.deck-inner{transition:none}.deck-window::before,.deck-window::after{animation:none!important}}
+
+/* Deck mode (?deck): less clutter above the cards (Astra, 2026-11-14: "just the cards and then the main thing").
+   Hidden: the tagline, the decorative cartoon panel, the attribution line, the "no paywalls" line, the session
+   counter and the article-index box. Kept: today's paper, its small print, the subject buttons and Surprise me. */
+.deck-mode .header-note,.deck-mode .art-panel,.deck-mode .attribution,.deck-mode .shuffle-row>p,.deck-mode .status>span,.deck-mode .library{display:none!important}
+.deck-mode .paper-card{grid-template-columns:1fr}
+.deck-mode .shuffle-row{justify-content:center}
