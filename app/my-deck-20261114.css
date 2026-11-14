@@ -282,3 +282,8 @@ body:has(.deck-mode){background:#2e2f33}
 .lv3 .deck-band .deck-rarity,.lv3 .deck-band .deck-stars em{color:#3a3e45}
 .lv3 .deck-band .deck-stars i{color:#3a3e4540}
 .lv3 .deck-band .deck-stars i.on{color:#3a3e45}
+/* Read paper: the same circle as the Type stat; empty until tapped, then filled in the subject's color with a tick */
+.deck-read b::before{display:none!important}
+.deck-type-stat i.read-dot{background:transparent;border:.6cqw solid color-mix(in srgb,var(--sc) 80%,#000);box-shadow:none;box-sizing:border-box}
+.deck-type-stat i.read-dot.on{background:var(--sc);border-color:var(--sc);box-shadow:inset 0 0 0 .45cqw #ffffff60,0 .3cqw .8cqw #2a1f2c40}
+.deck-read input:focus-visible+b i.read-dot{outline:2px solid #efa9c5;outline-offset:2px}

@@ -7,7 +7,7 @@
 // DRAFT: shows ten sample cards and only when the address has ?deck (for example /paper-girl/?deck), so the live site
 // is unchanged until real cards exist. Card rules: docs/card-plan-20261113.md.
 import {useEffect,useState,type CSSProperties} from 'react';
-import {Atom,Brain,CircleHelp,FlaskConical,Globe2,Leaf,Sigma,type LucideIcon} from 'lucide-react';
+import {Atom,Brain,Check,CircleHelp,FlaskConical,Globe2,Leaf,Sigma,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import '@/app/my-deck-20261114.css';
@@ -32,7 +32,9 @@ function Stars({n}:{n:number}){
 
 // Sparkles from Astra's portfolio (findastra.github.io, the twinkles over her portrait): four-point stars that grow,
 // turn 45 degrees and fade, placed by a hash so each card keeps its own pattern. Rainbow on Holo rare, gold on Legendary.
-function hash(s:string){let n=2166136261;for(const c of s)n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0}
+// FNV hash, then a strong bit mix so neighboring sparkles get unrelated sizes and spots (plain FNV gave runs of big ones).
+function hash(s:string){let n=2166136261;for(const c of s)n=Math.imul(n^c.charCodeAt(0),16777619);
+ n^=n>>>16;n=Math.imul(n,0x7feb352d);n^=n>>>15;n=Math.imul(n,0x846ca68b);n^=n>>>16;return n>>>0}
 function Glitter({seed,gold,count=14,whole=false}:{seed:string;gold:boolean;count?:number;whole?:boolean}){
  const RAINBOW=[330,20,50,140,190,260],GOLD=['hsl(45 95% 72%)','hsl(40 90% 62%)','hsl(50 100% 88%)','hsl(35 85% 58%)'];
  // Spread evenly over the whole square (Astra, 2026-11-14: "randomly across the card", not around one object): the
@@ -40,7 +42,9 @@ function Glitter({seed,gold,count=14,whole=false}:{seed:string;gold:boolean;coun
  const cols=Math.ceil(Math.sqrt(count)),rows=Math.ceil(count/cols);
  return <span className={'deck-glitter'+(gold?' gold':'')+(whole?' whole':'')} aria-hidden="true">{Array.from({length:count},(_,i)=>{
   const k=hash(seed+':'+i),cx=i%cols,cy=Math.floor(i/cols);
-  const style={'--x':`${((cx+.15+((k%70)/100))/cols*100).toFixed(1)}%`,'--y':`${((cy+.15+(((k>>>7)%70)/100))/rows*100).toFixed(1)}%`,'--s':`${3.2+((k>>>14)%40)/10}cqw`,'--d':`${((k>>>20)%30)/10}s`,
+  // Sizes vary a lot (Astra, 2026-11-14: "really tiny ones and big ones"): mostly small, a few large.
+  const r=((k>>>14)%1000)/1000,size=1.2+Math.pow(r,2.2)*7.8;
+  const style={'--x':`${((cx+.15+((k%70)/100))/cols*100).toFixed(1)}%`,'--y':`${((cy+.15+(((k>>>7)%70)/100))/rows*100).toFixed(1)}%`,'--s':`${size.toFixed(2)}cqw`,'--d':`${((k>>>20)%30)/10}s`,
    '--c':gold?GOLD[(k>>>24)%GOLD.length]:`hsl(${RAINBOW[(k>>>24)%RAINBOW.length]} 70% 78%)`} as CSSProperties;
   return <i key={i} style={style}/>;
  })}</span>;
@@ -88,11 +92,13 @@ export function DeckCard({card}:{card:Card}){
       <span className="deck-lv" aria-label={`Level ${card.lv}`}>LV <b>{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
-      {(card.lv>=4||gold)&&<Glitter seed={card.no} gold={gold} count={20}/>}</div></div>
+      {(card.lv>=4||gold)&&<Glitter seed={card.no} gold={gold} count={30}/>}</div></div>
      <div className="deck-stats">
       <div><span>type</span><b className="deck-type-stat"><i aria-hidden="true"><TypeIcon/></i>{card.subject}</b></div>
       <div><span>paper</span><a href={card.url} target="_blank" rel="noreferrer">Open ↗</a></div>
-      <label className="deck-read"><span>read paper</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/><b>{read?'Read':'Not yet'}</b></label>
+      <label className="deck-read"><span>read paper</span><input type="checkbox" checked={read} onChange={e=>setRead(e.target.checked)} aria-label={`I read ${card.name}`}/>
+       {/* Looks like the Type stat: a circle that fills in when you tap it (Astra, 2026-11-14) */}
+       <b className="deck-type-stat"><i className={'read-dot'+(read?' on':'')} aria-hidden="true">{read&&<Check/>}</i>{read?'Read':'Not read'}</b></label>
      </div>
      <div className="deck-band"><span className="deck-rarity">{rarity}</span><Stars n={card.lv}/></div>
     </div>
