@@ -15,18 +15,26 @@ body{height:100dvh;overflow:hidden;display:flex;flex-direction:column;background
 header{text-align:center;padding:clamp(10px,2vh,18px) 16px 8px}
 h1{margin:0;font-family:'Space Grotesk',sans-serif;font-size:clamp(20px,2.4vw,28px)}
 header p{margin:4px 0 0;font-size:13px;color:var(--soft)}
-.grid{flex:1;min-height:0;overflow:auto;padding:8px clamp(12px,3vw,32px) 24px;display:grid;grid-template-columns:minmax(90px,140px) repeat(5,minmax(130px,1fr));gap:10px;align-content:start}
-.head{position:sticky;top:0;z-index:2;background:var(--bg);font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--pink);text-align:center;padding:6px 2px}
-.head b{display:block;font-size:22px;color:var(--ink)}
-.row-name{display:flex;flex-direction:column;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px}
-.row-name span{font-family:'DM Sans',sans-serif;font-weight:400;font-size:12px;color:var(--soft)}
+/* One row per card: its name, then its five styles. Computer: name left, five across. Phone: name on top, the five
+   styles swipe sideways inside the row (a mini scroll section). Only the list scrolls up and down. */
+.grid{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:8px clamp(12px,3vw,32px) 24px;display:flex;flex-direction:column;gap:12px}
+.heads,.row{display:grid;grid-template-columns:minmax(90px,140px) 1fr;gap:10px;align-items:center}
+.heads{position:sticky;top:0;z-index:2;background:var(--bg);padding-bottom:4px}
+.heads .strip div{font-family:'Space Grotesk',sans-serif;font-size:13px;color:var(--pink);text-align:center}
+.heads .strip b{display:block;font-size:22px;color:var(--ink)}
+.strip{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.row-name{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px}
+.row-name span{display:block;font-family:'DM Sans',sans-serif;font-weight:400;font-size:12px;color:var(--soft)}
 .cell{aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#2a2130;border:1px solid var(--line);cursor:zoom-in;padding:0}
 .cell img{width:100%;height:100%;object-fit:cover;display:block}
 .cell.missing{display:grid;place-items:center;font-size:12px;color:var(--soft);cursor:default}
+.cell .tag{display:none}
 @media(max-width:620px){
- .grid{grid-template-columns:repeat(5,72vw);grid-auto-flow:row;overflow-x:auto;scroll-snap-type:x mandatory}
- .head{display:none}.row-name{grid-column:1/-1;position:sticky;left:0}
- .cell{scroll-snap-align:center}
+ .heads{display:none}
+ .row{grid-template-columns:1fr;gap:6px}
+ .strip{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+ .strip .cell{flex:0 0 72vw;scroll-snap-align:center;position:relative}
+ .cell .tag{display:block;position:absolute;left:8px;bottom:8px;font-size:12px;background:#1d1720cc;color:#fff;padding:3px 8px;border-radius:8px}
 }
 dialog{border:0;padding:0;background:transparent;max-width:min(92vw,92dvh)}
 dialog::backdrop{background:#000c}
@@ -43,16 +51,19 @@ dialog p{margin:8px 0 0;text-align:center;color:#fff;font-size:14px}
 const STYLES=[['a','Bright creature-card cartoon'],['b','Storybook watercolor'],['c','Clay toy 3D'],['d','Flat vector sticker'],['e','Retro Saturday-morning cartoon']];
 const CARDS=[['jumping-spider','Spider Memory','Common'],['bat-pup','Babbling Bat','Uncommon'],['pika','Tiny Gardener','Rare'],['colored-seven','Color Number','Holo rare'],['newborn-eeg','Pattern Listener','Legendary']];
 const grid=document.getElementById('grid');
-grid.insertAdjacentHTML('beforeend','<div class="head"></div>'+STYLES.map(([k,n])=>`<div class="head"><b>${k.toUpperCase()}</b>${n}</div>`).join(''));
+grid.insertAdjacentHTML('beforeend','<div class="heads"><div></div><div class="strip">'+STYLES.map(([k,n])=>`<div><b>${k.toUpperCase()}</b>${n}</div>`).join('')+'</div></div>');
 for(const [slug,name,rar] of CARDS){
-  grid.insertAdjacentHTML('beforeend',`<div class="row-name">${name}<span>${rar}</span></div>`);
+  const row=document.createElement('section');row.className='row';
+  row.innerHTML=`<div class="row-name">${name}<span>${rar}</span></div><div class="strip"></div>`;
+  const strip=row.querySelector('.strip');grid.append(row);
   for(const [k,n] of STYLES){
     const src=`../art-originals/drafts/${slug}-${k}-20261114.webp`;
     const b=document.createElement('button');b.className='cell';b.title=`${name}: ${k.toUpperCase()} ${n}`;
     const img=new Image();img.src=src;img.alt=`${name}, ${n}`;img.loading='lazy';
     img.onerror=()=>{b.classList.add('missing');b.textContent='still drawing…'};
-    b.append(img);b.onclick=()=>{if(b.classList.contains('missing'))return;bigImg.src=src;bigCap.textContent=`${name} · ${k.toUpperCase()} ${n}`;big.showModal()};
-    grid.append(b);
+    const tag=document.createElement('span');tag.className='tag';tag.textContent=`${k.toUpperCase()} · ${n}`;
+    b.append(img,tag);b.onclick=()=>{if(b.classList.contains('missing'))return;bigImg.src=src;bigCap.textContent=`${name} · ${k.toUpperCase()} ${n}`;big.showModal()};
+    strip.append(b);
   }
 }
 </script>
