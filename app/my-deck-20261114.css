@@ -827,3 +827,51 @@ body:has(.deck-mode){background:#8f8b91}
  background-image:linear-gradient(110deg,#5a3c06,#8a5a10 30%,#c48a24 48%,#8a5a10 66%,#5a3c06),linear-gradient(#fff3d1,#fff3d1)!important;
  box-shadow:0 0 0 3px #f3d27a66!important}
 .pick-year{font-family:'Times New Roman',Times,Georgia,serif!important;font-size:14px!important;padding:5px 14px!important}
+
+/* ---------------- Polish 2, 2026-11-14 late (Astra) ---------------- */
+/* Draw a card: solid shining gold again, a sparkle on each side of the words */
+.pick-draw{border:1px solid #8a5a10!important;
+ background-image:linear-gradient(110deg,#b8862e,#f3d27a 28%,#fff3c4 42%,#e8bb52 58%,#b8862e 80%,#d9a53f)!important;background-size:220% 100%!important;
+ -webkit-background-clip:border-box!important;background-clip:border-box!important;color:#2a1a02!important;-webkit-text-fill-color:#2a1a02!important;
+ box-shadow:inset 0 1px 0 #ffffffa0,0 2px 0 #7a520c,0 6px 14px #00000026!important;animation:deck-text-shine 6s ease-in-out infinite!important}
+.pick-draw:hover:not(:disabled){filter:brightness(1.06)!important;border-color:#8a5a10!important;box-shadow:inset 0 1px 0 #ffffffa0,0 3px 0 #7a520c,0 8px 18px #0000002e!important}
+.pick-draw-icon{color:#5a3c06!important;-webkit-text-fill-color:#5a3c06!important;font-size:16px}
+
+/* One size for every subject circle: the picker's circles and the card's circles (top corner, Subject, Completion)
+   are all 24 px on a card 330 px wide (7.3cqw) */
+.pick-dot{width:30px;height:30px}
+.pick-dot i{width:24px;height:24px}
+.pick-dot i svg{width:14px;height:14px}
+.deck-type{width:7.3cqw;height:7.3cqw}
+.deck-type svg{width:4.2cqw;height:4.2cqw}
+.deck-type-stat i,.deck-type-stat i.read-dot{width:7.3cqw!important;height:7.3cqw!important}
+.deck-type-stat i svg{width:4.2cqw!important;height:4.2cqw!important}
+
+/* Card stats: an even 2 x 3 grid. Both rows use the same three equal columns, so the stats line up */
+.deck-stats,.deck-stats-years{width:100%;grid-template-columns:repeat(3,minmax(0,1fr))!important;justify-content:stretch!important;gap:0 1.4cqw!important}
+.deck-stats-years{margin-top:2.2cqw}
+.deck-stats b,.deck-stats a{font-size:3.6cqw;height:7.3cqw;line-height:7.3cqw}
+.deck-type-stat{gap:1cqw!important;max-width:100%}
+/* The card number in black, the same size as the dates beside it */
+.deck-no-stat b.deck-no{font-size:3.6cqw!important;font-weight:700;letter-spacing:0;background:none!important;color:#1c1a1e!important;-webkit-text-fill-color:#1c1a1e!important;animation:none!important}
+
+/* ---------------- Polish 3, 2026-11-14 late (Astra) ---------------- */
+/* Fit the 2 x 3 stats without shrinking the picture: tighter gaps, and the date row only as tall as its text */
+.deck-top{margin-bottom:1.4cqw}
+.deck-lower{padding:1cqw 0 .8cqw}
+.deck-stats-years{margin-top:1.2cqw}
+.deck-stats-years b{height:5cqw;line-height:5cqw}
+/* Sparkles: no pulsing. Each fades in, stays a while turning slowly, and fades out, at its own time, so many show at
+   once; a second layer of tiny ones stays up longer still */
+.deck-glitter i{animation:deck-twinkle-soft 9s ease-in-out var(--d) infinite!important}
+.deck-glitter.small i{animation-name:deck-twinkle-linger!important;animation-duration:11s!important}
+@keyframes deck-twinkle-soft{0%{opacity:0;transform:scale(.75) rotate(0deg)}16%{opacity:1;transform:scale(1) rotate(8deg)}
+ 72%{opacity:1;transform:scale(1) rotate(34deg)}88%,100%{opacity:0;transform:scale(.75) rotate(45deg)}}
+@keyframes deck-twinkle-linger{0%{opacity:0;transform:rotate(0deg)}10%{opacity:.95;transform:rotate(5deg)}
+ 85%{opacity:.95;transform:rotate(40deg)}100%{opacity:0;transform:rotate(45deg)}}
+/* Holo rare: the card itself is the same pastel rainbow as its band, not the subject's color, with a slow drift */
+.lv4:not(.gold-card) .deck-face{background:linear-gradient(125deg,#ffd1e6,#ffe3c2 18%,#fff2c2 32%,#d6ffe9 48%,#c7ecff 64%,#e0ccff 80%,#ffd1e6);
+ background-size:220% 220%;animation:deck-prism 12s ease-in-out infinite alternate}
+.lv4 .deck-band{background:linear-gradient(90deg,#ffd1e6,#fff2c2 25%,#d6ffe9 50%,#c7ecff 75%,#e0ccff)}
+/* Room under the rarity word: the band keeps its full padding at the card bottom */
+.deck-band{padding-top:1.6cqw;padding-bottom:1.8cqw}

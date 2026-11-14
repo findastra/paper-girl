@@ -56,16 +56,19 @@ function Stars({n}:{n:number}){
 // FNV hash, then a strong bit mix so neighboring sparkles get unrelated sizes and spots (plain FNV gave runs of big ones).
 function hash(s:string){let n=2166136261;for(const c of s)n=Math.imul(n^c.charCodeAt(0),16777619);
  n^=n>>>16;n=Math.imul(n,0x7feb352d);n^=n>>>15;n=Math.imul(n,0x846ca68b);n^=n>>>16;return n>>>0}
-function Glitter({seed,gold,count=14,whole=false}:{seed:string;gold:boolean;count?:number;whole?:boolean}){
+// small: a layer of tiny sparkles that stay up longer, so many show at once (Astra, 2026-11-14).
+function Glitter({seed,gold,count=14,whole=false,small=false}:{seed:string;gold:boolean;count?:number;whole?:boolean;small?:boolean}){
  const RAINBOW=[330,20,50,140,190,260],GOLD=['hsl(45 95% 72%)','hsl(40 90% 62%)','hsl(50 100% 88%)','hsl(35 85% 58%)'];
  // Spread evenly over the whole square (Astra, 2026-11-14: "randomly across the card", not around one object): the
  // picture is cut into a grid and each sparkle sits somewhere random inside its own cell.
  const cols=Math.ceil(Math.sqrt(count)),rows=Math.ceil(count/cols);
- return <span className={'deck-glitter'+(gold?' gold':'')+(whole?' whole':'')} aria-hidden="true">{Array.from({length:count},(_,i)=>{
+ return <span className={'deck-glitter'+(gold?' gold':'')+(whole?' whole':'')+(small?' small':'')} aria-hidden="true">{Array.from({length:count},(_,i)=>{
   const k=hash(seed+':'+i),cx=i%cols,cy=Math.floor(i/cols);
-  // Sizes vary a lot (Astra, 2026-11-14: "really tiny ones and big ones"): mostly small, a few large.
-  const r=((k>>>14)%1000)/1000,size=1.2+Math.pow(r,2.2)*7.8;
-  const style={'--x':`${((cx+.15+((k%70)/100))/cols*100).toFixed(1)}%`,'--y':`${((cy+.15+(((k>>>7)%70)/100))/rows*100).toFixed(1)}%`,'--s':`${size.toFixed(2)}cqw`,'--d':`${((k>>>20)%30)/10}s`,
+  // Sizes vary a lot (Astra, 2026-11-14: "really tiny ones and big ones"): mostly small, a few large. The small layer
+  // is all tiny ones.
+  const r=((k>>>14)%1000)/1000,size=small?.6+r*1.6:1.2+Math.pow(r,2.2)*7.8;
+  // Start times spread over the whole cycle, so sparkles come and go one by one instead of pulsing together.
+  const style={'--x':`${((cx+.15+((k%70)/100))/cols*100).toFixed(1)}%`,'--y':`${((cy+.15+(((k>>>7)%70)/100))/rows*100).toFixed(1)}%`,'--s':`${size.toFixed(2)}cqw`,'--d':`${-((k>>>20)%90)/10}s`,
    '--c':gold?GOLD[(k>>>24)%GOLD.length]:`hsl(${RAINBOW[(k>>>24)%RAINBOW.length]} 70% 78%)`} as CSSProperties;
   return <i key={i} style={style}/>;
  })}</span>;
@@ -125,14 +128,14 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
    onClick={flip} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ')&&!own(e.target)){e.preventDefault();turn()}}}>
    <div className="deck-inner">
     <div className="deck-face deck-front">
-     {gold&&<Glitter seed={card.no+':card'} gold count={22} whole/>}
+     {gold&&<><Glitter seed={card.no+':card'} gold count={22} whole/><Glitter seed={card.no+':card-tiny'} gold count={30} whole small/></>}
      <div className="deck-top">
       <span className="deck-type" title={card.subject}><TypeIcon aria-hidden="true"/></span>
       <div className="deck-title"><p className="deck-name">{card.name}</p></div>
       <span className="deck-lv" aria-label={`Level ${card.lv}`}>LV <b>{card.lv}</b></span>
      </div>
      <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
-      {(tier>=4||gold)&&<Glitter seed={card.no} gold={gold} count={30}/>}</div></div>
+      {(tier>=4||gold)&&<><Glitter seed={card.no} gold={gold} count={30}/><Glitter seed={card.no+':tiny'} gold={gold} count={42} small/></>}</div></div>
      {/* Stats (Astra, 2026-11-14): Subject, Article (the journal's name, linked) and Completion (a gold circle that
          fills in), centered in the space under the picture, with the card number centered under them. */}
      <div className="deck-lower">
@@ -150,7 +153,7 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
        <div><span>minted</span><b>{card.made?shortDate(card.made):'—'}</b></div>
       </div>
      </div>
-     <div className="deck-band"><span className="deck-rarity-wrap"><span className={'deck-rarity'+(tier>=3?' shiny':'')}>{rarity}</span><small className="deck-score" title="Rarity score">{score}</small></span><Stars n={card.lv}/></div>
+     <div className="deck-band"><span className="deck-rarity-wrap"><span className={'deck-rarity'+(tier>=3?' shiny':'')}>{rarity}</span></span><Stars n={card.lv}/></div>
     </div>
     <div className="deck-face deck-back">
      {gold&&<Glitter seed={card.no+':back'} gold count={16} whole/>}
@@ -170,7 +173,9 @@ export function DeckCard({card,onPick}:{card:Card;onPick?:(c:Card)=>void}){
       {/* Two dates (Astra, 2026-11-14): when the paper came out, and when this card was minted. */}
       <div className="deck-made">{card.author&&<b className="deck-approved">Approved by its author</b>}
        {card.published&&<span>Paper published {fmtDate(card.published)}</span>}
-       {card.made&&<span>Card minted {fmtDate(card.made)}</span>}</div>
+       {card.made&&<span>Card minted {fmtDate(card.made)}</span>}
+       {/* The rarity score lives on the back with a label (Astra, 2026-11-14: a bare number on the front was unclear) */}
+       <span>Rarity score {score}</span></div>
      </div>
     </div>
    </div>
