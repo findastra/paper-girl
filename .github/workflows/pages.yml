@@ -1,4 +1,4 @@
-# Publishes the static edition of Paper Girl to GitHub Pages on every push to main.
+# Publishes the static edition of Papermon to GitHub Pages on every push to main.
 name: Deploy to GitHub Pages
 
 on:

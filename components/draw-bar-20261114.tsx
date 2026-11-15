@@ -138,7 +138,7 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
   {/* The message line (Astra, 2026-11-14): the motto's spot under the buttons, in its gold handwriting, shows what just
       happened: the card you drew, or "Printed decks are coming soon" after Order My Deck. With nothing to say it shows
       the motto. */}
-  <p className={'pick-motto'+(message.length>70?' long':'')} role="status" aria-live="polite">{message||'Every card, one idea wiser.'}</p>
+  <p className={'pick-motto'+(message.length>70?' long':'')} role="status" aria-live="polite">{message||'Real science, one card at a time.'}</p>
  </div>;
 }
 

@@ -1,20 +1,20 @@
-# Paper Girl
+# Papermon
 
 A free science discovery desk with a dark mauve reading view, playful illustrations, and real papers from eLife and five PLOS journals.
 
-**[Live site](https://findastra.github.io/paper-girl/)** *(static edition on GitHub Pages)*
+**[Live site](https://findastra.github.io/papermon/)** *(static edition on GitHub Pages)*
 
 - **Surprise me:** discovers a different article and checks its publisher summary and CC BY license.
 - **Article index:** searchable metadata for the supported Europe PMC collection; summary verification happens as papers are opened.
 - **Shared search history:** persistent anonymous filters, timestamps, results, and unsuccessful searches.
 - **Reading history:** an anonymous browser cookie prevents repeats across visits on the same browser.
-- **Daily paper:** a rotating selection with clearly attributed publisher explanations or prepared Paper Girl commentary.
+- **Daily paper:** a rotating selection with clearly attributed publisher explanations or prepared Papermon commentary.
 
 Built with React, TypeScript, Vinext, Cloudflare Workers, and D1. No paid AI dependency. Publishing this repository does not itself deploy the Cloudflare site or copy the local article database.
 
 ## Live site (static edition)
 
-The [live site](https://findastra.github.io/paper-girl/) is a static build of the same page, published to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`. GitHub Pages has no server or database, so `lib/browser-library.ts` answers the app's `/api/*` requests in the visitor's browser:
+The [live site](https://findastra.github.io/papermon/) is a static build of the same page, published to GitHub Pages by `.github/workflows/pages.yml` on every push to `main`. GitHub Pages has no server or database, so `lib/browser-library.ts` answers the app's `/api/*` requests in the visitor's browser:
 
 - **Surprise me** and the **article index** query Europe PMC directly from the browser.
 - **Reading history** and **search history** are kept in that browser's local storage, so search history is personal rather than shared between visitors.
@@ -186,7 +186,7 @@ Open [paper-girl-20261008.html](paper-girl-20261008.html) in a modern browser, o
 
 Limits: this browser interface does not install or start native programs. Where an existing web app is available, the old pets page opens that app. Draft controls store their data in the current browser and do not imply connected services. Existing application instructions above still apply.
 
-Version [v0.1.0-20261008-pets](https://github.com/findastra/paper-girl/tree/v0.1.0-20261008-pets). Added with OpenAI Codex (GPT-6), 2026-10-08.
+Version [v0.1.0-20261008-pets](https://github.com/findastra/papermon/tree/v0.1.0-20261008-pets). Added with OpenAI Codex (GPT-6), 2026-10-08.
 
 ## Desktop pet update - 2026-10-11
 Latest desktop size: 20% larger than prior 0.65 multiplier. Desktop artwork status: draft. Manifest: [desktop-pet-20261011.json (in the hub)](https://raw.githubusercontent.com/findastra/astras-pet-os/main/desktop-art/paper-girl/desktop-pet-20261011.json). The native companion renders this art; existing browser interface behavior is unchanged. Generated character artwork uses OpenAI image generation; source sheets and derived frames are included where applicable. Public credit: Astra. Integrated by OpenAI Codex (GPT-6).
@@ -197,6 +197,6 @@ Desktop appearance draft updated 2026-10-11: see [desktop details](https://raw.g
 
 What is not done, plainly. From the hub's [intelligence levels](https://github.com/findastra/astras-pet-os/blob/main/INTELLIGENCE-LEVELS.md) (checked 2026-10-18):
 
-- **Program (L1/L2):** ✅ **Made by Astra:** **Paper Girl**: [findastra.github.io/paper-girl](https://findastra.github.io/paper-girl/), the free science discovery website
+- **Program (L1/L2):** ✅ **Made by Astra:** **Papermon**: [findastra.github.io/papermon](https://findastra.github.io/papermon/), the free science discovery website
 - **Runtime (L2):** — **Should:** bring fresh research and articles to the site (suggested)
 - **Agentic harness (L3):** — not built yet
