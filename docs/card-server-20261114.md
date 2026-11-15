@@ -81,6 +81,16 @@ bodies capped at 64 KB; friends' text is stored as text and shown with `textCont
 kept (network addresses only as a salted hash, for the per-network limit); at most two new cards are made at once and
 one per friend; the daily budget stops new cards before the cap is passed.
 
+## Still to do (2026-11-14)
+
+1. Astra makes Claude's key (`PAPER_GIRL_ANTHROPIC_API_KEY`) on the Claude Platform, with prepaid credit and a monthly
+   limit, and adds it to Windows herself (API Fairy request `20261113-paper-girl-paper-girl-anthropic-api-key`).
+2. Tailscale on the PC (her OK to download the installer, her sign-in), then `tailscale funnel` to the server's port,
+   and the site built with that address in `VITE_PAPERMON_SERVER`.
+3. Run the server for real, make the first five real cards, check them against the card plan, and tell Astra what each
+   cost.
+4. Only then: merge (her OK per PR) and send friends the link.
+
 ## Known limits
 
 - New cards' pictures load from the server. While the PC is asleep, a friend sees pictures only for the cards their
