@@ -31,7 +31,12 @@
 .gif-all button:hover:not(:disabled),.gif-done li>button:hover,.gif-go:hover:not(:disabled){background:#fff}
 .gif-all button:disabled,.gif-go:disabled{opacity:.5;cursor:default}
 .gif-go{background:linear-gradient(135deg,#fbe6a6,#e7bd5c 55%,#f6d98d);border-color:#a8761c;min-height:40px;font-size:15px}
-.gif-list{list-style:none;margin:0;padding:0;overflow:auto;min-height:0;flex:1 1 auto;display:grid;gap:6px}
+/* Only ever scrolls up and down (Astra, 2026-11-14: "get rid of the random scroll bar at the bottom"): the rows always
+   fit the list's width, even when the list's own up-and-down scrollbar takes some of it (the long GIF file names used
+   to push the rows wider) */
+.gif-list{list-style:none;margin:0;padding:0;overflow-x:hidden;overflow-y:auto;min-height:0;flex:1 1 auto;display:grid;
+ grid-template-columns:minmax(0,1fr);gap:6px}
+.gif-list li,.gif-list label{min-width:0}
 .gif-list label,.gif-done li{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px;background:#f6f3f7;cursor:pointer}
 .gif-list label:has(input:checked){background:#fff4d6;box-shadow:inset 0 0 0 1.5px #c9952e}
 .gif-list input{width:18px;height:18px;accent-color:#a8761c;flex:none}
