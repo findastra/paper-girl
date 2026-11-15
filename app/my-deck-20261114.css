@@ -1527,8 +1527,9 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
  border-top:.35cqw solid #b8862e!important;box-shadow:inset 0 .4cqw .8cqw #5a3c0626}
 
 /* ---------------- Enter Card Code (Astra, 2026-11-14) ---------------- */
-/* The button: the full width of the menu, first, with a little card picture like the other buttons' icons */
-.pick-actions .pick-code{grid-column:1/-1;width:100%!important}
+/* The button: a small pill like the others (Astra, 2026-11-14, later: "enter card code should be small"), sharing the
+   first row with Buy More Digital Cards, with a little card picture like the other buttons' icons */
+.pick-actions .pick-code{grid-column:auto}
 .card-icon{flex:none}
 /* The mock of a printed card's back, with the code's spot under a gold scratch-off strip along the bottom edge */
 .code-mock{display:flex;align-items:center;gap:16px;margin:4px 0 6px}
