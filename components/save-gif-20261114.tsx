@@ -22,18 +22,25 @@ const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Denver'}).for
 const fileName=(c:Card)=>`papermon-${c.no.replace(/\D/g,'').slice(-4)}-${c.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}-${today()}.gif`;
 const tick=()=>new Promise(r=>setTimeout(r,0));
 
+/** Waits for p, but never longer than ms (then goes on with `fallback`). */
+const within=<T,>(p:Promise<T>|undefined,ms:number,fallback?:T)=>
+ Promise.race([p??Promise.resolve(fallback as T),new Promise<T>(r=>setTimeout(()=>r(fallback as T),ms))]);
+
 /**
- * html-to-image waits for an animation frame after each picture it loads, and a page that isn't on screen gets no
- * frames (a browser window covered by Discord while the GIFs are made, a hidden window), so it would wait forever.
- * While a card is photographed, a frame that hasn't come within 100 ms is replaced by a timer.
+ * A page that isn't on screen (a browser window covered by Discord while the GIFs are made, a hidden window) gets no
+ * animation frames, and its pictures' decode() may never finish. html-to-image waits on both after every picture it
+ * loads, so it would wait forever. While a card is photographed, a frame that hasn't come within 100 ms is replaced by
+ * a timer, and decode() gives up after 300 ms (the picture has already loaded by then, so it still draws). Both are
+ * put back right after.
  */
-async function withFrameFallback<T>(work:()=>Promise<T>):Promise<T>{
- const raf=window.requestAnimationFrame;
+async function withoutScreenWaits<T>(work:()=>Promise<T>):Promise<T>{
+ const raf=window.requestAnimationFrame,decode=HTMLImageElement.prototype.decode;
  window.requestAnimationFrame=(cb:FrameRequestCallback)=>{
   let done=false;const run=(t:number)=>{if(!done){done=true;cb(t)}};
   const id=raf.call(window,run);setTimeout(()=>run(performance.now()),100);return id;
  };
- try{return await work()}finally{window.requestAnimationFrame=raf}
+ HTMLImageElement.prototype.decode=function(this:HTMLImageElement){return within(decode.call(this).catch(()=>undefined),300)};
+ try{return await work()}finally{window.requestAnimationFrame=raf;HTMLImageElement.prototype.decode=decode}
 }
 
 /**
@@ -43,12 +50,12 @@ async function withFrameFallback<T>(work:()=>Promise<T>):Promise<T>{
  */
 const rasters=new Map<string,Promise<string>>();
 function raster(svg:string){
- if(!rasters.has(svg))rasters.set(svg,new Promise<string>(done=>{
+ if(!rasters.has(svg))rasters.set(svg,within(new Promise<string>(done=>{
   const img=new Image();
   img.onload=()=>{const c=document.createElement('canvas');c.width=img.naturalWidth||420;c.height=img.naturalHeight||420;
    c.getContext('2d')!.drawImage(img,0,0);try{done(c.toDataURL('image/png'))}catch{done(svg)}};
   img.onerror=()=>done(svg);img.src=svg;
- }));
+ }),3000,svg));
  return rasters.get(svg)!;
 }
 async function flattenSvgTextures(root:HTMLElement){
@@ -63,7 +70,7 @@ async function flattenSvgTextures(root:HTMLElement){
 
 /** Draws one card off screen, exactly as the deck shows it, and photographs its front and back. */
 async function photograph(card:Card,CardView:ComponentType<{card:Card}>){
- return withFrameFallback(()=>photographNow(card,CardView));
+ return withoutScreenWaits(()=>photographNow(card,CardView));
 }
 async function photographNow(card:Card,CardView:ComponentType<{card:Card}>){
  const host=document.createElement('div');
@@ -75,9 +82,10 @@ async function photographNow(card:Card,CardView:ComponentType<{card:Card}>){
   flushSync(()=>root.render(<CardView card={card}/>));
   const imgs=[...host.querySelectorAll('img')];
   for(const i of imgs)i.loading='eager';
-  await Promise.all(imgs.map(i=>i.complete&&i.naturalWidth?null:new Promise(r=>{i.onload=i.onerror=()=>r(null)})));
+  // Every wait has a time limit, so a slow or stuck one can never stop the GIFs
+  await within(Promise.all(imgs.map(i=>i.complete&&i.naturalWidth?null:new Promise(r=>{i.onload=i.onerror=()=>r(null)}))),8000);
   await Promise.all(imgs.map(i=>i.decode?.().catch(()=>null)));
-  await document.fonts?.ready;
+  await within(document.fonts?.ready,2000);
   await flattenSvgTextures(host);
   // A short pause for the browser to lay the card out. A timer, not animation frames: a page that isn't on screen
   // (a phone switched to another app, a hidden window) gets no frames, and the GIF would wait forever.
