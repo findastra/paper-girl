@@ -144,5 +144,150 @@
    "matters": "Statistical learning looks like a general-purpose pattern finder that works on many features of sound, not only syllables. Yet from birth, the brain seems to treat only syllable patterns as possible words and to handle them with a dedicated network.\n\nTogether this suggests that babies arrive with a broad ability to detect patterns, which may play a bigger part in early language learning than scientists had thought."
   },
   "cite": "Fló, Ana, et al. “Statistical Learning beyond Words in Human Neonates.” *eLife*, vol. 13, 2025, article RP101802, https://doi.org/10.7554/eLife.101802."
+ },
+ {
+  "lv": 1,
+  "name": "Synurbic Allometric Sunflower",
+  "subject": "Environment",
+  "src": "eLife 2026",
+  "art": "cards/city-sunflower-e-20261114.webp",
+  "no": "000,006",
+  "url": "https://doi.org/10.7554/elife.109047",
+  "headline": "Being big helps some species live in cities, but not all.",
+  "hook": "Most wild species avoid cities, but a few move right in.",
+  "found": "Bigger plants coped better in cities; animals followed no one rule.",
+  "matters": "There is no single recipe for living in a city.",
+  "drawing": {
+   "slug": "city-sunflower",
+   "subject": "a tall, cheerful common sunflower (Helianthus annuus) drawn as a living creature: a big round face of brown seeds ringed by bright yellow petals, with two big friendly cartoon eyes and a small smile in the seed disc, broad green leaves held out like arms, growing tall and confident out of a crack in a city sidewalk and looking down kindly at a tiny shiny green ground beetle with big eyes beside its stem",
+   "scene": "Background: a sunny city street corner with red-brick apartment buildings, a lamppost and a parked bicycle, painted in warm tones.",
+   "style": "e"
+  },
+  "pmcid": "PMC13461149",
+  "made": "2026-11-14",
+  "published": "2026-08-11",
+  "readMinutes": 43,
+  "paper": {
+   "hook": "Cities are usually bad news for wildlife. Many plants and animals disappear as towns grow, yet a few species seem to love city life. Scientists have spent decades asking what sets the winners apart.\n\nOne popular idea is body size. Size shapes how far a living thing can travel, what it eats and how it copes with change: a big bird can fly in and out of a city easily, while a small beetle may be stuck there. But earlier studies looked at only a few groups or a handful of cities, so nobody knew whether size mattered everywhere.",
+   "found": "Callaghan and colleagues checked more than 30,000 plant and animal species from around the world, using recorded sightings to score how strongly each one is drawn to cities.\n\nMost species avoided cities; only a small number thrived in them. Size did matter, but not in the same way for everyone. Bigger plants were generally more likely to cope with city life. In animals the pattern was all over the place: some groups showed the opposite trend, and many showed no link with size at all.",
+   "matters": "There is no single recipe for city success. Size helps explain which species live in cities in some groups, but it is only one piece of the puzzle, alongside food, movement and habitat.\n\nAs cities keep spreading, knowing which species can live in them matters more and more. The team shared city scores for every species and an interactive tool for exploring the results, from moths and birds to orchids, so others can test new ideas."
+  },
+  "cite": "Callaghan, Corey T., et al. “Global Relationships between Body Size and Urban Affinity across More than 30,000 Plant and Animal Species.” *eLife*, vol. 14, 2026, article RP109047, https://doi.org/10.7554/eLife.109047."
+ },
+ {
+  "lv": 2,
+  "name": "Heterodont Bathyal Sixgill",
+  "subject": "Biology",
+  "src": "eLife 2025",
+  "art": "cards/sixgill-shark-e-20261114.webp",
+  "no": "000,007",
+  "url": "https://doi.org/10.7554/elife.107406",
+  "headline": "A shark’s whole set of teeth tells where it lives.",
+  "hook": "One shark tooth is a clue; a whole mouthful tells a story.",
+  "found": "How neighboring teeth differ matched where a shark lives.",
+  "matters": "Fossil teeth may show how ancient oceans changed.",
+  "drawing": {
+   "slug": "sixgill-shark",
+   "subject": "a friendly bluntnose sixgill shark (Hexanchus griseus), drawn so it is clearly this species: a long, dark brownish-gray body, six gill slits on each side of its head, a single small dorsal fin set far back near the tail, a blunt rounded snout and big glowing green eyes, with a shy, gentle open-mouthed grin that shows its two kinds of teeth: wide comb-shaped teeth with many little points along the lower jaw and narrower hooked teeth in the upper jaw",
+   "scene": "Background: the dim blue deep sea just above a muddy seafloor, with soft light fading down from above into darkness.",
+   "style": "e"
+  },
+  "pmcid": "PMC12695028",
+  "made": "2026-11-14",
+  "published": "2025-11-13",
+  "readMinutes": 45,
+  "paper": {
+   "hook": "Teeth come in a huge variety of shapes, fitted to every kind of diet and home. They differ between species, between animals of the same species, and even within one mouth, which often holds several kinds of teeth.\n\nSharks and mammals both have especially varied teeth, though their last common ancestor lived hundreds of millions of years ago. A tooth is built in layers of detail: where it sits in the jaw is settled first, then its small points (cusps) and saw edges. Single shark teeth had been studied before, but not how a whole set of teeth fits a shark’s way of life.",
+   "found": "Zimm and colleagues built a new way to compare entire sets of teeth, using an online collection of shark teeth together with genetic data on how the species are related.\n\nThey found clear differences between the two major groups of sharks and between the places sharks live, especially the deep sea and the open ocean. How neighboring teeth in the same jaw differ from one another was shaped more by a shark’s home than by its family tree. Ancestry explained more of the fine details within each tooth and the differences between the upper and lower jaws.",
+   "matters": "Many body parts work as a team across scales, from a tiny saw edge to a whole jaw. This study shows which level of detail tells you about a lifestyle and which tells you about ancestry.\n\nShark teeth often survive as fossils, and they are closely tied to how a shark feeds and where it lives. Reading whole sets of teeth could help scientists follow how ocean life changed in the past and predict how it may change next."
+  },
+  "cite": "Zimm, Roland, et al. “Integration of Multi-Level Dental Diversity Links Macro-Evolutionary Patterns to Ecological Strategies across Sharks.” *eLife*, vol. 14, 2025, article e107406, https://doi.org/10.7554/eLife.107406."
+ },
+ {
+  "lv": 3,
+  "name": "Sequestering Polytoxic Monarch",
+  "subject": "Chemistry",
+  "src": "eLife 2026",
+  "art": "cards/monarch-caterpillar-e-20261114.webp",
+  "no": "000,008",
+  "url": "https://doi.org/10.7554/elife.109003",
+  "headline": "Even a poison expert struggles with a toxic cocktail.",
+  "hook": "Monarch caterpillars eat poisonous milkweed and keep the poison.",
+  "found": "A mix of five poisons slowed them more than any single one.",
+  "matters": "A mix of defenses can wear down a specialist pest.",
+  "drawing": {
+   "slug": "monarch-caterpillar",
+   "subject": "a plump, cute monarch butterfly caterpillar (Danaus plexippus), drawn so it is clearly this species: bold bands of black, white and yellow around its body, a pair of black whip-like filaments at the front and a shorter pair at the back, small black legs, and big cartoon eyes on its round face, chewing a tropical milkweed leaf (Asclepias curassavica) with a slightly overwhelmed, puffed-cheek look, beside a small cluster of the plant's red-and-orange flowers",
+   "scene": "Background: a sunny lab bench with small round milkweed leaf discs in clear petri dishes, in warm lamp light.",
+   "style": "e"
+  },
+  "pmcid": "PMC12991640",
+  "made": "2026-11-14",
+  "published": "2026-03-16",
+  "readMinutes": 35,
+  "paper": {
+   "hook": "Monarch butterflies eat only milkweed, a plant loaded with poisons called cardenolides. Monarchs have evolved not just to survive these poisons but to store them in their bodies, which protects them from predators such as birds. It is a textbook arms race between a plant and the insect that eats it.\n\nBut plants rarely make just one poison. Some milkweeds also make unusual cardenolides that contain nitrogen and sulfur, and nobody knew whether these, or the mixture as a whole, cost monarch caterpillars more than the familiar ones.",
+   "found": "Agrawal and colleagues purified the five main cardenolides from tropical milkweed (Asclepias curassavica) and fed them to monarch caterpillars, one at a time or all mixed together.\n\nThe caterpillars did not store the nitrogen- and sulfur-containing poisons as they were. They changed them into less toxic forms first, so they ended up with less defensive poison than caterpillars fed the other toxins.\n\nThe mixture hit hardest. Caterpillars fed all five toxins together grew more slowly and stored less poison than those fed the same amount of single compounds. The variety itself seems to overwhelm the caterpillar’s detox system.",
+   "matters": "A plant’s defense is more than its strongest poison: a mix of chemicals can wear down even a specialist that has evolved to eat it.\n\nFarmers could borrow this cocktail approach, protecting crops with several compounds at once instead of relying on one. The next step is to test the idea on living plants and with many other plant-eating insects."
+  },
+  "cite": "Agrawal, Anurag A., et al. “Cardenolide Toxin Diversity Impacts Monarch Butterfly Growth and Sequestration.” *eLife*, vol. 14, 2026, article RP109003, https://doi.org/10.7554/eLife.109003."
+ },
+ {
+  "lv": 3,
+  "name": "Resilient Riparian Burrower",
+  "subject": "Earth science",
+  "src": "eLife 2026",
+  "art": "cards/triassic-crayfish-e-20261114.webp",
+  "no": "000,009",
+  "url": "https://doi.org/10.7554/elife.104205",
+  "headline": "Life rebuilt a busy riverbank soon after Earth’s worst extinction.",
+  "hook": "Earth’s worst extinction wiped out most life 252 million years ago.",
+  "found": "Two million years later, a riverbank near the equator was busy again.",
+  "matters": "Burrowing may help life ride out extreme heat.",
+  "drawing": {
+   "slug": "triassic-crayfish",
+   "subject": "a cute ancient freshwater crayfish with big cartoon eyes on short stalks, a reddish-brown segmented shell, two sturdy claws and long antennae, peeking proudly out of the round entrance of its burrow in a muddy riverbank, the burrow winding down between pale plant roots",
+   "scene": "Background: an Early Triassic riverbank 250 million years ago under a hot, hazy sky, with tall jointed horsetail-like Neocalamites stems and Pleuromeia plants (single upright stems topped with a tuft of grassy leaves) along a shallow muddy river, and far in the distance a small lizard-like reptile with a long tail.",
+   "style": "e"
+  },
+  "pmcid": "PMC13183373",
+  "made": "2026-11-14",
+  "published": "2026-05-18",
+  "readMinutes": 21,
+  "paper": {
+   "hook": "About 252 million years ago, Earth suffered its worst mass extinction. Huge volcanic eruptions, global warming and acid rain wiped out more than 95% of ocean species and about 70% of life on land, and the planet stayed harsh for millions of years.\n\nSome sea life seems to have bounced back fairly quickly, but recovery on land is much harder to study, because few fossils survive, especially from basins near the equator. So how fast did land ecosystems there come back?",
+   "found": "Guo and colleagues studied rock layers from the very end of the Permian and the start of the Triassic at six sites in the Central North China Basin, which lay near the equator at the time.\n\nThey found new fossils of medium-sized meat-eating reptiles, plant stems, root traces and many burrows, including crayfish burrows tangled in plant roots. Animals were living down in the riverbank mud far more than before.\n\nTogether these clues point to a river-side ecosystem with several levels of eaters, from burrowers to predators, about two million years after the extinction. Land life near the equator may have recovered faster and more fully than scientists assumed.",
+   "matters": "The study helps explain how Earth became livable again after the disaster. It suggests that around 250 million years ago, plants and animals adapted fairly quickly to extreme heat, for example by burrowing underground and living along rivers.\n\nThat makes these ancient riverbanks a guide to how living things might respond to severe global warming in the future."
+  },
+  "cite": "Guo, Wenwei, et al. “Rapid Riparian Ecosystem Recovery in Low-Latitudinal North China following the End-Permian Mass Extinction.” *eLife*, vol. 14, 2026, article RP104205, https://doi.org/10.7554/eLife.104205."
+ },
+ {
+  "lv": 4,
+  "name": "Latent Ocellar Formicine",
+  "subject": "Genetics",
+  "src": "eLife 2026",
+  "art": "cards/ocelli-ant-e-20261114.webp",
+  "no": "000,010",
+  "url": "https://doi.org/10.7554/elife.110148",
+  "headline": "Evolution may keep an old blueprint in the drawer.",
+  "hook": "Worker ants lost their tiny extra eyes, then kept getting them back.",
+  "found": "Eye-building genes still flicker on in workers with no extra eyes.",
+  "matters": "A lost trait’s recipe can hide, ready to return.",
+  "drawing": {
+   "slug": "ocelli-ant",
+   "subject": "a cute worker formicine ant drawn so it is clearly an ant: a reddish-brown body in three parts (head, thorax and a round, shiny abdomen), bent elbowed antennae, six thin legs, two big glossy compound eyes as its cartoon eyes, and three tiny glowing simple eyes (ocelli) arranged in a little triangle on top of its head, which it is trying to look up at with a curious, delighted expression",
+   "scene": "Background: inside an underground ant nest, warm earthen tunnels and chambers, with a few pale white larvae resting in a soft-lit chamber.",
+   "style": "e"
+  },
+  "pmcid": "PMC13485301",
+  "made": "2026-11-14",
+  "published": "2026-08-18",
+  "readMinutes": 36,
+  "paper": {
+   "hook": "Sometimes a body part disappears during evolution and then comes back millions of years later. How a lost trait can return is an old puzzle.\n\nAnts are a good place to look. In one colony the same genes can build queens, males and workers that look very different. Queens and males always have ocelli, three tiny light-sensing eyes on top of the head. Workers have lost and regained them again and again: depending on the species, a worker has none, one, two or all three.",
+   "found": "Vasquez-Correa and colleagues traced the family history of worker ocelli across a huge group of ants, the Formicinae. Workers gained ocelli once, then lost them many times and got them back independently several times.\n\nTo see how, they watched the head develop from the eye-antennal disc, the tissue that builds the eyes, antennae, ocelli and head. A staining method lit up genes as they switched on. Even in workers with no ocelli, key ocellus-building genes were briefly active: the genetic recipe was still there, just never finished.",
+   "matters": "When a trait is lost, its instructions may not be. A dormant recipe like this could explain how ocelli kept coming back in worker ants and soldiers.\n\nMany living things grow different forms from the same genes, from single cells to whole societies. If hidden gene activity like this is common, it could be a store of evolutionary potential that helps lost traits return in new forms."
+  },
+  "cite": "Vasquez-Correa, Angelly, et al. “Latent Gene Network Expression Underlies Partial Re-Evolution of a Polyphenic Trait in the Worker Caste of Ants.” *eLife*, vol. 15, 2026, article RP110148, https://doi.org/10.7554/eLife.110148."
  }
 ]
