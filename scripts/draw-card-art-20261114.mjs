@@ -6,7 +6,7 @@
 //   node scripts/draw-card-art-20261114.mjs                    draw every card that has no OpenAI picture yet
 //   node scripts/draw-card-art-20261114.mjs --only pika --redo  draw one card again
 //
-// Needs PAPERGIRL_PATTY_OPENAI_API_KEY (Paper Patty's own key, never OPENAI_API_KEY). The key is read from the environment
+// Needs PAPERMON_PATTY_OPENAI_API_KEY (Paper Patty's own key, never OPENAI_API_KEY; the old name PAPERGIRL_PATTY_OPENAI_API_KEY works until API Fairy renames it). The key is read from the environment
 // and never printed or written anywhere. Pictures land in public/art/cards/ as 720 px WebP; the card's `art` is updated.
 import {readFileSync, writeFileSync, mkdirSync, existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
@@ -37,8 +37,8 @@ const cards = JSON.parse(readFileSync(DECK, 'utf8'));
 const todo = cards.filter(c => c.drawing && (!only || c.drawing.slug === only) && (redo || !String(c.art).startsWith('cards/')));
 if (!todo.length) { console.log('Nothing to draw.'); process.exit(0); }
 
-const key = process.env.PAPERGIRL_PATTY_OPENAI_API_KEY;
-if (!dry && !key) { console.error('PAPERGIRL_PATTY_OPENAI_API_KEY is not set. Nothing was drawn.'); process.exit(1); }
+const key = process.env.PAPERMON_PATTY_OPENAI_API_KEY || process.env.PAPERGIRL_PATTY_OPENAI_API_KEY;
+if (!dry && !key) { console.error('PAPERMON_PATTY_OPENAI_API_KEY is not set. Nothing was drawn.'); process.exit(1); }
 mkdirSync(OUT, {recursive: true}); mkdirSync(ORIGINALS, {recursive: true});
 
 for (const card of todo) {

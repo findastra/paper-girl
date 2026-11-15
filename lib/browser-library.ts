@@ -9,8 +9,8 @@ type SearchResult = {hitCount: number; nextCursorMark?: string; resultList?: {re
 type HistoryItem = {id: string; filters: Filters; pmcid: string | null; title: string | null; journal: string | null; outcome: string; message: string | null; created_at: number};
 type Store = {visits: string[]; history: HistoryItem[]; checked: Record<string, 'ready' | 'unavailable'>};
 
-// Saved under the Papermon name since 2026-11-14; a history saved under the old Paper Girl name is read once and
-// carried over, so nobody loses what they have read.
+// Renamed with the site (Papermon, 2026-11-14). A browser that saved under the old name keeps its history: it is read once
+// from OLD_STORE_KEY and saved under the new name from then on.
 const STORE_KEY = 'papermon:library:v1', OLD_STORE_KEY = 'paper-girl:library:v1';
 const PAGE = 30;
 let memory: Store | null = null;
