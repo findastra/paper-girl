@@ -22,8 +22,50 @@ const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'America/Denver'}).for
 const fileName=(c:Card)=>`papermon-${c.no.replace(/\D/g,'').slice(-4)}-${c.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}-${today()}.gif`;
 const tick=()=>new Promise(r=>setTimeout(r,0));
 
+/**
+ * html-to-image waits for an animation frame after each picture it loads, and a page that isn't on screen gets no
+ * frames (a browser window covered by Discord while the GIFs are made, a hidden window), so it would wait forever.
+ * While a card is photographed, a frame that hasn't come within 100 ms is replaced by a timer.
+ */
+async function withFrameFallback<T>(work:()=>Promise<T>):Promise<T>{
+ const raf=window.requestAnimationFrame;
+ window.requestAnimationFrame=(cb:FrameRequestCallback)=>{
+  let done=false;const run=(t:number)=>{if(!done){done=true;cb(t)}};
+  const id=raf.call(window,run);setTimeout(()=>run(performance.now()),100);return id;
+ };
+ try{return await work()}finally{window.requestAnimationFrame=raf}
+}
+
+/**
+ * The cards' paper and metal textures are SVG pictures drawn with filters (white Common cards: a marble texture
+ * multiplied over white). html-to-image paints those black, so on the off-screen copy each one is first turned into
+ * a plain PNG picture of itself; the card looks the same and photographs correctly.
+ */
+const rasters=new Map<string,Promise<string>>();
+function raster(svg:string){
+ if(!rasters.has(svg))rasters.set(svg,new Promise<string>(done=>{
+  const img=new Image();
+  img.onload=()=>{const c=document.createElement('canvas');c.width=img.naturalWidth||420;c.height=img.naturalHeight||420;
+   c.getContext('2d')!.drawImage(img,0,0);try{done(c.toDataURL('image/png'))}catch{done(svg)}};
+  img.onerror=()=>done(svg);img.src=svg;
+ }));
+ return rasters.get(svg)!;
+}
+async function flattenSvgTextures(root:HTMLElement){
+ await Promise.all([root,...root.querySelectorAll<HTMLElement>('*')].map(async el=>{
+  const bg=getComputedStyle(el).backgroundImage;
+  if(!bg.includes('data:image/svg+xml'))return;
+  let out=bg;
+  for(const [,svg] of bg.matchAll(/url\("(data:image\/svg\+xml[^"]*)"\)/g))out=out.replace(svg,await raster(svg));
+  el.style.backgroundImage=out;
+ }));
+}
+
 /** Draws one card off screen, exactly as the deck shows it, and photographs its front and back. */
 async function photograph(card:Card,CardView:ComponentType<{card:Card}>){
+ return withFrameFallback(()=>photographNow(card,CardView));
+}
+async function photographNow(card:Card,CardView:ComponentType<{card:Card}>){
  const host=document.createElement('div');
  host.className='gif-stage';
  // Inside My deck, so the deck's own styles apply to it
@@ -36,7 +78,10 @@ async function photograph(card:Card,CardView:ComponentType<{card:Card}>){
   await Promise.all(imgs.map(i=>i.complete&&i.naturalWidth?null:new Promise(r=>{i.onload=i.onerror=()=>r(null)})));
   await Promise.all(imgs.map(i=>i.decode?.().catch(()=>null)));
   await document.fonts?.ready;
-  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  await flattenSvgTextures(host);
+  // A short pause for the browser to lay the card out. A timer, not animation frames: a page that isn't on screen
+  // (a phone switched to another app, a hidden window) gets no frames, and the GIF would wait forever.
+  await new Promise(r=>setTimeout(r,80));
   const face=(sel:string)=>toCanvas(host.querySelector(sel) as HTMLElement,{width:W,height:H,pixelRatio:1,
    style:{transform:'none',backfaceVisibility:'visible',boxShadow:'none'}});
   return {front:await face('.deck-front'),back:await face('.deck-back')};
