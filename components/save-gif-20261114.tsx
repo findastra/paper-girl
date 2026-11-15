@@ -179,7 +179,8 @@ export function SaveGifButton({cards,Card:CardView}:{cards:Card[];Card:Component
     {made.length>0&&<>
      <ul className="gif-list gif-done">{made.map(m=><li key={m.name}>
       <img src={m.url} alt={`${m.card.name} as a GIF`}/>
-      <span><b>{m.card.name}</b><small>{m.name} · {mb(m.blob)}</small></span>
+      {/* The file name is long, so the row shows the size; the file still saves under its full name */}
+      <span title={m.name}><b>{m.card.name}</b><small>GIF · {mb(m.blob)}</small></span>
       <button type="button" onClick={()=>save(m)} aria-label={`Save ${m.name}`}><Download size={16} aria-hidden="true"/>Save</button>
      </li>)}</ul>
      <div className="gif-all gif-finish">
