@@ -12,6 +12,8 @@ import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import '@/app/my-deck-20261114.css';
+import {CardQR} from '@/components/card-qr-20261114';
+import {SaveGifButton} from '@/components/save-gif-20261114';
 
 // certifiedBy / certifiedOn: who checked the card for its paper's authors and when (only on author-checked cards).
 // example: a gold card shown only to show the look of a certified card (Astra, 2026-11-14); it is labeled "Example" on
@@ -342,7 +344,10 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
         <span><b>Author’s name:</b> {card.example?'[Author’s name]':card.certifiedBy||'the paper’s author'}</span>
         <span><b>Author’s certification date:</b> <em className="deck-date">{card.example?shortDate(card.made||'2026-11-14'):card.certifiedOn?shortDate(card.certifiedOn):'—'}</em></span>
        </>}</div>
-      {gold&&<PapermonSeal id={card.no.replace(/\D/g,'')} author={!!card.author} example={!!card.example}/>}
+      {/* The QR code to the original article, just left of the seal (Astra, 2026-11-14); on cards without a seal it
+          takes the seal's corner */}
+      <span className="bfoot-marks"><CardQR url={card.url} label={card.name}/>
+       {gold&&<PapermonSeal id={card.no.replace(/\D/g,'')} author={!!card.author} example={!!card.example}/>}</span>
      </div>
     </div>
    </div>
@@ -434,6 +439,8 @@ export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
     {ORDERS.map(o=><option key={o.key} value={o.key}>{o.label}</option>)}</select></label>
    <button type="button" className="deck-dir" onClick={()=>setReverse(r=>!r)} aria-label="Turn the order around"
     title="Turn the order around">{(order.down?!reverse:reverse)?'↓':'↑'}</button>
+   {/* Save as GIF (Astra, 2026-11-14): pick cards, each saves as its own animated GIF, ready for Discord */}
+   <SaveGifButton cards={cards} Card={DeckCard}/>
   </div>
   {group.of
    ?<div className="my-deck-piles">{piles.map(p=><Pile key={p.key+':'+orderKey+':'+reverse} pile={p.cards} onPick={onPick}/>)}</div>
