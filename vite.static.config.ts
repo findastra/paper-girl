@@ -1,12 +1,13 @@
 // Builds the static edition into dist-static/ for GitHub Pages (`npm run build:static`). The full Cloudflare site
-// keeps using vite.config.ts. Set PAPERMON_BASE to serve from somewhere other than /papermon/.
+// keeps using vite.config.ts. Addresses are relative (base ./), so the site works at any address, such as
+// findastra.github.io/papermon/ or a local preview. Set PAPERMON_BASE to use a fixed address instead.
 import {fileURLToPath} from 'node:url';
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   root: 'static-site',
-  base: process.env.PAPERMON_BASE || '/papermon/',
+  base: process.env.PAPERMON_BASE || './',
   publicDir: '../public',
   define: {'import.meta.env.VITE_PAPERMON_STATIC': JSON.stringify('1')},
   resolve: {alias: {'@': fileURLToPath(new URL('.', import.meta.url))}},

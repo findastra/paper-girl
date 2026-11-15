@@ -19,6 +19,7 @@ let moduleId = 0;
 async function withLibrary(network, run, saved = {}) {
   const originals = Object.fromEntries(['fetch','window','location','localStorage'].map(key => [key,Object.getOwnPropertyDescriptor(globalThis,key)]));
   const random = Math.random;
+  // Saved under the old Paper Girl name, so every test also checks that the history is carried over.
   const storage = new Map([['paper-girl:library:v1',JSON.stringify(saved)]]);
   try {
     globalThis.fetch = network;
@@ -28,7 +29,7 @@ async function withLibrary(network, run, saved = {}) {
     Math.random = () => 0.999;
     const {installBrowserLibrary} = await import(`../lib/browser-library.ts?test=${++moduleId}`);
     installBrowserLibrary();
-    await run(() => JSON.parse(storage.get('papermon:library:v1')));
+    await run(() => JSON.parse(storage.get('papermon:library:v1') ?? storage.get('paper-girl:library:v1')));
   } finally {
     Math.random = random;
     for (const [key, descriptor] of Object.entries(originals)) {

@@ -5,5 +5,5 @@ const env = ((import.meta as unknown as {env?: Record<string, string | undefined
 
 export const staticEdition = env.VITE_PAPERMON_STATIC === '1';
 
-/** Where the site is served from: "/" for the full site, "/papermon/" on GitHub Pages. */
+/** Where the site is served from: "/" for the full site, "./" on GitHub Pages. */
 export const base = env.BASE_URL || '/';

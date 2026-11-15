@@ -1,14 +1,14 @@
 # Papermon
 
-A free science discovery desk with a dark mauve reading view, playful illustrations, and real papers from eLife and five PLOS journals.
+A free science trading-card game: every card is a real scientific article from eLife and five PLOS journals, written up in plain words. The more you collect, the smarter you get.
 
 **[Live site](https://findastra.github.io/papermon/)** *(static edition on GitHub Pages)*
 
-- **Surprise me:** discovers a different article and checks its publisher summary and CC BY license.
-- **Article index:** searchable metadata for the supported Europe PMC collection; summary verification happens as papers are opened.
-- **Shared search history:** persistent anonymous filters, timestamps, results, and unsuccessful searches.
-- **Reading history:** an anonymous browser cookie prevents repeats across visits on the same browser.
-- **Daily paper:** a rotating selection with clearly attributed publisher explanations or prepared Papermon commentary.
+- **Card of the day:** a real paper written up in four parts (the strange hook, what they found, why it matters, bibliography) beside its card.
+- **Draw Card:** five draws a day, by subject and reading difficulty. When no card exists yet, you get a real paper to read instead.
+- **My deck:** every card you have drawn, grouped and sorted, with read ticks kept in your browser.
+- **Rarity:** from reading difficulty and the paper's age; a gold card only when the paper's author certifies it.
+- **Enter Card Code:** for printed cards (not out yet).
 
 Built with React, TypeScript, Vinext, Cloudflare Workers, and D1. No paid AI dependency. Publishing this repository does not itself deploy the Cloudflare site or copy the local article database.
 
@@ -197,6 +197,6 @@ Desktop appearance draft updated 2026-10-11: see [desktop details](https://raw.g
 
 What is not done, plainly. From the hub's [intelligence levels](https://github.com/findastra/astras-pet-os/blob/main/INTELLIGENCE-LEVELS.md) (checked 2026-10-18):
 
-- **Program (L1/L2):** ✅ **Made by Astra:** **Papermon**: [findastra.github.io/papermon](https://findastra.github.io/papermon/), the free science discovery website
+- **Program (L1/L2):** ✅ **Made by Astra:** **Papermon**: [findastra.github.io/papermon](https://findastra.github.io/papermon/), the free science trading-card website
 - **Runtime (L2):** — **Should:** bring fresh research and articles to the site (suggested)
 - **Agentic harness (L3):** — not built yet
