@@ -12,6 +12,7 @@ import {formatArticleSummary,ARTICLE_SECTION_LABELS} from '@/lib/article-summary
 import {LibraryPanel} from '@/components/library-panel';
 import {MyDeck,DeckCard,cards as deckCards,type Card} from '@/components/my-deck-20261114';
 import {SERVER,serverUp,drawOnServer,waitForCard,addDrawn,useDeckCards,paperOf} from '@/lib/card-server-20261114';
+import {CardCatalogButton} from '@/components/card-catalog-20261114';
 import {GoldSurface} from '@/components/gold-surface-20261114';
 // The page's accent is always gold, whatever card is drawn (Astra, 2026-11-14), so the line beside "Why it matters"
 // and the other accents stay gold.
@@ -60,7 +61,7 @@ export default function Home(){
  // The card site is the normal page; ?classic shows the old one.
  const [showDeck,setShowDeck]=useState(false),[drawType,setDrawType]=useState(0),[drawLevel,setDrawLevel]=useState(0),[drawYear,setDrawYear]=useState(0),[spinning,setSpinning]=useState(false),[drawStatus,setDrawStatus]=useState('');
  // Card of the day (Astra, 2026-11-14): in deck mode today's paper is one that has a card, so the card can sit beside
- // its full write-up. Until Paper Patty makes cards for every paper, it rotates through the cards that exist.
+ // its full write-up. Until Papermon makes cards for every paper, it rotates through the cards that exist.
  function cardOfTheDay(day:string):Paper|null{const c=deckCards[hash('card:'+day)%deckCards.length],s=seeds.find(x=>x.pmcid===c.pmcid);return s?{...s,...editorials[s.pmcid]}:null}
  useEffect(()=>{setShowDeck(!new URLSearchParams(window.location.search).has('classic'))},[]);
  const seen=useRef(new Set<string>([initial.pmcid])),working=useRef(false),controller=useRef<AbortController|null>(null),dailyPaper=useRef(initial),editorial=useRef(editorials);
@@ -77,7 +78,7 @@ export default function Home(){
  const allCards=useDeckCards();
  const paperCard=showDeck?allCards.find(c=>c.pmcid===paper.pmcid):undefined;
  // Draw a card (Astra, 2026-11-14): pick a card of that type and difficulty from the library; when none exists yet,
- // look up a real paper of that type instead (Paper Patty will make its card later).
+ // look up a real paper of that type instead (Papermon will make its card later).
  function drawFromReels(){setSpinning(true);setTimeout(()=>setSpinning(false),650);
   const type=TYPE_ITEMS[drawType].key,level=Number(LEVEL_ITEMS[drawLevel].key);
   drawFromServer(type,level).then(done=>{if(!done)drawCard(type,level,drawYear)})}
@@ -116,9 +117,11 @@ export default function Home(){
   if(filled.length){const {cards}=weightedPick(filled,x=>x.g.odds),c=cards[Math.floor(Math.random()*cards.length)],s=seeds.find(x=>x.pmcid===c.pmcid);
    if(s){setPaper({...s,...editorials[s.pmcid]});setDaily(false);setSourceOpen(false);setError('');setDrawStatus(`You drew ${c.name}.`);return}}
   const g=weightedPick(groups,x=>x.odds),years=groupRange(g);
-  setDrawStatus(`No ${type||''} card${level?` at reading difficulty ${level}`:''}${yearChoice?` from ${yearChoice===1?'this year':'past years'}`:''} in the library yet, so here is a real paper from ${g.label} to read. Paper Patty will make its card.`.replace('No  card','No card'));
+  setDrawStatus(`No ${type||''} card${level?` at reading difficulty ${level}`:''}${yearChoice?` from ${yearChoice===1?'this year':'past years'}`:''} in the library yet, so here is a real paper from ${g.label} to read. Papermon will make its card.`.replace('No  card','No card'));
   shuffle({...filters,topic:type||'Everything',period:'custom',from:String(years.from),to:String(years.to)}).catch(()=>{});
  }
+ // "Read the write-up" on a card in My deck or the Card Catalog: its paper goes on the sheet up top.
+ function pickCard(c:Card){const s=seeds.find(x=>x.pmcid===c.pmcid);setPaper(s?{...s,...editorials[s.pmcid]}:paperOf(c));setDaily(false);setSourceOpen(false);setError('');setDrawStatus('');(document.activeElement as HTMLElement|null)?.blur?.();setTimeout(()=>requestAnimationFrame(toPaper),60)}
  // The paper's sections can hold several paragraphs, split on a blank line.
  const paras=(t:string)=>t.split(/\n\s*\n/).map((x,i)=><p key={i}>{x}</p>);
  const scienceDialog=(trigger:ReactNode)=><Dialog><DialogTrigger asChild>{trigger}</DialogTrigger><DialogContent className="source-dialog"><DialogTitle>The science behind Papermon</DialogTitle><DialogDescription>Clear explanations. Real sources. No subscriptions.</DialogDescription><div className="source-dialog-copy"><h3>Our journal shelf</h3><p>Live discovery searches <a href="https://europepmc.org/RestfulWebService" target="_blank" rel="noreferrer">Europe PMC</a> for open-access research in <a href="https://elifesciences.org/" target="_blank" rel="noreferrer">eLife</a>, PLOS Biology, PLOS Genetics, PLOS Computational Biology, PLOS Pathogens and PLOS Neglected Tropical Diseases. Original papers open on their journal websites.</p><h3>Simple subjects, honest coverage</h3><p>Biology and health are our strongest areas. Chemistry includes biochemistry; Math includes mathematical modeling; Physics includes biological physics. Earth science covers ecosystems, climate and fossils. Subject filters match titles and abstracts, so topics may overlap. This library does not cover every branch of science.</p><h3>Words and metaphors</h3><p>Daily picks rotate through a prepared collection with edited plain-English explanations. We use metaphors only where they fit the mechanism, keep the study’s actual scope, and include a specific limitation. Live papers use selected whole sentences from the publisher’s digest or author summary in the same three-part format. The full explanation remains under Source details. Some publisher text is more technical. We do not invent a metaphor or conclusion for it.</p><h3>What we check</h3><p>Live finds must have an accessible publisher summary and a CC BY license. We skip reviews, preprints and known retraction or concern notices present in the index. These checks are not a guarantee that a study’s conclusion is correct. One study is one piece of evidence.</p><h3>Keep exploring, for free</h3><p>{staticEdition?'The article index searches the supported open-access collection live. Summaries are checked when selected. Your browser remembers the articles you have read, so you will not see repeats; clearing this site’s data starts a new reading history. Your searches are saved in this browser only, with their filters, time and outcome. Nothing about you is sent anywhere: the only thing that leaves your device is the search itself, sent to Europe PMC. Narrow filters can run out; widen them to keep exploring.':'The article index covers the supported open-access collection. Summaries are checked when selected. An anonymous browser cookie remembers articles you have read across visits; clearing cookies starts a new reading history. Every search is saved in the shared history with its filters, time and outcome. Names, emails and account IDs are not stored. Narrow filters can run out; widen them to keep exploring.'}</p><p>Daily picks were edited October 19, 2026. The cartoon button remixes three original illustrations, not scientific diagrams. There is no paid AI service, subscription, or payment collection.</p></div></DialogContent></Dialog>;
@@ -140,11 +143,13 @@ export default function Home(){
  {researchDetails}
  <a className="original-link" href={paper.articleUrl} target="_blank" rel="noreferrer"><BookOpen size={16}/> Read the original paper <span>OPEN ACCESS</span></a></>}
 </div>
- {showDeck&&<aside className="cotd-card" aria-label="Today's card">{paperCard?<DeckCard card={paperCard} onPick={()=>{(document.activeElement as HTMLElement|null)?.blur?.();toPaper()}}/>:<div className="cotd-nocard"><p>Paper Patty hasn’t made a card for this paper yet.</p></div>}
+ {showDeck&&<aside className="cotd-card" aria-label="Today's card">{paperCard?<DeckCard card={paperCard} onPick={()=>{(document.activeElement as HTMLElement|null)?.blur?.();toPaper()}}/>:<div className="cotd-nocard"><p>Papermon hasn’t made a card for this paper yet.</p></div>}
   {/* The little motto under the card, like the old "Stay curious, sweet thing" note: every card makes you a bit smarter. */}
   <div className="cotd-below">
   <DrawPicker busy={busy} type={drawType} level={drawLevel} year={drawYear} onType={setDrawType} onLevel={setDrawLevel} onYear={setDrawYear} onDraw={drawFromReels} status={error||drawStatus}>
    {/* Every link is a button here, under the draw buttons, not on the paper (Astra, 2026-11-14) */}
+   {/* Every card anyone has drawn (Astra, 2026-11-14, card server deck Q4-Q5); only while the card server answers */}
+   <CardCatalogButton onPick={pickCard}/>
    {popup(<><CircleHelp size={16} aria-hidden="true"/>Rules</>,'Rules',<HowToPlay/>,'Collect real science, one card at a time.')}
    {/* Was "Where the science comes from" (Astra, 2026-11-14: "game design methodology and credits or something") */}
    {popup(<><BookOpen size={16} aria-hidden="true"/>Methods & Credits</>,'Methods & Credits',<MethodsCredits/>,'How Papermon turns real research into cards.')}
@@ -156,7 +161,7 @@ export default function Home(){
  <div className="shuffle-row"><p>No paywalls here. Just one more “wait, really?”</p><button className="shuffle-button" disabled={busy} onClick={()=>{shuffle().catch(()=>{})}}>{busy?<LoaderCircle size={20} className="spin"/>:<Shuffle size={20}/>} {busy?'Finding a paper…':'Surprise me'} {!busy&&<Sparkles size={16}/>}</button></div><div role="status" aria-live="polite" className="status">{status}{reads>0&&!busy&&<span>{reads} new {reads===1?'discovery':'discoveries'} this session</span>}</div>{error&&<div className="error" role="alert"><Info size={17}/><p>{error}</p><button onClick={()=>setError('')} aria-label="Dismiss message"><X size={16}/></button></div>}</section>
  {/* Deck mode: "Where the science comes from" lives on the paper, in Article information (Astra, 2026-11-14) */}
  </div>
- <LibraryPanel revision={reads}/>{showDeck&&<GoldSurface/>}{showDeck&&<MyDeck onPick={c=>{const s=seeds.find(x=>x.pmcid===c.pmcid);setPaper(s?{...s,...editorials[s.pmcid]}:paperOf(c));setDaily(false);setSourceOpen(false);setError('');setDrawStatus('');(document.activeElement as HTMLElement|null)?.blur?.();setTimeout(()=>requestAnimationFrame(toPaper),60)}}/>}{!showDeck&&scienceFooter}
+ <LibraryPanel revision={reads}/>{showDeck&&<GoldSurface/>}{showDeck&&<MyDeck onPick={pickCard}/>}{!showDeck&&scienceFooter}
  {showDeck&&<AstraFooter/>}
  </main></div>
 }

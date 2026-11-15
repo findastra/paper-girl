@@ -32,7 +32,8 @@ const CONFIG = {
   origins: (env.PAPERMON_ORIGINS || 'https://findastra.github.io,http://127.0.0.1:8813').split(',').map(s => s.trim()).filter(Boolean),
   timeZone: 'America/Denver',
 };
-const KEYS = {anthropic: env.PAPER_GIRL_ANTHROPIC_API_KEY || '', openai: env.PAPERGIRL_PATTY_OPENAI_API_KEY || ''};
+// The OpenAI key's new name (PR #19's rename) first, then the name API Fairy filed it under.
+const KEYS = {anthropic: env.PAPER_GIRL_ANTHROPIC_API_KEY || '', openai: env.PAPERMON_PATTY_OPENAI_API_KEY || env.PAPERGIRL_PATTY_OPENAI_API_KEY || ''};
 
 mkdirSync(DATA, {recursive: true});
 const ART = join(DATA, 'art');

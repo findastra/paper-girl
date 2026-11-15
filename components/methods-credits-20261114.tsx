@@ -17,7 +17,7 @@ export function MethodsCredits(){
    plain summary are used; reviews, preprints and papers with a retraction or concern notice are skipped. Every card
    links to its original article.</p>
   <h3>How a card is made</h3>
-  <p>Paper Patty, Papermon’s writer, reads the paper and the publisher’s summary and writes the card: a name, the
+  <p>Papermon reads the whole paper and the publisher’s summary, and Claude writes the card from them: a name, the
    three-part story on the back, and the two-minute write-up on the paper. The picture is drawn in one cartoon style,
    and its hero is always a creature with eyes. Nothing on a card is made up: no moves or invented stats.</p>
   <h3>What the numbers mean</h3>

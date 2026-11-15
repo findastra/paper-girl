@@ -13,8 +13,14 @@ these cards are good or bad. And I want to see these cards that my friends gener
   The same paper always gives the same card, so nobody pays twice for one paper.
 - **Five draws a day per person**, counted on the server too (and at most 15 a day from one network, so clearing the
   browser doesn't reset it). A card that fails to be made doesn't use up a draw.
-- **Feedback reaches Astra:** the card back's thumbs, "Report a problem" and "I wrote this paper" go to the server.
-  When the server can't be reached they stay in the friend's browser and the pop-up says so.
+- **Feedback reaches Astra** (deck Q6, thumbs + reason + note): a thumbs down opens "What's wrong with this card?"
+  with five reasons (wrong about the science, hard to follow, boring, picture doesn't fit, other) and an optional
+  one-line note; after a thumbs up, "Add a note" takes the place of "Good card?". "Report a problem" and "I wrote this
+  paper" go to the server too. When the server can't be reached they stay in the friend's browser and the pop-up says so.
+- **The Card Catalog for friends** (deck Q4 and Q5): a **Card Catalog** button beside Rules, shown only while the
+  server answers, opens every card anyone has drawn with its thumbs counts and an "In your deck" mark, by subject and
+  newest, card number or most liked. Notes, reports and who drew what never leave Astra's page
+  (`components/card-catalog-20261114.tsx`, `app/card-catalog-20261114.css`).
 - **Astra's page** (`/owner`) lists every card with who drew it first (an anonymous id, never a name), its thumbs,
   reasons and notes, every report and author message, and what each day cost. It opens only on her PC, with the owner
   key the server prints when it starts.
@@ -25,7 +31,7 @@ these cards are good or bad. And I want to see these cards that my friends gener
 | What | Where |
 |---|---|
 | Server code | `server/` in this repo (`papermon-server-20261114.mjs`, `card-maker-20261114.mjs`, `catalog-20261114.mjs`, `owner-page-20261114.html`) |
-| Page side | `lib/card-server-20261114.ts`; small hooks in `app/page.tsx` and `components/my-deck-20261114.tsx` |
+| Page side | `lib/card-server-20261114.ts`, `components/card-catalog-20261114.tsx`; small hooks in `app/page.tsx` and `components/my-deck-20261114.tsx` |
 | The catalog, new card pictures, owner key | Astra's PC only: `%USERPROFILE%\Documents\Astra's PetOS Data\papermon\` (never in the repo) |
 | Card rules Claude follows | `RULES` in `server/card-maker-20261114.mjs`, written from [card-plan-20261113.md](card-plan-20261113.md) |
 
@@ -41,6 +47,9 @@ $env:PAPERGIRL_PATTY_OPENAI_API_KEY = [Environment]::GetEnvironmentVariable('PAP
 npm start
 ```
 
+Once API Fairy renames the OpenAI key to `PAPERMON_PATTY_OPENAI_API_KEY` (the rename PR's name), the server uses that
+name first.
+
 The keys are read from Windows by name and never written to a file. The first start puts the five starter cards in
 the catalog as No. 1 to 5, so new cards start at No. 6.
 
@@ -55,7 +64,7 @@ the catalog as No. 1 to 5, so new cards start at No. 6.
 
 ## Reaching it from friends' phones
 
-The server listens on 127.0.0.1 only. A tunnel carries friends' requests to it (deck question 1, recommended:
+The server listens on 127.0.0.1 only. A tunnel carries friends' requests to it (deck question 1, decided:
 Tailscale Funnel), and the site is built with the tunnel's address in `VITE_PAPERMON_SERVER`. On this PC a working
 copy can be pointed at a local server with `?server=http://127.0.0.1:PORT` (only loopback addresses are accepted).
 

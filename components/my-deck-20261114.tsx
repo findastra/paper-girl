@@ -5,14 +5,15 @@
 // type symbol, the level, the headline, the rarity and difficulty stars. No links on the front.
 // Back: the three sections, the "Read the paper" link, the source, the author status and the card number.
 // Live since 2026-11-14 as the normal page (?classic shows the old one). For now everyone sees the same five starter
-// cards (lib/data/sample-deck-20261114.json) until Paper Patty makes cards per visitor. Card rules: docs/card-plan-20261113.md.
+// cards (lib/data/sample-deck-20261114.json), plus the cards they draw from Papermon's card server. Card rules: docs/card-plan-20261113.md.
 import {useEffect,useState,type CSSProperties,type FormEvent} from 'react';
 import {Atom,Brain,Check,CircleHelp,ThumbsDown,ThumbsUp,TreePine,Users,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
-import {artSrc,sendVote,sendMessage,useDeckCards} from '@/lib/card-server-20261114';
+import {artSrc,sendVote,sendMessage,useDeckCards,DOWN_REASONS} from '@/lib/card-server-20261114';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import '@/app/my-deck-20261114.css';
+import '@/app/card-catalog-20261114.css';
 
 // certifiedBy / certifiedOn: who checked the card for its paper's authors and when (only on author-checked cards).
 // example: a gold card shown only to show the look of a certified card (Astra, 2026-11-14); it is labeled "Example" on
@@ -183,13 +184,42 @@ export function useReadMap(){
 function useRead(no:string):[boolean,(v:boolean)=>void]{const m=useReadMap();return [!!m[no],v=>saveRead(no,v)]}
 
 // Thumbs up or down on a card (Astra, 2026-11-14: "you would immediately just rank it"), kept in this browser per card
-// like the read ticks, until Papermon has a server to collect them.
-const RATE_KEY='papermon:rate:v1',RATE_EVENT='papermon-rate';
+// like the read ticks, and sent to Astra's card server when the page can reach it. Thumbs + reason + note (Astra,
+// 2026-11-14, card server deck Q6): a thumbs down asks why; either thumb can carry a one-line note.
+const RATE_KEY='papermon:rate:v1',NOTE_KEY='papermon:rate-note:v1',RATE_EVENT='papermon-rate';
+type RateNote={reason?:string;note?:string};
 function loadRates():Record<string,1|-1>{try{return JSON.parse(localStorage.getItem(RATE_KEY)||'{}')}catch{return {}}}
-function useRate(no:string):[0|1|-1,(v:0|1|-1)=>void]{
- const [m,setM]=useState<Record<string,1|-1>>({});
- useEffect(()=>{const f=()=>setM(loadRates());f();window.addEventListener(RATE_EVENT,f);return()=>window.removeEventListener(RATE_EVENT,f)},[]);
- return [m[no]||0,v=>{const all=loadRates();if(v)all[no]=v;else delete all[no];try{localStorage.setItem(RATE_KEY,JSON.stringify(all))}catch{}sendVote(no,v);window.dispatchEvent(new Event(RATE_EVENT))}];
+function loadNotes():Record<string,RateNote>{try{return JSON.parse(localStorage.getItem(NOTE_KEY)||'{}')}catch{return {}}}
+function useRate(no:string):[0|1|-1,RateNote,(v:0|1|-1,n?:RateNote)=>Promise<boolean>]{
+ const [m,setM]=useState<{r:Record<string,1|-1>;n:Record<string,RateNote>}>({r:{},n:{}});
+ useEffect(()=>{const f=()=>setM({r:loadRates(),n:loadNotes()});f();window.addEventListener(RATE_EVENT,f);return()=>window.removeEventListener(RATE_EVENT,f)},[]);
+ return [m.r[no]||0,m.n[no]||{},(v,n={})=>{const all=loadRates(),notes=loadNotes();if(v)all[no]=v;else delete all[no];
+  if(v&&(n.reason||n.note))notes[no]=n;else delete notes[no];
+  try{localStorage.setItem(RATE_KEY,JSON.stringify(all));localStorage.setItem(NOTE_KEY,JSON.stringify(notes))}catch{}
+  window.dispatchEvent(new Event(RATE_EVENT));return sendVote(no,v,n.reason,n.note).catch(()=>false)}];
+}
+
+/** Why a thumbs down, or a note on either thumb: a small pop-up like Report a problem. Closing it keeps the thumb. */
+function VoteForm({card,thumb,open,saved,onSend,onClose}:{card:Card;thumb:0|1|-1;open:boolean;saved:RateNote;onSend:(n:RateNote)=>Promise<boolean>;onClose:()=>void}){
+ const [reason,setReason]=useState(''),[note,setNote]=useState(''),[done,setDone]=useState<null|boolean>(null);
+ useEffect(()=>{if(open){setReason(saved.reason||'');setNote(saved.note||'');setDone(null)}},[open]);// eslint-disable-line react-hooks/exhaustive-deps
+ const down=thumb===-1;
+ const send=async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();setDone(await onSend({reason:down&&reason?reason:undefined,note:note.trim()||undefined}))};
+ return <Dialog open={open} onOpenChange={o=>{if(!o)onClose()}}>
+  <DialogContent className="source-dialog card-form">
+   <DialogTitle>{down?'What’s wrong with this card?':'Anything to add?'}</DialogTitle>
+   <DialogDescription>{card.name} · No. {cardNumber(card.no)} · {down?'Thumbs down':'Thumbs up'}</DialogDescription>
+   {done!==null?<div className="card-form-done"><p><b>Thank you.</b> {done?'Sent to Papermon. Astra reads every one.':'Papermon can’t receive this right now, so it is saved on this device for now.'}</p>
+    <button type="button" className="card-form-send" onClick={onClose}>Close</button></div>
+   :<form onSubmit={send}>
+    {down&&<fieldset><legend>Pick one</legend><div className="card-form-chips">{DOWN_REASONS.map(r=><button key={r} type="button" aria-pressed={reason===r}
+     className={reason===r?'on':''} onClick={()=>setReason(r)}>{r.replace("'",'’')}</button>)}</div></fieldset>}
+    <label>One line for Astra <small>(optional)</small><input name="note" maxLength={280} value={note} onChange={e=>setNote(e.target.value)}
+     placeholder={down?'What would make it better?':'What made it a good card?'}/></label>
+    <button type="submit" className="card-form-send" disabled={down&&!reason}>Send</button>
+   </form>}
+  </DialogContent>
+ </Dialog>;
 }
 
 /**
@@ -243,7 +273,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
  const [sweep,setSweep]=useState(0);
  const [read,setRead]=useRead(card.no);
  const [form,setForm]=useState<''|'report'|'author'>('');
- const [rate,setRate]=useRate(card.no);
+ const [rate,saved,setRate]=useRate(card.no),[voting,setVoting]=useState(false);
  const turn=()=>{setFlipped(f=>!f);setSweep(s=>s===1?2:1)};
  // Rarity comes from the rarity score (difficulty, age and the author's check, weighted); the stars still show how
  // hard the paper is to read.
@@ -327,9 +357,12 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
      {/* Thumbs up or down, under the four buttons (Astra, 2026-11-14: leaves room for long sentences); a quick rating,
          and Report a problem is still there for more */}
      {/* Not on a verified gold card or the gold example: the spot stays, empty (Astra, 2026-11-14) */}
-     <div className={'deck-rate'+(card.author||card.example?' deck-rate-off':'')} role="group" aria-label="Rate this card" aria-hidden={card.author||card.example?true:undefined}><span>Good card?</span>
-      <button type="button" aria-pressed={rate===1} aria-label="Thumbs up" className={rate===1?'on':''} onClick={()=>setRate(rate===1?0:1)}><ThumbsUp aria-hidden="true"/></button>
-      <button type="button" aria-pressed={rate===-1} aria-label="Thumbs down" className={rate===-1?'on':''} onClick={()=>setRate(rate===-1?0:-1)}><ThumbsDown aria-hidden="true"/></button>
+     {/* After a thumb, "Good card?" turns into a button for the reason and note (a thumbs down opens it at once) */}
+     <VoteForm card={card} thumb={rate} open={voting&&!!rate} saved={saved} onSend={n=>setRate(rate,n)} onClose={()=>setVoting(false)}/>
+     <div className={'deck-rate'+(card.author||card.example?' deck-rate-off':'')} role="group" aria-label="Rate this card" aria-hidden={card.author||card.example?true:undefined}>
+      {rate?<button type="button" className="deck-rate-note" onClick={()=>setVoting(true)}>{saved.reason||saved.note?'Edit note':rate===-1?'Tell us why':'Add a note'}</button>:<span>Good card?</span>}
+      <button type="button" aria-pressed={rate===1} aria-label="Thumbs up" className={rate===1?'on':''} onClick={()=>{setRate(rate===1?0:1)}}><ThumbsUp aria-hidden="true"/></button>
+      <button type="button" aria-pressed={rate===-1} aria-label="Thumbs down" className={rate===-1?'on':''} onClick={()=>{if(rate===-1)setRate(0);else{setRate(-1);setVoting(true)}}}><ThumbsDown aria-hidden="true"/></button>
      </div>
      {/* Back footer (Astra, 2026-11-14): the day the card was made; on an author-approved card, the author's own
          signature or their lab's logo as a stamp (they send it with their answer; this one is a placeholder). */}

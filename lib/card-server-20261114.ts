@@ -2,7 +2,7 @@
 // good; she sees every card in the Card Catalog). The server runs on Astra's PC (server/papermon-server-20261114.mjs).
 // When the page can't reach it (no address in this build, or the PC is asleep), everything here quietly says no and
 // the page works as before: starter cards, real papers, thumbs and reports kept in this browser.
-import {useSyncExternalStore} from 'react';
+import {useEffect, useState, useSyncExternalStore} from 'react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import type {Card} from '@/components/my-deck-20261114';
 import type {Paper} from '@/lib/science';
@@ -71,10 +71,35 @@ export async function waitForCard(job: string, onStep: (text: string) => void): 
   throw new Error('The card is taking too long. Try again later.');
 }
 
-/** A thumb on a card (1 up, -1 down, 0 taken back), sent to Astra when the server is there. */
-export function sendVote(no: string, thumb: 0 | 1 | -1, reason?: string, note?: string) {
-  if (!SERVER) return;
-  serverUp().then(async ok => { if (ok) await call('/api/vote', {method: 'POST', body: JSON.stringify({reader: readerId(), no, thumb, reason, note})}); }).catch(() => {});
+/**
+ * A thumb on a card (1 up, -1 down, 0 taken back), with the reason for a thumbs down and an optional one-line note
+ * (Astra, 2026-11-14: thumbs + reason + note). Resolves true when Astra's server has it.
+ */
+export async function sendVote(no: string, thumb: 0 | 1 | -1, reason?: string, note?: string): Promise<boolean> {
+  if (!SERVER || !(await serverUp())) return false;
+  const r = await call<{ok?: boolean}>('/api/vote', {method: 'POST', body: JSON.stringify({reader: readerId(), no, thumb, reason, note})}).catch(() => null);
+  return !!r?.ok;
+}
+
+/** The reasons a thumbs down can give; the server accepts only these. */
+export const DOWN_REASONS = ['Wrong about the science', 'Hard to follow', 'Boring', "Picture doesn't fit", 'Other'] as const;
+
+export type Tally = {up: number; down: number};
+/**
+ * The Card Catalog as friends see it (Astra, 2026-11-14: everyone sees every card and its thumbs counts; notes, reports
+ * and who made what stay hers). Null when the server can't be reached.
+ */
+export async function fetchCatalog(): Promise<{cards: Card[]; tallies: Record<string, Tally>} | null> {
+  if (!SERVER || !(await serverUp())) return null;
+  const r = await call<{cards?: Card[]; tallies?: Record<string, Tally>}>('/api/catalog').catch(() => null);
+  return r && r.http === 200 && Array.isArray(r.cards) ? {cards: r.cards, tallies: r.tallies || {}} : null;
+}
+
+/** True once the server has answered, false when it can't be reached, null while asking. */
+export function useServerUp(): boolean | null {
+  const [ok, setOk] = useState<boolean | null>(SERVER ? null : false);
+  useEffect(() => { let live = true; serverUp().then(v => { if (live) setOk(v); }); return () => { live = false; }; }, []);
+  return ok;
 }
 
 /** "Report a problem" or "I wrote this paper". Resolves true when Astra's server has it. */
