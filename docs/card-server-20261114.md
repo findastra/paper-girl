@@ -17,8 +17,8 @@ these cards are good or bad. And I want to see these cards that my friends gener
   with five reasons (wrong about the science, hard to follow, boring, picture doesn't fit, other) and an optional
   one-line note; after a thumbs up, "Add a note" takes the place of "Good card?". "Report a problem" and "I wrote this
   paper" go to the server too. When the server can't be reached they stay in the friend's browser and the pop-up says so.
-- **The Card Catalog for friends** (deck Q4 and Q5): a **Card Catalog** button beside Rules, shown only while the
-  server answers, opens every card anyone has drawn with its thumbs counts and an "In your deck" mark, by subject and
+- **The Card Catalog for friends** (deck Q4 and Q5; **off** since Astra changed Q5: friends see only their own and
+  traded cards): a **Card Catalog** button beside Rules, shown only while the server answers and the catalog is public, opens every card anyone has drawn with its thumbs counts and an "In your deck" mark, by subject and
   newest, card number or most liked. Notes, reports and who drew what never leave Astra's page
   (`components/card-catalog-20261114.tsx`, `app/card-catalog-20261114.css`).
 - **Astra's page** (`/owner`) lists every card with who drew it first (an anonymous id, never a name), its thumbs,
@@ -55,9 +55,9 @@ the catalog as No. 1 to 5, so new cards start at No. 6.
 
 | Setting (environment) | Default | What it does |
 |---|---|---|
-| `PAPERMON_DAILY_BUDGET_USD` | `5` | Money new cards may cost a day (America/Denver days). After it, draws hand out catalog cards. |
+| `PAPERMON_DAILY_BUDGET_USD` | `2` | Money new cards may cost a day (America/Denver days). After it, draws hand out catalog cards. |
 | `PAPERMON_DRAWS_PER_DAY` | `5` | Draws per person a day (decided). |
-| `PAPERMON_PUBLIC_CATALOG` | on | `0` keeps `/api/catalog` private. |
+| `PAPERMON_PUBLIC_CATALOG` | off | `1` makes `/api/catalog` public and shows friends the Card Catalog button. Off since Astra's 2026-11-14 change: friends see only their own cards. |
 | `PAPERMON_ORIGINS` | the Papermon site | Pages allowed to talk to the server. |
 | `PAPERMON_WRITER` | `claude` | `dry` = a free stand-in writer for testing on this PC (no AI, the bat pup picture). Never for friends. |
 | `PAPERMON_PORT`, `PAPERMON_DATA` | | Loopback port and data folder. |

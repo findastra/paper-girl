@@ -49,7 +49,7 @@ export function HowToPlay(){
    you get a real paper to read and its card comes later. You get <b>5 draws a day</b>; they come back every morning.</p>
   <h3>Good card?</h3>
   <p>On the back of every card, tap a thumb. A thumbs down asks what’s wrong; either thumb can carry a one-line note.
-   Astra reads every one. <b>Card Catalog</b>, beside Rules, shows every card anyone has drawn and its thumbs.</p>
+   Astra reads every one.</p>
   <p>You don’t pick the year: Papermon does, and newer papers come up more often. A drawn card’s paper is from:</p>
   <table className="rc-points howto-odds"><thead><tr><th>Published</th><th>Chance</th></tr></thead><tbody>
    {AGE_ODDS.map(g=><tr key={g.label}><td>{g.label.replace(/^./,c=>c.toUpperCase())}</td><td>{g.odds}%</td></tr>)}

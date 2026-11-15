@@ -26,9 +26,10 @@ const CONFIG = {
   port: Number(env.PAPERMON_PORT || 8830),
   draws: Number(env.PAPERMON_DRAWS_PER_DAY || 5),             // decided: five draws a day per person
   drawsPerNetwork: Number(env.PAPERMON_DRAWS_PER_NETWORK || 15), // one household or a person clearing their browser
-  budget: Number(env.PAPERMON_DAILY_BUDGET_USD || 5),          // deck Q3 (recommended $5 a day)
+  budget: Number(env.PAPERMON_DAILY_BUDGET_USD || 2),          // Astra, 2026-11-14: $2 a day to start (about 8 new cards)
   writer: env.PAPERMON_WRITER || 'claude',                     // 'claude' (decided) or 'dry' for local tests only
-  publicCatalog: env.PAPERMON_PUBLIC_CATALOG !== '0',          // deck Q5 (recommended: everyone sees the cards)
+  // Astra, 2026-11-14: friends see only the cards they drew or were traded, so the full list is hers alone unless set to 1
+  publicCatalog: env.PAPERMON_PUBLIC_CATALOG === '1',
   origins: (env.PAPERMON_ORIGINS || 'https://findastra.github.io,http://127.0.0.1:8813').split(',').map(s => s.trim()).filter(Boolean),
   timeZone: 'America/Denver',
 };
@@ -149,7 +150,7 @@ const short = (s, n) => String(s ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').t
 async function route(req, res, url) {
   const path = url.pathname;
   if (req.method === 'GET' && path === '/api/health') {
-    return send(res, 200, {ok: true, cards: catalog.count(), newCardsToday: canMakeNew(), drawsPerDay: CONFIG.draws, writer: CONFIG.writer === 'dry' ? 'dry' : 'claude'});
+    return send(res, 200, {ok: true, catalog: CONFIG.publicCatalog, cards: catalog.count(), newCardsToday: canMakeNew(), drawsPerDay: CONFIG.draws, writer: CONFIG.writer === 'dry' ? 'dry' : 'claude'});
   }
 
   if (req.method === 'POST' && path === '/api/draw') {

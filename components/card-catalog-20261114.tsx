@@ -1,7 +1,7 @@
 "use client";
 /**
- * The Card Catalog as friends see it (Astra, 2026-11-14, card server deck Q4 and Q5: "Card Catalog"; everyone with the
- * link can browse every card and its thumbs counts, like a collector's checklist). Notes, reports and who made which
+ * The Card Catalog as friends would see it (card server deck Q4 and Q5). Astra changed Q5 later on 2026-11-14: friends
+ * see only the cards they drew or were traded, so this stays hidden unless she makes the catalog public. Notes, reports and who made which
  * card stay on Astra's own page (server/owner-page-20261114.html). The button shows only while Papermon's card server
  * answers; without it there is no catalog to show, and the page works as before.
  */
@@ -9,7 +9,7 @@ import {useEffect,useMemo,useState} from 'react';
 import {Library,ThumbsDown,ThumbsUp} from 'lucide-react';
 import {Dialog,DialogTrigger,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {DeckCard,type Card} from '@/components/my-deck-20261114';
-import {fetchCatalog,useDeckCards,useServerUp,type Tally} from '@/lib/card-server-20261114';
+import {fetchCatalog,useDeckCards,useCatalogOpen,type Tally} from '@/lib/card-server-20261114';
 import '@/app/card-catalog-20261114.css';
 
 const num=(no:string)=>parseInt(no.replace(/\D/g,''),10)||0;
@@ -47,9 +47,12 @@ function CardCatalog({onPick}:{onPick?:(c:Card)=>void}){
  </div>;
 }
 
-/** "Card Catalog" under Draw Card, beside Rules: opens every card anyone has drawn. Nothing shows without the server. */
+/**
+ * "Card Catalog" under Draw Card, beside Rules: opens every card anyone has drawn. Hidden unless the server answers and
+ * Astra has made the catalog public (PAPERMON_PUBLIC_CATALOG=1); since 2026-11-14 friends see only their own cards.
+ */
 export function CardCatalogButton({onPick}:{onPick?:(c:Card)=>void}){
- const up=useServerUp(),[open,setOpen]=useState(false);
+ const up=useCatalogOpen(),[open,setOpen]=useState(false);
  if(!up)return null;
  return <Dialog open={open} onOpenChange={setOpen}>
   <DialogTrigger asChild><button type="button" className="pick-more"><Library size={16} aria-hidden="true"/>Card Catalog</button></DialogTrigger>

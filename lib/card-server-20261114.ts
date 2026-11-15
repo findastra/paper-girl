@@ -40,14 +40,18 @@ async function call<T>(path: string, init?: RequestInit, ms = 15000): Promise<T 
   } finally { clearTimeout(timer); }
 }
 
-let up: Promise<boolean> | null = null, upAt = 0;
+type Health = {ok?: boolean; catalog?: boolean};
+let health: Promise<Health> | null = null, upAt = 0;
+function checkHealth(): Promise<Health> {
+  if (!SERVER) return Promise.resolve({});
+  if (health && Date.now() - upAt < 60e3) return health;
+  upAt = Date.now();
+  health = call<Health>('/api/health', undefined, 4000).catch(() => ({}));
+  return health;
+}
 /** Whether the server answers right now (asked at most once a minute). */
 export function serverUp(): Promise<boolean> {
-  if (!SERVER) return Promise.resolve(false);
-  if (up && Date.now() - upAt < 60e3) return up;
-  upAt = Date.now();
-  up = call<{ok?: boolean}>('/api/health', undefined, 4000).then(r => !!r.ok).catch(() => false);
-  return up;
+  return checkHealth().then(h => !!h.ok);
 }
 
 export type DrawAnswer = {http: number; card?: Card | null; job?: string; need?: 'paper'; reason?: 'budget'; limit?: boolean; error?: string; relaxed?: boolean};
@@ -95,10 +99,13 @@ export async function fetchCatalog(): Promise<{cards: Card[]; tallies: Record<st
   return r && r.http === 200 && Array.isArray(r.cards) ? {cards: r.cards, tallies: r.tallies || {}} : null;
 }
 
-/** True once the server has answered, false when it can't be reached, null while asking. */
-export function useServerUp(): boolean | null {
+/**
+ * True when the server answers and Astra has made the Card Catalog public; false otherwise, null while asking.
+ * Astra, 2026-11-14: friends see only the cards they drew or were traded, so it is private unless she turns it on.
+ */
+export function useCatalogOpen(): boolean | null {
   const [ok, setOk] = useState<boolean | null>(SERVER ? null : false);
-  useEffect(() => { let live = true; serverUp().then(v => { if (live) setOk(v); }); return () => { live = false; }; }, []);
+  useEffect(() => { let live = true; checkHealth().then(h => { if (live) setOk(!!h.ok && !!h.catalog); }); return () => { live = false; }; }, []);
   return ok;
 }
 
