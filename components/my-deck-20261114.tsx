@@ -475,7 +475,8 @@ export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
    <button type="button" className="deck-dir" onClick={()=>setReverse(r=>!r)} aria-label="Turn the order around"
     title="Turn the order around">{(order.down?!reverse:reverse)?'↓':'↑'}</button>
    {/* Save as GIF (Astra, 2026-11-14): pick cards, each saves as its own animated GIF, ready for Discord */}
-   <SaveGifButton cards={cards} Card={DeckCard}/>
+   {/* Every card in this deck, drawn ones included, can be saved as a GIF */}
+   <SaveGifButton cards={all} Card={DeckCard}/>
   </div>
   {group.of
    ?<div className="my-deck-piles">{piles.map(p=><Pile key={p.key+':'+orderKey+':'+reverse} pile={p.cards} onPick={onPick}/>)}</div>
