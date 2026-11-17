@@ -4,7 +4,7 @@
   "owner": "Astra",
   "sprite": "pet-sprite-20261008.json",
   "art_key": "paper-girl",
-  "job": "Runs Paper Girl, a free science discovery desk: real research, publisher explanations and fresh articles.",
+  "job": "Runs Papermon, a free science discovery desk: real research, publisher explanations and fresh articles.",
   "runs_on": "Modern browser for the pet interface; original application requirements remain in README.md.",
   "entry": "paper-girl-20261008.html",
   "homepage": "https://findastra.github.io/astras-pet-os/apps/pet-programs/paper-girl-20261018.html",
@@ -14,7 +14,7 @@
     "home": "https://github.com/findastra/astras-pet-os"
   },
   "version": "0.1.0-20261008-pets",
-  "source": "https://github.com/findastra/paper-girl/tree/v0.1.0-20261008-pets",
+  "source": "https://github.com/findastra/papermon/tree/v0.1.0-20261008-pets",
   "built_with": "OpenAI Codex (GPT-6), 2026-10-08; OpenAI Codex (GPT-6), 2026-10-11; Claude Opus 5.5 (claude-opus-5-5), 2026-10-18 (renamed Paper Patty); homepage (its pet program page) added with Claude Opus 5.5 (claude-opus-5-5), 2026-10-19",
   "desktop_pet": "https://raw.githubusercontent.com/findastra/astras-pet-os/main/desktop-art/paper-girl/desktop-pet-20261011.json",
   "desktop_art_built_with": "OpenAI Codex (GPT-6), built-in imagegen and native renderer, 2026-10-11",

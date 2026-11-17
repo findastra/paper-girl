@@ -1,6 +1,6 @@
 {
   "PMC13485301": {
-    "discipline": "Biology",
+    "discipline": "Genetics",
     "headline": "Evolution may keep an old blueprint in the drawer.",
     "hook": "Some worker ants lost their extra light-sensing eyes, yet parts of the machinery for building them still briefly switch on.",
     "explanation": "Researchers traced the history of these tiny eyes and watched eye-building genes during ant development. Even workers without the extra eyes showed some of that gene activity. Think of an old blueprint still in the drawer: losing the finished feature may not erase every instruction used to make it. That could help explain why these eyes have reappeared in different ant lineages.",
@@ -17,15 +17,15 @@
   },
   "PMC13183373": {
     "discipline": "Earth science",
-    "headline": "Ancient footprints reveal life rebuilding after disaster.",
+    "headline": "Life rebuilt a busy riverbank soon after Earth’s worst extinction.",
     "hook": "After Earth's largest mass extinction, some river ecosystems were rebuilding a surprisingly complex community about two million years later.",
     "explanation": "Researchers examined ancient rocks in North China for roots, tracks, burrows and other remains. Think of those traces as a neighborhood's surviving footprints: together, they reveal more than one resident could. The evidence suggests plants and animals at several levels of a food web were living there. Burrowing may have helped some animals cope with harsh conditions above ground.",
     "importance": "Recovery from a mass extinction was not necessarily equally slow everywhere. These river deposits help scientists reconstruct where complex communities returned and how organisms survived extreme conditions.",
     "caveat": "The fossils document particular river environments in North China. They do not show that all land ecosystems recovered at the same time."
   },
   "PMC13461149": {
-    "discipline": "Earth science",
-    "headline": "City wildlife has no universal size requirement.",
+    "discipline": "Environment",
+    "headline": "Being big helps some species live in cities, but not all.",
     "hook": "Being big can help some species tolerate city life. For others, size offers little guidance—or the relationship runs the other way.",
     "explanation": "Researchers compared urban sightings of more than 30,000 plant and animal species, examining size where measurements were available. Larger plants were generally more associated with cities, but animals showed varied patterns. Size is not a universal entry ticket: different groups face different combinations of food, movement and habitat. Most species in the dataset were more associated with less urban places.",
     "importance": "Planning for wildlife needs more than one simple rule. This dataset helps researchers test which combinations of traits are associated with urban life, rather than assuming all organisms respond alike.",
@@ -33,7 +33,7 @@
   },
   "PMC12991640": {
     "discipline": "Chemistry",
-    "headline": "Even a poison specialist can struggle with the cocktail.",
+    "headline": "Even a poison expert struggles with a toxic cocktail.",
     "hook": "Monarch caterpillars turn some milkweed poisons into protection. But tolerating one chemical is not the same as handling a mixture.",
     "explanation": "Researchers fed caterpillars five purified milkweed toxins, separately or mixed at the same total concentration. The mixture reduced growth and toxin storage compared with the average response to individual compounds. Imagine a chemical obstacle course with several different hurdles, rather than more of the same hurdle. Some toxins also had to be changed chemically before storage. The results suggest that chemical variety itself can strengthen a plant's defense.",
     "importance": "A plant's defenses cannot always be understood one ingredient at a time. The combination matters, even for an insect that has evolved to eat that plant.",
@@ -57,7 +57,7 @@
   },
   "PMC12695028": {
     "discipline": "Biology",
-    "headline": "A shark's whole toolbox tells more than one tooth.",
+    "headline": "A shark’s whole set of teeth tells where it lives.",
     "hook": "One shark tooth is a clue. The assortment across its mouth can tell a different story about where the shark lives.",
     "explanation": "Researchers compared tooth outlines across major groups of living sharks, looking at individual shapes and differences across the mouth. Think of a toolbox: its collection of tools tells you something a single blade cannot. Variation among teeth within a jaw was especially informative about habitat, while other features more closely tracked ancestry. Different scales of detail revealed different parts of the story.",
     "importance": "Looking at an entire set of teeth could improve how researchers connect anatomy with lifestyle. It may also help them interpret extinct sharks, whose teeth often survive as fossils.",

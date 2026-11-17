@@ -1,0 +1,50 @@
+/* Papermon card extras (Astra, 2026-11-14): the QR code on every card's back and Save as GIF in My deck.
+   Kept apart from my-deck-20261114.css so other work on the deck's styles doesn't collide with these. */
+
+/* ---------------- The QR code, left of the seal ---------------- */
+.deck-back .deck-bfoot .bfoot-marks{display:flex;align-items:flex-start;gap:2cqw;flex:none;margin-left:auto}
+/* (Not the footer's round link pill: .deck-bfoot a styles the back's text links) */
+.deck-bfoot a.card-qr{display:block;flex:none;width:20cqw;height:20cqw;padding:0;margin:0;background:none;border-radius:2cqw;line-height:0;
+ box-shadow:0 .35cqw .9cqw #0000002e,0 0 0 .3cqw #c9952e66;transition:transform .15s}
+.deck-bfoot a.card-qr:hover,.deck-bfoot a.card-qr:focus-visible{background:none;transform:scale(1.05)}
+.card-qr:focus-visible{outline:2px solid #5a3c06;outline-offset:2px}
+.card-qr svg{display:block;width:100%;height:100%}
+
+/* ---------------- Save as GIF ---------------- */
+/* A pill as wide as its words, after the sort buttons (the menu's pills fill their grid cells; this one has no cell) */
+.deck-bar .deck-gif{gap:6px;width:auto!important;flex:none;padding:0 16px!important;white-space:nowrap!important}
+/* Where a card is drawn to be photographed: off screen, at the GIF's width */
+.gif-stage{position:fixed!important;left:-10000px;top:0;width:400px;pointer-events:none}
+.gif-stage .deck-slot{width:400px!important}
+/* The one gold surface (gold-surface-20261114.tsx) lines each gold thing up with where it sits on screen; off screen
+   that points at empty space, so the stage's gold is pinned as if the card sat at the top left of the screen. */
+.gif-stage,.gif-stage *{--gold-pos:-1000px -1000px!important}
+
+.gif-dialog{max-width:min(560px,94vw)!important;max-height:88vh;display:flex!important;flex-direction:column;gap:12px;
+ font-family:'Times New Roman',Times,Georgia,serif}
+.gif-dialog p{margin:0}
+.gif-all{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.gif-all>span{font-size:14px;color:#5a4a33}
+.gif-all button,.gif-done li>button,.gif-go{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:34px;
+ padding:0 14px;border-radius:999px;border:1.5px solid #c9952e;background:#fffaf0;color:#3d2a10;font:700 14px 'Times New Roman',Times,serif;
+ cursor:pointer}
+.gif-all button:hover:not(:disabled),.gif-done li>button:hover,.gif-go:hover:not(:disabled){background:#fff}
+.gif-all button:disabled,.gif-go:disabled{opacity:.5;cursor:default}
+.gif-go{background:linear-gradient(135deg,#fbe6a6,#e7bd5c 55%,#f6d98d);border-color:#a8761c;min-height:40px;font-size:15px}
+/* Only ever scrolls up and down (Astra, 2026-11-14: "get rid of the random scroll bar at the bottom"): the rows always
+   fit the list's width, even when the list's own up-and-down scrollbar takes some of it (the long GIF file names used
+   to push the rows wider) */
+.gif-list{list-style:none;margin:0;padding:0;overflow-x:hidden;overflow-y:auto;min-height:0;flex:1 1 auto;display:grid;
+ grid-template-columns:minmax(0,1fr);gap:6px}
+.gif-list li,.gif-list label{min-width:0}
+.gif-list label,.gif-done li{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px;background:#f6f3f7;cursor:pointer}
+.gif-list label:has(input:checked){background:#fff4d6;box-shadow:inset 0 0 0 1.5px #c9952e}
+.gif-list input{width:18px;height:18px;accent-color:#a8761c;flex:none}
+.gif-list img{width:44px;height:44px;border-radius:6px;object-fit:cover;flex:none}
+.gif-done img{width:60px;height:84px;object-fit:contain;border-radius:6px;background:#3a3a40}
+.gif-list span{display:flex;flex-direction:column;min-width:0;flex:1}
+.gif-list b{font-size:15px;color:#2b1d0e}
+.gif-list small{font-size:12.5px;color:#6b5a40;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gif-done li{cursor:default}
+.gif-status{min-height:1.2em;font-size:14px;color:#5a3c06}
+.gif-status:empty{display:none}

@@ -3,7 +3,7 @@
 // Difficulty), each turned by the mouse wheel, the arrows, a swipe or the keyboard, and a face-down deck of cards you
 // click to draw from. The Type wheel shows the same pills as a card's type chip: colored circle, symbol, name capitalized.
 import {useEffect,useRef,useState,useSyncExternalStore,type ReactNode,type CSSProperties} from 'react';
-import {ChevronUp,ChevronDown,Printer,Shuffle} from 'lucide-react';
+import {ChevronUp,ChevronDown,Printer,Shuffle,ShoppingBag} from 'lucide-react';
 import {TYPES,MAX_STARS} from '@/components/my-deck-20261114';
 import {dayKey} from '@/lib/science';
 import {CardCodeButton} from '@/components/card-code-20261114';
@@ -97,8 +97,11 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
  onType:(i:number)=>void;onLevel:(i:number)=>void;onYear:(i:number)=>void;onDraw:()=>void;status:string;children?:ReactNode}){
  // Order printed cards of your deck. Printing is not set up yet, so it says so instead of taking an order.
  const [ordering,setOrdering]=useState(false);
+ // Buy Digital Cards (Astra, 2026-11-14): there is no shop yet, so it says so, like Order My Deck.
+ const [buying,setBuying]=useState(false);
  const left=useDrawsLeft(),out=left<=0,wait=useUntilTomorrow(out);
- const message=ordering?'Printed decks are coming soon. Your cards are saved here until then.':status;
+ const message=ordering?'Printed decks are coming soon. Your cards are saved here until then.'
+  :buying?'Buying more digital cards is coming soon.':status;
  // Redone 2026-11-14 (Astra did not like the little deck with "Draw" or the "Order my deck" pill): everything centered
  // under the card, type circles, then stars, then two matching buttons side by side: Draw a card (gold) and Order my deck.
  return <div className="draw-picker" aria-label="Draw a card"><div className="pick-left">
@@ -106,7 +109,7 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
   <div className="pick-divider pick-divider-top" aria-hidden="true"><i/><span>✦</span><i/></div>
   {/* Draw Card at the top of the choices, right below the divider (Astra, 2026-11-14, final). Plain words (Astra, 2026-11-14): "Draw Card 1/5" ... "Draw Card 5/5"; once all five are drawn the button goes
        gray and counts down to the next draws */}
-  <button type="button" className={'pick-draw'+(busy?' busy':'')+(out?' out':'')} disabled={busy||out} onClick={()=>{if(out)return;setOrdering(false);spendDraw();onDraw()}}>
+  <button type="button" className={'pick-draw'+(busy?' busy':'')+(out?' out':'')} disabled={busy||out} onClick={()=>{if(out)return;setOrdering(false);setBuying(false);spendDraw();onDraw()}}>
     {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:<>Draw Card <span className="draw-count-paren">({DRAWS_PER_DAY-left+1}/{DRAWS_PER_DAY})</span></>}</button>
   <span className="pick-label pick-label-top">Subject</span>
   {/* Each circle with its subject's name to the right, in two columns (Astra, 2026-11-14) */}
@@ -130,15 +133,18 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
   <div className="pick-actions">
    {/* Some space, then a fancy gold divider, then the other buttons (Astra, 2026-11-14) */}
    <div className="pick-divider" aria-hidden="true"><i/><span>✦</span><i/></div>
-   {/* Enter Card Code (Astra, 2026-11-14): the code from a printed card adds it to your deck; the full width, first */}
+   {/* First row (Astra, 2026-11-14, later): Enter Card Code is a small pill like the rest, split with Buy Digital Cards
+       (her "buy more digital cards", shortened to fit a phone-width pill), right above Order My Deck. Enter Card Code:
+       the code from a printed card adds it to your deck. */}
    <CardCodeButton/>
-   <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>setOrdering(o=>!o)}><Printer size={16} aria-hidden="true"/>Order My Deck</button>
+   <button type="button" className="pick-order pick-buy" aria-expanded={buying} onClick={()=>{setOrdering(false);setBuying(b=>!b)}}><ShoppingBag size={16} aria-hidden="true"/>Buy Digital Cards</button>
+   <button type="button" className="pick-order" aria-expanded={ordering} onClick={()=>{setBuying(false);setOrdering(o=>!o)}}><Printer size={16} aria-hidden="true"/>Order My Deck</button>
    {children}
   </div>
   {/* The message line (Astra, 2026-11-14): the motto's spot under the buttons, in its gold handwriting, shows what just
       happened: the card you drew, or "Printed decks are coming soon" after Order My Deck. With nothing to say it shows
       the motto. */}
-  <p className={'pick-motto'+(message.length>70?' long':'')} role="status" aria-live="polite">{message||'Every card, one idea wiser.'}</p>
+  <p className={'pick-motto'+(message.length>70?' long':'')} role="status" aria-live="polite">{message||'Real science, one card at a time.'}</p>
  </div>;
 }
 

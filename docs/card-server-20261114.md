@@ -50,8 +50,8 @@ npm start
 Once API Fairy renames the OpenAI key to `PAPERMON_PATTY_OPENAI_API_KEY` (the rename PR's name), the server uses that
 name first.
 
-The keys are read from Windows by name and never written to a file. The first start puts the five starter cards in
-the catalog as No. 1 to 5, so new cards start at No. 6.
+The keys are read from Windows by name and never written to a file. The first start puts the starter cards in
+the catalog under their own numbers (ten since PR #21: No. 1 to 10), so new cards start at No. 11.
 
 | Setting (environment) | Default | What it does |
 |---|---|---|

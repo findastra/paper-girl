@@ -1,4 +1,5 @@
-# Publishes the static edition of Paper Girl to GitHub Pages on every push to main.
+# Publishes the static edition of Papermon to GitHub Pages on every push to main. The build uses relative
+# addresses (vite.static.config.ts), so the site works at any address: /paper-girl/ now and /papermon/ after the rename.
 name: Deploy to GitHub Pages
 
 on:

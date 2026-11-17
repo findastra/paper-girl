@@ -53,7 +53,7 @@ function loadLocalConfig() {
   return fresh;
 }
 
-/** The five starter cards (made by hand on 2026-11-14) are the catalog's first five, so new cards start at No. 6. */
+/** The starter cards (made by hand on 2026-11-14; ten since PR #21) keep their numbers, so new cards follow them. */
 function seedStarters() {
   if (catalog.count()) return;
   const starters = JSON.parse(readFileSync(join(HERE, '..', 'lib', 'data', 'sample-deck-20261114.json'), 'utf8'));
@@ -216,7 +216,7 @@ async function route(req, res, url) {
     return send(res, 200, {ok: true});
   }
 
-  // New cards' pictures from the data folder; the five starters' from the repo (public/art/cards).
+  // New cards' pictures from the data folder; the starters' from the repo (public/art/cards).
   const art = path.match(/^\/art\/(cards\/)?([a-z0-9-]+\.(webp|png))$/);
   if (req.method === 'GET' && art) {
     const [, starter, name, ext] = art;

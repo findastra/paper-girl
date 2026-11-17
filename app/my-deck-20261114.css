@@ -3,9 +3,9 @@
    picture sits in a metal frame; rarity shows in the frame and the foil ON THE PICTURE, not the border:
    1-3 silver frame, 4 rainbow frame + rainbow holographic flakes, Legendary gold frame + gold flakes. */
 .my-deck{margin-top:28px;border-top:1px solid #4d394e;padding:26px 3px 6px}
-.my-deck-head{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:18px;text-align:center}
-.my-deck-head h2{margin:0;font-family:'Space Grotesk',sans-serif;font-size:clamp(22px,2.4vw,28px);font-weight:700;color:#f4e9ed}
-.my-deck-head span{font-size:13px;color:#b89cac}
+
+
+
 .my-deck-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(220px,22vw,280px),1fr));gap:clamp(16px,2vw,24px)}
 @media(max-width:520px){.my-deck-grid{grid-template-columns:1fr;justify-items:center}.my-deck-grid .deck-slot{width:min(86vw,360px)}}
 .deck-slot{container-type:inline-size;width:100%;--sc:#8a8a8a}
@@ -122,13 +122,13 @@ body:has(.deck-mode){background:#2e2f33}
 .deck-mode{--accent:#d9a53f;--n0:#2e2f33;--n1:#3f4046;--n2:#43444a;--n3:#53545b;--n4:#65666e;--t1:#f5f5f3;--t2:#dcdcd8;--t3:#b2b2ae;
  --gold:linear-gradient(110deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c);
  --rainbow:linear-gradient(90deg,#ff8fc8,#ffd27a,#9dffc9,#7fd3ff,#c49bff,#ff8fc8);color:var(--t1)}
-.deck-mode .header-note,.deck-mode .art-panel,.deck-mode .shuffle-row>p,.deck-mode .status>span,.deck-mode .library{display:none!important}
+
 /* Header: the brand gets a gold shimmer, the rest neutral */
 .deck-mode .brand{color:var(--t1)}
-.deck-mode .brand>span,.deck-mode .my-deck-head h2,.deck-mode .above-card>span:first-child{background:var(--gold);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:deck-text-shine 6s ease-in-out infinite}
-.deck-mode .brand>svg,.deck-mode .above-card svg{color:#e8c46a}
-.deck-mode .daily-link{color:var(--t3)}.deck-mode .daily-link:hover,.deck-mode .daily-link.active{color:var(--t1)}
-.deck-mode .above-card{color:var(--t3)}
+.deck-mode .brand>span{background:var(--gold);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:deck-text-shine 6s ease-in-out infinite}
+.deck-mode .brand>svg{color:#e8c46a}
+
+
 @keyframes deck-text-shine{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
 /* The card-of-the-day box, with a slow rainbow shimmer along its top edge */
 .cotd-box{position:relative}
@@ -140,47 +140,47 @@ body:has(.deck-mode){background:#2e2f33}
 .deck-mode .cotd-card .deck-slot{width:100%}
 .cotd-nocard{aspect-ratio:5/7;border:2px dashed var(--n4);border-radius:14px;display:grid;place-items:center;text-align:center;padding:20px;color:var(--t3);font-size:14px;line-height:1.6}
 /* Write-up text, neutral */
-.deck-mode .paper-meta{color:var(--t3)}
-.deck-mode .subject-tag{background:var(--n2);border-color:var(--n4);color:var(--t2)}
-.deck-mode .read-time{color:var(--t3)}
+
+
+
 .deck-mode h1{color:var(--t1)}
 .deck-mode .section-label{color:color-mix(in srgb,var(--accent) 70%,#fff)}.deck-mode .section-label>span{color:var(--t3)}
 .deck-mode .story-section p{color:var(--t2)}.deck-mode .hook p{color:var(--t1)}
 .deck-mode .significance{border-left-color:var(--accent)}
-.deck-mode .reality-check,.deck-mode .reality-check p{color:var(--t3)}.deck-mode .reality-check svg{color:var(--t3)}.deck-mode .reality-check strong{color:var(--t2)}
-.deck-mode .attribution{color:var(--t3)}.deck-mode .attribution button{color:var(--t2)}
-.deck-mode .research-details{background:var(--n2);border-color:var(--n3)}.deck-mode .research-details p{color:var(--t2)}.deck-mode .research-details a,.deck-mode .research-details summary{color:color-mix(in srgb,var(--accent) 70%,#fff)}
-.deck-mode .original-link{color:var(--t1);border-top-color:var(--n3)}.deck-mode .original-link>span{color:var(--t3)}
+
+
+
+
 /* Your next rabbit hole, inside the box */
-.deck-mode .controls{padding:22px 28px 22px;border-top:1px solid var(--n3);margin-top:8px}
-.deck-mode .controls h2{color:var(--t1)}
-.deck-mode .date-toggle{color:var(--t3)}
-.deck-mode .subject{background:var(--n2);border-color:var(--n4);color:var(--t2)}
-.deck-mode .subject:hover{background:var(--n3);color:var(--t1)}
-.deck-mode .subject.active{background:var(--accent);border-color:var(--accent);color:#fff;text-shadow:0 1px 2px #0005}
-.deck-mode .shuffle-row{justify-content:center}
-.deck-mode .shuffle-button{background:linear-gradient(110deg,var(--accent),color-mix(in srgb,var(--accent) 60%,#fff) 50%,var(--accent));background-size:250% 100%;color:#fff;text-shadow:0 1px 2px #0006;box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000),0 0 24px color-mix(in srgb,var(--accent) 30%,transparent);animation:deck-text-shine 6s ease-in-out infinite}
-.deck-mode .shuffle-button:hover{filter:brightness(1.06)}
-.deck-mode .status{color:var(--t3)}
-.deck-mode .error{background:#2a1c1c;border-color:#6b3a3a;color:#f1d0d0}
+
+
+
+
+
+
+
+
+
+
+
 /* My deck and footer, neutral */
 .deck-mode .my-deck{border-top-color:var(--n3)}
-.deck-mode .my-deck-head span{color:var(--t3)}
+
 .deck-mode footer{color:var(--t3);border-top-color:var(--n3)}
 .deck-mode footer button:hover{color:var(--t1)}
 /* Phone: the card comes first, then its write-up, then the controls */
 @media(max-width:760px){
  .deck-mode .paper-card{grid-template-columns:1fr;padding:0;gap:0}
  .deck-mode .cotd-card{order:-1;padding:22px 22px 0;justify-self:center;width:min(100%,360px)}
- .deck-mode .controls{padding:20px 18px}
+ 
 }
 @media(prefers-reduced-motion:reduce){.deck-mode *{animation:none!important}}
 
 /* The motto under the card of the day: the site's little logo line, centered, tilted like a margin note */
-.cotd-motto{margin:26px auto 6px;text-align:center;transform:rotate(-5deg);color:var(--t2,#ddd)}
-.cotd-motto svg{margin:0 auto 4px;color:var(--accent,#d9a53f)}
-.cotd-motto p{margin:0;font-family:'Space Grotesk',sans-serif;font-size:20px;line-height:1.35}
-.cotd-motto em{font-family:Georgia,'Times New Roman',serif;font-size:25px;font-style:italic;background:var(--gold);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:deck-text-shine 6s ease-in-out infinite}
+
+
+
+
 
 /* White-paper type (Astra, 2026-11-14: "all of the font on this whole page should just be the typical font that you
    would see on a white paper ... Times New Roman"): every word on the deck page, cards included. */
@@ -191,9 +191,9 @@ body:has(.deck-mode){background:#2e2f33}
 .deck-mode .brand>svg{display:none}
 /* The motto sits in the middle of the space under the card */
 .deck-mode .cotd-card{align-self:stretch;display:flex;flex-direction:column}
-.deck-mode .cotd-motto{margin:auto;padding:24px 0}
-.deck-mode .cotd-motto p{font-size:21px}
-.deck-mode .cotd-motto em{font-size:26px}
+
+
+
 
 /* Astra's unified footer, as on Spoonfed: a soft fading line, By Astra, sparkle, star, sparkle, Find Out More, GitHub */
 .astra-footer{display:flex;justify-content:center;padding:6px 16px 26px}
@@ -206,7 +206,7 @@ body:has(.deck-mode){background:#2e2f33}
 .af-icon svg{width:22px;height:22px}.af-icon:hover{opacity:.8}
 @media(max-width:520px){.af-row{flex-wrap:nowrap;gap:8px;padding:18px 4px 0}.af-sparkle{width:12px;height:12px}.af-star{width:40px;height:40px}}
 /* 2026-11-14 (Astra): no "Card of the day" date row and no "Today's paper" link above the box */
-.deck-mode .above-card,.deck-mode .daily-link{display:none!important}
+
 .deck-mode main{padding-top:6px}
 /* The card number sits at the top, under the name, big enough to read */
 .deck-title{min-width:0;display:flex;flex-direction:column;align-items:center;gap:0}
@@ -215,12 +215,12 @@ body:has(.deck-mode){background:#2e2f33}
 .deck-back .deck-bfoot{flex-direction:row;align-items:center;justify-content:flex-start;gap:3cqw}
 .deck-made{display:flex;flex-direction:column;gap:.6cqw;font-size:3.8cqw}
 .deck-made span{opacity:.75}
-.deck-stamp{flex:none;width:15cqw;height:15cqw;border-radius:50%;border:.6cqw double var(--rc);color:var(--rc);display:grid;place-items:center;align-content:center;text-align:center;transform:rotate(-10deg);line-height:1}
-.deck-stamp span{font-size:5cqw}
-.deck-stamp small{font-size:2.4cqw;font-weight:700;text-transform:uppercase;letter-spacing:.15cqw}
+
+
+
 /* The draw bar (Astra, 2026-11-14) replaces "Your next rabbit hole" in deck mode: Draw a card, the type pills (each
    exactly like a card's type chip: its colored circle and symbol, the name capitalized), and a difficulty dial. */
-.deck-mode .controls{display:none!important}
+
 .draw-bar{border-top:1px solid var(--n3,#53545b);padding:20px 28px 22px;display:flex;flex-direction:column;gap:14px}
 .type-pill{--tc:#8a8a90;display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 5px;border-radius:999px;border:1px solid var(--n4,#65666e);background:var(--n2,#43444a);color:var(--t1,#f5f5f3);font-size:15px;font-weight:700;cursor:pointer}
 .type-pill i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--tc);color:#fff;font-style:normal;font-size:14px;box-shadow:inset 0 0 0 2px #ffffff60,0 1px 3px #0005}
@@ -229,7 +229,7 @@ body:has(.deck-mode){background:#2e2f33}
 .type-pill.active{background:color-mix(in srgb,var(--tc) 30%,var(--n2,#43444a));border-color:var(--tc)}
 .type-pill.random i{background:linear-gradient(135deg,#d26a9a,#e0a43a,#4f9a5e,#3f8ccc,#8d6bc8)}
 .draw-status{font-size:14px;color:var(--t3,#b2b2ae)}
-@media(max-width:760px){.draw-bar{padding:18px}.draw-button{width:100%;justify-content:center}}
+@media(max-width:760px){.draw-bar{padding:18px}}
 /* Three wheels like Spoonfed's reels: each shows the item before and after, faded, around the chosen one */
 .reels{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:center;gap:14px}
 .reel{display:flex;flex-direction:column;align-items:center;gap:6px}
@@ -251,8 +251,8 @@ body:has(.deck-mode){background:#2e2f33}
 .reel-stars em{font-style:normal;font-size:18px;color:var(--accent);opacity:.3}.reel-stars em.on{opacity:1}
 .reel .type-pill{cursor:inherit;pointer-events:none}
 .draw-bar{align-items:center}
-.draw-bar .draw-button{align-self:flex-end;margin-bottom:22px}
-@media(max-width:760px){.reels{gap:10px}.reel-drum{width:min(44vw,190px)}.draw-bar .draw-button{align-self:stretch;margin:4px 0 0}}
+
+@media(max-width:760px){.reels{gap:10px}.reel-drum{width:min(44vw,190px)}}
 /* Level written out again, "LV 3", no star (Astra, 2026-11-14) */
 .deck-lv{justify-self:end;font-weight:700;font-size:3.6cqw;white-space:nowrap;color:var(--rc)}
 .deck-lv b{font-size:6.6cqw}
@@ -270,10 +270,8 @@ body:has(.deck-mode){background:#2e2f33}
 .gold-card .deck-band{background:linear-gradient(90deg,#e8bb52,#fff1c4 50%,#d29a32);border-top-color:#b8862e}
 .lv1 .deck-frame{--frame:linear-gradient(135deg,#d9d9dc,#9d9fa6)}
 /* The Draw button (restored) */
-.draw-button{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:999px;border:0;cursor:pointer;font-size:17px;font-weight:700;color:#fff;text-shadow:0 1px 2px #0006;
- background:linear-gradient(110deg,var(--accent),color-mix(in srgb,var(--accent) 60%,#fff) 50%,var(--accent));background-size:250% 100%;animation:deck-text-shine 6s ease-in-out infinite;
- box-shadow:0 3px 0 color-mix(in srgb,var(--accent) 60%,#000),0 0 22px color-mix(in srgb,var(--accent) 30%,transparent)}
-.draw-button:disabled{opacity:.7;cursor:wait}
+
+
 /* Long two-line names stay inside the card */
 .deck-name{font-size:5cqw}
 /* Rare is silver (Astra, 2026-11-14): a polished silver band and frame with a slow shine; dark text on it */
@@ -312,16 +310,16 @@ body:has(.deck-mode){background:#2e2f33}
 @media(max-width:760px){.draw-deck{align-self:center}}
 /* "More about this paper": the extra facts the card leaves out, under a line, in one place (Astra, 2026-11-14).
    The old scattered notes (small print, attribution line, "OPEN ACCESS" link) are hidden in deck mode. */
-.deck-mode .reality-check,.deck-mode .attribution,.deck-mode .research-details,.deck-mode .original-link{display:none!important}
-.cotd-more{border-top:1px solid #d9a53f80;margin:6px 0 22px;padding-top:18px}
-.cotd-more h3{margin:0 0 12px;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:#e8c46a}
-.cotd-more dl{display:grid;grid-template-columns:minmax(110px,160px) 1fr;gap:10px 16px;margin:0}
-.cotd-more dt{font-weight:700;color:var(--t3,#b2b2ae);font-size:14px}
-.cotd-more dd{margin:0;color:var(--t2,#dcdcd8);font-size:15px;line-height:1.5}
-.cotd-more dd a{color:#e8c46a;text-decoration:underline;text-underline-offset:3px}
-.cotd-original{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:9px 16px;border-radius:999px;border:1px solid #d9a53f;color:#f3e3b5;font-weight:700}
-.cotd-original:hover{background:#d9a53f22}
-@media(max-width:520px){.cotd-more dl{grid-template-columns:1fr;gap:2px}.cotd-more dd{margin-bottom:8px}}
+
+
+
+
+
+
+
+
+
+
 .my-deck .deck-card{cursor:pointer}
 /* Footer all gold on this site (Astra, 2026-11-14): gold line and sparkles, and the star picture warmed to gold */
 .deck-mode .af-row::before{background:linear-gradient(90deg,transparent,#d9a53f 20%,#f3d27a 50%,#d9a53f 80%,transparent)}
@@ -333,19 +331,19 @@ body:has(.deck-mode){background:#2e2f33}
 /* Your deck is a panel like the card-of-the-day box: the same gold border, just cards inside */
 .deck-mode .my-deck{margin-top:26px;border:2px solid transparent;border-radius:18px;padding:18px 24px 26px;
  background:linear-gradient(var(--n1),var(--n1)) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box;box-shadow:0 18px 50px #0007}
-.deck-mode .my-deck-head{align-items:flex-start;margin-bottom:14px}
-.deck-mode .my-deck-head h2{font-size:15px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;animation:none;background:none;color:#e8c46a;-webkit-text-fill-color:#e8c46a}
+
+
 @media(max-width:520px){.deck-mode .my-deck{padding:16px 12px 20px}}
-/* The write-up inside the box goes back to the original Paper Girl layout, which read more easily (Astra, 2026-11-14):
+/* The write-up inside the box goes back to the original write-up layout, which read more easily (Astra, 2026-11-14):
    DM Sans text, a Space Grotesk headline, the original sizes and spacing, the small print, the attribution line and
    the "Read the original paper" link. Colors stay gray and gold. The cards keep Times New Roman. */
 .deck-mode .cotd-box .paper-copy,.deck-mode .cotd-box .paper-copy :where(p,span,b,em,strong,a,button,div,h2,summary){font-family:'DM Sans',Arial,sans-serif!important}
 .deck-mode .cotd-box .paper-copy h1{font-family:'Space Grotesk',sans-serif!important;font-weight:500;letter-spacing:-1.35px}
 .deck-mode .cotd-box .paper-copy .section-label>span{font-family:'Space Grotesk',sans-serif!important}
-.deck-mode .reality-check{display:flex!important}
-.deck-mode .attribution{display:block!important}
-.deck-mode .original-link{display:flex!important}
-.deck-mode .research-details{display:block!important}
+
+
+
+
 /* Footer star: her picture unchanged; only the rim (the overlay) and the sparkles are gold */
 .deck-mode .af-star img{filter:none!important}
 .af-star{position:relative}
@@ -358,16 +356,16 @@ body:has(.deck-mode){background:#ffffff}
 .deck-mode{--n0:#ffffff;--n1:#ffffff;--n2:#f3f2ef;--n3:#e2dfd8;--n4:#cbc7be;--t1:#111111;--t2:#2b2b2b;--t3:#6b6b6b;color:#111}
 .deck-mode .brand{color:#111}
 .deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #00000014}
-.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .my-deck-head h2,.cotd-more h3{color:#9a6b12!important;-webkit-text-fill-color:#9a6b12}
+.deck-mode .cotd-box .section-label,.deck-mode .section-label{color:#9a6b12!important;-webkit-text-fill-color:#9a6b12}
 .deck-mode .section-label>span{color:#8a8a8a}
 .deck-mode .significance{border-left-color:#d9a53f}
 .deck-mode .story-section p{color:#2b2b2b}.deck-mode .hook p{color:#111}
-.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg{color:#6b6b6b}.deck-mode .reality-check strong{color:#2b2b2b}
-.deck-mode .attribution{color:#6b6b6b}.deck-mode .attribution button{color:#2b2b2b}
-.deck-mode .research-details{background:#f7f5f0;border-color:#e2dfd8}.deck-mode .research-details p{color:#2b2b2b}.deck-mode .research-details a,.deck-mode .research-details summary{color:#9a6b12}
-.deck-mode .original-link{color:#111;border-top-color:#e2dfd8}.deck-mode .original-link>span{color:#8a8a8a}
-.deck-mode .subject-tag{background:#f3f2ef;border-color:#d6d2c8;color:#2b2b2b}
-.deck-mode .paper-meta,.deck-mode .read-time{color:#6b6b6b}
+
+
+
+
+
+
 .deck-mode .draw-bar{border-top-color:#e2dfd8}
 .deck-mode .reel-drum{background:#f7f6f3;border-color:#d6d2c8;box-shadow:inset 0 10px 14px -10px #0002,inset 0 -10px 14px -10px #0002}
 .deck-mode .reel-name{color:#6b6b6b}.deck-mode .reel-text{color:#111}.deck-mode .reel-arrow{color:#8a8a8a}.deck-mode .reel-arrow:hover{color:#111}
@@ -376,8 +374,8 @@ body:has(.deck-mode){background:#ffffff}
 .deck-mode .draw-deck-cards span{background:repeating-linear-gradient(45deg,#2b2b2e 0 6px,#38383c 6px 12px)}
 .deck-mode .draw-deck-label{color:#9a6b12}
 .deck-mode .draw-status{color:#6b6b6b}
-.deck-mode .cotd-motto,.deck-mode .cotd-motto p{color:#2b2b2b}
-.deck-mode .cotd-motto em{background:linear-gradient(110deg,#8a5a10,#c48a24 40%,#e8b850 50%,#8a5a10);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+
+
 .deck-mode .brand>span{background:linear-gradient(110deg,#8a5a10,#c48a24 40%,#e8b850 50%,#8a5a10);background-size:250% 100%;-webkit-background-clip:text;background-clip:text}
 .deck-mode footer{color:#6b6b6b}.deck-mode footer button{color:#2b2b2b}
 .deck-mode .af-title,.deck-mode .af-icon{color:#111}
@@ -390,35 +388,35 @@ body:has(.deck-mode){background:#d9d4ca}
 .deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #3a301f22}
 .deck-mode .reel-drum{background:#ddd7cc;border-color:#b9b1a3}
 .deck-mode .type-pill{background:#ebe6dd;border-color:#b9b1a3}
-.deck-mode .subject-tag{background:#d6d0c5;border-color:#b9b1a3}
-.deck-mode .research-details{background:#ddd7cc;border-color:#c4bdb0}
-.deck-mode .original-link{border-top-color:#c4bdb0}
+
+
+
 .deck-mode .draw-bar{border-top-color:#c4bdb0}/* Small gray notes darker on the softer paper, so they stay easy to read (about 6:1) */
-.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
-.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#4f4a43}
+
+.deck-mode .section-label>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#4f4a43}
 /* More gray than brown (Astra, 2026-11-14): neutral light gray paper, panels a shade lighter, black text */
 body:has(.deck-mode){background:#d5d5d3}
 .deck-mode{--n0:#d5d5d3;--n1:#e1e1df;--n2:#d0d0cd;--n3:#bdbdba;--n4:#a6a6a3}
 .deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #00000022}
 .deck-mode .reel-drum{background:#dadad7;border-color:#b3b3b0}
 .deck-mode .type-pill{background:#e9e9e7;border-color:#b3b3b0}
-.deck-mode .subject-tag{background:#d0d0cd;border-color:#b3b3b0}
-.deck-mode .research-details{background:#dadad7;border-color:#bdbdba}
-.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#bdbdba}
-.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
-.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#474746}
+
+
+.deck-mode .draw-bar{border-top-color:#bdbdba}
+
+.deck-mode .section-label>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#474746}
 /* Darker gray paper (Astra, 2026-11-14: "DARKER"); black text still about 11:1 */
 body:has(.deck-mode){background:#b8b8b5}
 .deck-mode{--n0:#b8b8b5;--n1:#c6c6c3;--n2:#b6b6b3;--n3:#9f9f9c;--n4:#8a8a87}
 .deck-mode .reel-drum{background:#bdbdba;border-color:#939390}
 .deck-mode .type-pill{background:#d0d0cd;border-color:#939390}
-.deck-mode .subject-tag{background:#b6b6b3;border-color:#939390}
-.deck-mode .research-details{background:#bdbdba;border-color:#9f9f9c}
-.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#9f9f9c}
-.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
-.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#353534}
+
+
+.deck-mode .draw-bar{border-top-color:#9f9f9c}
+
+.deck-mode .section-label>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#353534}
 /* Gold words darker so they still read on the darker gray */
-.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .my-deck-head h2,.deck-mode .draw-deck-label,.deck-mode .research-details a,.deck-mode .research-details summary{color:#6e4a0a!important;-webkit-text-fill-color:#6e4a0a}
+.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .draw-deck-label{color:#6e4a0a!important;-webkit-text-fill-color:#6e4a0a}
 .deck-mode .reel-stars{color:#7a520c}
 /* Pure neutral gray, darker (Astra, 2026-11-14: "more gray, it looks kind of green, and darker"): the earlier grays had a
    faint yellow tint (less blue), which read as green. These have equal or slightly higher blue. Black text about 9:1. */
@@ -426,12 +424,12 @@ body:has(.deck-mode){background:#a7a8aa}
 .deck-mode{--n0:#a7a8aa;--n1:#b6b7b9;--n2:#a9aaac;--n3:#929395;--n4:#7d7e80}
 .deck-mode .reel-drum{background:#adaeb0;border-color:#87888a}
 .deck-mode .type-pill{background:#c2c3c5;border-color:#87888a}
-.deck-mode .subject-tag{background:#a9aaac;border-color:#87888a}
-.deck-mode .research-details{background:#adaeb0;border-color:#929395}
-.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#929395}
-.deck-mode .paper-meta,.deck-mode .read-time,.deck-mode .attribution,.deck-mode .reality-check,.deck-mode .reality-check p,.deck-mode .reality-check svg,
-.deck-mode .section-label>span,.deck-mode .original-link>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#2b2b2d}
-.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .my-deck-head h2,.deck-mode .draw-deck-label,.deck-mode .research-details a,.deck-mode .research-details summary{color:#5a3c06!important;-webkit-text-fill-color:#5a3c06}
+
+
+.deck-mode .draw-bar{border-top-color:#929395}
+
+.deck-mode .section-label>span,.deck-mode .reel-name,.deck-mode .draw-status,.deck-mode footer{color:#2b2b2d}
+.deck-mode .cotd-box .section-label,.deck-mode .section-label,.deck-mode .draw-deck-label{color:#5a3c06!important;-webkit-text-fill-color:#5a3c06}
 .deck-mode .reel-stars{color:#5a3c06}
 .deck-mode .cotd-box,.deck-mode .my-deck{box-shadow:0 10px 30px #0000002e}
 /* Counter the green look (Astra, 2026-11-14: "still looks really green"): the gray is a hair low in green (R and B a
@@ -440,17 +438,17 @@ body:has(.deck-mode){background:#aba7ad}
 .deck-mode{--n0:#aba7ad;--n1:#bab6bc;--n2:#adaaaf;--n3:#96929a;--n4:#817d85}
 .deck-mode .reel-drum{background:#b1adb3;border-color:#8b878e}
 .deck-mode .type-pill{background:#c6c2c8;border-color:#8b878e}
-.deck-mode .subject-tag{background:#adaaaf;border-color:#8b878e}
-.deck-mode .research-details{background:#b1adb3;border-color:#96929a}
-.deck-mode .original-link,.deck-mode .draw-bar{border-top-color:#96929a}
-.deck-mode .brand>span,.deck-mode .cotd-motto em{background:linear-gradient(110deg,#5a3c06,#8a5a10 40%,#b07a18 50%,#5a3c06);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+
+
+.deck-mode .draw-bar{border-top-color:#96929a}
+.deck-mode .brand>span{background:linear-gradient(110deg,#5a3c06,#8a5a10 40%,#b07a18 50%,#5a3c06);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 /* The card-of-the-day box a little lighter than the page and the deck panel (Astra, 2026-11-14) */
 .deck-mode .cotd-box{background:linear-gradient(#cbc7cd,#cbc7cd) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
 .deck-mode .cotd-box .reel-drum{background:#c0bcc2}
 /* The picker under the motto replaces the wheels (Astra, 2026-11-14): type circles, five stars, the deck to draw */
 .deck-mode .draw-bar{display:none!important}
 .cotd-below{margin:auto 0;display:flex;flex-direction:column;align-items:center;gap:16px;padding:22px 0 8px}
-.deck-mode .cotd-motto{margin:0;padding:0}
+
 .draw-picker{display:flex;flex-direction:column;align-items:center;gap:12px;width:100%}
 .pick-types{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;max-width:300px}
 .pick-dot{--tc:#888;width:32px;height:32px;padding:0;border-radius:50%;border:2px solid transparent;background:none;cursor:pointer;display:grid;place-items:center}
@@ -463,7 +461,7 @@ body:has(.deck-mode){background:#aba7ad}
 .pick-star{border:0;background:none;cursor:pointer;font-size:24px;line-height:1;padding:0 1px;color:#00000030}
 .pick-star.on{color:#a8761c;text-shadow:0 0 6px #f3d27a90}
 .pick-star:hover{transform:scale(1.12)}
-.pick-any{margin-left:8px;font-size:13px;color:#2b2b2d}
+
 .draw-picker .draw-deck{align-self:center}
 .draw-picker .draw-status{text-align:center;max-width:280px}
 
@@ -473,10 +471,9 @@ body:has(.deck-mode){background:#aba7ad}
 .deck-mode .cotd-box footer button{color:#2b2b2d;font-size:13px}
 
 /* Your deck: no label; an "Order my deck" button at the top right */
-.order-deck{display:flex;flex-direction:column;align-items:flex-end;gap:6px;margin:0 0 14px}
-.order-deck-button{border:2px solid transparent;border-radius:999px;padding:8px 18px;font-weight:700;font-size:15px;cursor:pointer;color:#3a2606;
- background:linear-gradient(110deg,#d9a53f,#f3d27a 40%,#fff3c4 50%,#d9a53f 60%,#b8862e) ;background-size:250% 100%;animation:deck-text-shine 6s ease-in-out infinite;box-shadow:0 2px 0 #8a5a10}
-.order-deck-note{margin:0;font-size:14px;color:#2b2b2d}
+
+
+
 /* The card-of-the-day box a little lighter again (Astra, 2026-11-14) */
 .deck-mode .cotd-box{background:linear-gradient(#d6d2d8,#d6d2d8) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
 /* The write-up about the card sits on a sheet of white paper inside the box (Astra, 2026-11-14): headline and the three
@@ -498,16 +495,14 @@ body:has(.deck-mode){background:#aba7ad}
 .cotd-below{gap:12px}
 /* The motto lives at the top right of the site now, in shiny gold */
 .deck-mode header{align-items:center}
-.site-motto{margin:0 0 0 auto;font-family:Georgia,'Times New Roman',serif!important;font-size:clamp(17px,2vw,22px);font-weight:700;text-align:right;
- background:linear-gradient(110deg,#7a520c,#c48a24 25%,#f3d27a 40%,#fff3c4 50%,#d9a53f 62%,#8a5a10 85%);background-size:250% 100%;
- -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:deck-text-shine 5s ease-in-out infinite}
-.site-motto em{font-style:italic;font-family:inherit!important}
-@media(max-width:520px){.site-motto{font-size:15px}}
+
+
+
 /* Fonts (Astra, 2026-11-14): Times New Roman only on the paper sheet; everything else back to the site's own type
    (DM Sans, Space Grotesk for names and headings). */
 .deck-mode,.deck-mode :where(h1,h2,h3,h4,p,span,b,em,small,a,button,label,input,div,li){font-family:'DM Sans',Arial,sans-serif!important}
-.deck-mode :where(.deck-name,.deck-rarity,.deck-lv,.deck-lv b,.site-motto,.site-motto em){font-family:'Space Grotesk',sans-serif!important}
-.deck-mode .site-motto,.deck-mode .site-motto em{font-family:Georgia,'Times New Roman',serif!important}
+
+
 .deck-mode .paper-sheet,.deck-mode .paper-sheet *{font-family:'Times New Roman',Times,Georgia,serif!important;letter-spacing:normal!important}
 .deck-mode .paper-sheet h1{font-weight:700}
 
@@ -525,7 +520,7 @@ body:has(.deck-mode){background:#aba7ad}
  padding:26px 32px 10px}
 .deck-mode .paper-sheet .story-section p{color:#1a1a1a}.deck-mode .paper-sheet .hook p{color:#111}
 /* The meta line now sits under the paper */
-.deck-mode .paper-copy .paper-meta{margin:4px 0 14px}
+
 @media(max-width:520px){.deck-mode .paper-sheet{padding:20px 18px 6px}}
 /* Times New Roman on the sheet must beat the older write-up font rule (higher specificity) */
 .deck-mode .cotd-box .paper-copy .paper-sheet,.deck-mode .cotd-box .paper-copy .paper-sheet *{font-family:'Times New Roman',Times,Georgia,serif!important;letter-spacing:normal!important}
@@ -533,7 +528,7 @@ body:has(.deck-mode){background:#aba7ad}
 .deck-name{font-size:4.8cqw}
 
 /* Logo and motto: the same shiny gold, both words of the logo, with a thin black outline to help reading (Astra, 2026-11-14) */
-.deck-mode .brand,.deck-mode .brand>span,.deck-mode .site-motto,.deck-mode .site-motto em{
+.deck-mode .brand,.deck-mode .brand>span{
  background:linear-gradient(110deg,#7a520c,#c48a24 25%,#f3d27a 40%,#fff3c4 50%,#d9a53f 62%,#8a5a10 85%)!important;background-size:250% 100%!important;
  -webkit-background-clip:text!important;background-clip:text!important;color:transparent!important;-webkit-text-fill-color:transparent!important;
  -webkit-text-stroke:.6px #1a1206;animation:deck-text-shine 5s ease-in-out infinite!important}
@@ -557,24 +552,23 @@ body:has(.deck-mode){background:#aba7ad}
 /* Pure white paper (Astra, 2026-11-14: "still kind of yellow") */
 .deck-mode .paper-sheet{background-color:#ffffff!important}
 /* Logo and motto: shiny gold, no black outline, Times New Roman like the paper (Astra, 2026-11-14) */
-.deck-mode .brand,.deck-mode .brand>span,.deck-mode .site-motto,.deck-mode .site-motto em{-webkit-text-stroke:0!important;font-family:'Times New Roman',Times,Georgia,serif!important}
+.deck-mode .brand,.deck-mode .brand>span{-webkit-text-stroke:0!important;font-family:'Times New Roman',Times,Georgia,serif!important}
 .deck-mode .brand{letter-spacing:-.5px;font-size:34px}
 /* Paper sections (Astra, 2026-11-14): titles underlined in dark ink, all three bodies the same size */
 .deck-mode .paper-sheet .section-label{color:#1a1a1a!important;-webkit-text-fill-color:#1a1a1a;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px;font-weight:700;letter-spacing:.06em!important}
 .deck-mode .paper-sheet .section-label>span{color:#1a1a1a!important}
 .deck-mode .paper-sheet .story-section p,.deck-mode .paper-sheet .hook p,.deck-mode .paper-sheet .significance p{font-size:17px!important;line-height:1.7;color:#1a1a1a}
 /* Facts under the paper */
-.paper-facts{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:4px 0 16px;font-size:15px}
-.paper-facts dt{font-weight:700;color:#2b2b2d}
-.paper-facts dd{margin:0;color:#111}
+
+
+
 /* The deck to draw from: back to the stacked size, with a real card back on top; "Draw" in the shiny gold */
 .draw-picker .draw-deck-cards{width:60px;height:84px}
 .deck-mode .draw-deck-cards span{background:#e9e7ea!important;background-image:none!important;border:1.5px solid #b8862e}
-.deck-mode .draw-deck-cards .card-back{display:grid;place-items:center;align-content:center;gap:2px;
- background:radial-gradient(circle at 50% 40%,#ffffff,#e4e1e6 70%)!important}
-.card-back .cb-rim{position:absolute;inset:4px;border:1px solid #d9a53f;border-radius:5px;box-shadow:inset 0 0 0 2px #e9e7ea,inset 0 0 0 3px #d9a53f80}
-.card-back b{font-size:22px;line-height:1;background:linear-gradient(110deg,#7a520c,#c48a24 30%,#f3d27a 45%,#fff3c4 52%,#d9a53f 65%,#8a5a10);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
-.card-back small{font-family:'Times New Roman',Times,serif!important;font-size:9px;font-weight:700;color:#8a5a10;letter-spacing:.04em}
+
+
+
+
 .deck-mode .draw-deck-label{background:linear-gradient(110deg,#7a520c,#c48a24 25%,#f3d27a 40%,#fff3c4 50%,#d9a53f 62%,#8a5a10 85%);background-size:250% 100%;
  -webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent!important;animation:deck-text-shine 5s ease-in-out infinite;font-family:'Times New Roman',Times,serif!important;font-size:17px;font-weight:700}
 /* Darker grays (Astra, 2026-11-14), still a hair low in green */
@@ -588,35 +582,35 @@ body:has(.deck-mode){background:#8f8b91}
 .deck-mode .paper-sheet .section-label,.deck-mode .paper-sheet .section-label>span{color:#000!important;-webkit-text-fill-color:#000}
 .deck-mode .paper-sheet .significance{border-left:3px solid var(--sub,#555)!important}
 /* Read the original paper, left of the read time, under the paper; the old link line is not needed here */
-.deck-mode .original-link{display:none!important}
-.facts-top{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px;margin-bottom:4px}
-.facts-original{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;border:1.5px solid #b8862e;color:#111;font-weight:700;font-size:14px;background:#ffffff40}
-.facts-original:hover{background:#ffffff80}
-.facts-top span{font-size:15px;color:#111}.facts-top b{font-weight:700}
+
+
+
+
+
 /* Your deck panel the same gray as the card-of-the-day box */
 .deck-mode .my-deck{background:linear-gradient(#b8b4ba,#b8b4ba) padding-box,linear-gradient(135deg,#a8761c,#f3d27a 30%,#fff3c4 45%,#d9a53f 60%,#a8761c) border-box}
 /* Order my deck sits beside the Draw deck */
-.draw-picker .order-deck{margin:0;align-items:center}
-.draw-picker .order-deck-button{font-size:14px;padding:7px 14px}
-.draw-picker .order-deck-note{max-width:180px;text-align:center;font-size:13px}/* "Draw" in a deeper shiny gold so it reads on the gray */
+
+
+/* "Draw" in a deeper shiny gold so it reads on the gray */
 .deck-mode .draw-deck-label{background:linear-gradient(110deg,#4a3104,#8a5a10 30%,#c48a24 45%,#e8b850 52%,#a8761c 65%,#4a3104)!important;background-size:250% 100%!important;-webkit-background-clip:text!important;background-clip:text!important}
 /* ---------------- 2026-11-14 night (Astra) ---------------- */
 /* Article information: a fourth section on the paper with no number and no side line. Every fact about the article
    lives here; nothing else sits on the gray box around the paper. */
 .deck-mode .paper-sheet .story-section p+p{margin-top:12px}
-.deck-mode .paper-info{margin:28px 0 20px;color:#000}
-.deck-mode .paper-info .section-label{display:block;margin-bottom:12px}
-.deck-mode .paper-info dl{display:grid;grid-template-columns:max-content 1fr;gap:7px 18px;margin:0;font-size:16px;line-height:1.5}
-.deck-mode .paper-info dt{font-weight:700}
-.deck-mode .paper-info dd{margin:0}
-.deck-mode .paper-info a{color:#000;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
-.deck-mode .paper-credit{margin:16px 0 0;font-size:14px;line-height:1.6;color:#333}
-.deck-mode .paper-credit button{background:none;border:0;padding:0;font:inherit;color:#000;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.deck-mode .paper-sheet .research-details{margin:14px 0 0;background:#f2f3f6;border:1px solid #d6d8de;border-radius:4px}
-.deck-mode .paper-sheet .research-details h2,.deck-mode .paper-sheet .research-details p{color:#111}
-.deck-mode .paper-sheet .research-details a,.deck-mode .paper-sheet .research-details summary{color:#000}
+
+
+
+
+
+
+
+
+
+
+
 .deck-mode .paper-sheet-wrap{margin-bottom:22px}
-@media(max-width:520px){.deck-mode .paper-info dl{grid-template-columns:1fr;gap:0}.deck-mode .paper-info dd{margin-bottom:8px}}
+
 
 /* Card front: no number under the name. The stats (Subject, Article, Completion) and the card number sit centered in
    the space between the picture and the band, with clear room above them. */
@@ -649,13 +643,13 @@ body:has(.deck-mode){background:#8f8b91}
 .pick-draw:hover:not(:disabled){filter:brightness(1.06);transform:translateY(-1px)}
 .pick-draw:active:not(:disabled){transform:translateY(1px)}
 .pick-draw:disabled{cursor:wait;opacity:.85}
-.pick-draw-icon{display:inline-block;font-size:18px;line-height:1;color:#5a3c06}
-.pick-draw.busy .pick-draw-icon{animation:pick-spin 1s linear infinite}
+
+
 @keyframes pick-spin{to{transform:rotate(360deg)}}
 .pick-order{border:1.5px solid #a8761c;background:#f2f0f3;box-shadow:0 2px 0 #00000026}
 .pick-order:hover{background:#ffffff;transform:translateY(-1px)}
 .pick-order svg{color:#7a520c}
-.pick-order-note{grid-column:1/-1;margin:2px 0 0;font-size:13px;line-height:1.4;text-align:center;color:#2b2b2d}
+
 .pick-draw:focus-visible,.pick-order:focus-visible{outline:2px solid #5a3c06;outline-offset:3px}
 @media(max-width:380px){.pick-draw,.pick-order{font-size:15px;padding:0 8px}}
 /* The paper is long now, so the card and the draw buttons stay together at the top of the column and stay in view
@@ -677,19 +671,19 @@ body:has(.deck-mode){background:#8f8b91}
 /* Logo and motto much bigger, outlined in black */
 .deck-mode .brand,.deck-mode .brand>span{-webkit-text-stroke:1.3px #000!important}
 .deck-mode .brand{font-size:clamp(40px,5.6vw,64px)!important;line-height:1}
-.deck-mode .site-motto,.deck-mode .site-motto em{-webkit-text-stroke:.9px #000!important}
-.deck-mode .site-motto{font-size:clamp(22px,3vw,38px)!important;line-height:1.15}
-@media(max-width:520px){.deck-mode .brand{font-size:34px!important}.deck-mode .site-motto{font-size:17px!important}}
+
+
+@media(max-width:520px){.deck-mode .brand{font-size:34px!important}}
 
 /* Section 03: the title lines up with 01 and 02; the side line runs only beside the body */
 .deck-mode .paper-sheet .significance{border-left:0!important;padding:0!important}
 .deck-mode .paper-sheet .matters-body{border-left:3px solid var(--sub,#555);padding-left:16px;margin-top:10px}
 .deck-mode .paper-sheet .matters-body p:first-child{margin-top:0}
-.deck-mode .paper-sheet .story-section p.paper-smallprint{font-size:15px!important;font-style:italic;line-height:1.6;margin:14px 0 0}
+
 /* 04 Bibliography: the entry with a hanging indent, as in a reference list */
 .deck-mode .paper-sheet .paper-bib p.bib-entry{padding-left:2em;text-indent:-2em;font-size:16px!important;line-height:1.7}
 .deck-mode .paper-bib a{color:#000;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
-.deck-mode .paper-sheet .paper-bib p.bib-note{font-size:14px!important;color:#333!important}
+
 
 /* Card: second row of stats (published, minted), the number lower and apart from them, the picture a little smaller
    to make room */
@@ -730,7 +724,7 @@ body:has(.deck-mode){background:#8f8b91}
 .tally-stats b{font-size:18px;color:#111;margin-right:3px}
 
 /* Picker: published-year bands, and the buttons: Draw a card across the top, then the others two by two */
-.pick-years{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;max-width:300px}
+
 .pick-year{border:1px solid #8b878e;background:#c6c2c8;border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700;color:#1a1a1a;cursor:pointer;line-height:1.2}
 .pick-year:hover{background:#d6d2d8}
 .pick-year.on{background:linear-gradient(110deg,#b8862e,#f3d27a 35%,#fff3c4 50%,#e8bb52 65%,#b8862e);border-color:#8a5a10;color:#2a1a02}
@@ -745,9 +739,9 @@ body:has(.deck-mode){background:#8f8b91}
 /* How to play pop-up */
 .howto ul{margin:6px 0 12px;padding-left:20px}
 .howto li{margin:4px 0;line-height:1.5}
-.howto-rarity{list-style:none;padding-left:0!important}
-.howto-stars{display:inline-block;min-width:5.6em;color:#a8761c;letter-spacing:1px}
-.howto-rarity span:last-child{opacity:.75}
+
+
+
 .howto-subjects{list-style:none;padding-left:0!important;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 12px}
 .howto-subjects li{display:flex;align-items:center;gap:8px}
 .howto-subjects i{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--sc);color:#fff;flex:none}
@@ -756,11 +750,11 @@ body:has(.deck-mode){background:#8f8b91}
 /* ---------------- Logo and rarity score (Astra, 2026-11-14) ---------------- */
 /* The logo: three gold cards fanned out, before the word Papermon */
 .deck-mode .brand{display:inline-flex;align-items:center;gap:0}
-.brand-logo{height:1.1em;width:auto;flex:none;margin-right:.14em;filter:drop-shadow(0 2px 3px #0004)}
-@media(max-width:520px){.brand-logo{height:1em}}
+
+
 /* The rarity score under the rarity word on the card band */
 .deck-rarity-wrap{display:flex;flex-direction:column;align-items:flex-start;gap:.5cqw;min-width:0}
-.deck-score{font-size:2.5cqw;font-weight:700;letter-spacing:.15cqw;text-transform:uppercase;line-height:1;color:#1c1a1e;opacity:.8;white-space:nowrap}
+
 /* The rarity chart in How to play */
 .rarity-chart{display:flex;flex-direction:column;gap:12px;margin:8px 0 14px}
 .rarity-chart table{width:100%;border-collapse:collapse;font-size:14px}
@@ -785,12 +779,12 @@ body:has(.deck-mode){background:#8f8b91}
 
 /* ---------------- Polish, 2026-11-14 late (Astra) ---------------- */
 /* No black outlines anywhere: the logo word and the motto are plain shiny gold */
-.deck-mode .brand,.deck-mode .brand>span,.deck-mode .site-motto,.deck-mode .site-motto em{-webkit-text-stroke:0!important}
+.deck-mode .brand,.deck-mode .brand>span{-webkit-text-stroke:0!important}
 /* The card stays where it is while you read: it does not slide down the page */
 @media(min-width:761px){.deck-mode .cotd-card{position:static!important}}
 
 /* Section 04: bibliography and other information, all in the paper's own format */
-.deck-mode .paper-sheet .paper-bib p.bib-fact{font-size:16px!important;line-height:1.6;margin:8px 0 0}
+
 
 /* Card: a bigger picture; published, the number and minted on one line */
 .deck-frame{margin:0 1.6cqw}
@@ -802,7 +796,7 @@ body:has(.deck-mode){background:#8f8b91}
  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:deck-text-shine 5s ease-in-out infinite}
 /* The rarity score sits beside the rarity word as a small badge, on one line */
 .deck-rarity-wrap{flex-direction:row;align-items:center;gap:1.4cqw}
-.deck-score{font-size:3.2cqw;letter-spacing:0;opacity:.9;padding:.4cqw 1.4cqw;border-radius:3cqw;background:#ffffff80;color:#1c1a1e;text-transform:none}
+
 
 /* Gold rings around every subject symbol: on the cards, in the picker, in the deck tally and the rules */
 .deck-type,.deck-type-stat i:not(.read-dot){box-shadow:0 0 0 .45cqw #f3d27a,0 0 0 .75cqw #a8761c,0 .4cqw 1cqw #2a1f2c40!important}
@@ -821,7 +815,7 @@ body:has(.deck-mode){background:#8f8b91}
 .pick-draw:hover:not(:disabled),.pick-order:hover,.pick-more:hover,.pick-year:hover,.deck-back-actions>*:hover{
  transform:translateY(-1px);border-color:#d9a53f!important;box-shadow:inset 0 1px 0 #fff,0 4px 10px #00000026,0 0 0 4px #f3d27a40!important}
 .pick-order svg,.pick-more svg{color:#a8761c}
-.pick-draw-icon{color:#c48a24!important;-webkit-text-fill-color:#c48a24!important;animation:none!important}
+
 .pick-draw{min-height:48px;font-size:19px!important;letter-spacing:.02em}
 .pick-year.on{border:2px solid #b8862e!important;
  background-image:linear-gradient(110deg,#5a3c06,#8a5a10 30%,#c48a24 48%,#8a5a10 66%,#5a3c06),linear-gradient(#fff3d1,#fff3d1)!important;
@@ -835,7 +829,7 @@ body:has(.deck-mode){background:#8f8b91}
  -webkit-background-clip:border-box!important;background-clip:border-box!important;color:#2a1a02!important;-webkit-text-fill-color:#2a1a02!important;
  box-shadow:inset 0 1px 0 #ffffffa0,0 2px 0 #7a520c,0 6px 14px #00000026!important;animation:deck-text-shine 6s ease-in-out infinite!important}
 .pick-draw:hover:not(:disabled){filter:brightness(1.06)!important;border-color:#8a5a10!important;box-shadow:inset 0 1px 0 #ffffffa0,0 3px 0 #7a520c,0 8px 18px #0000002e!important}
-.pick-draw-icon{color:#5a3c06!important;-webkit-text-fill-color:#5a3c06!important;font-size:16px}
+
 
 /* One size for every subject circle: the picker's circles and the card's circles (top corner, Subject, Completion)
    are all 24 px on a card 330 px wide (7.3cqw) */
@@ -932,13 +926,12 @@ body:has(.deck-mode){background:#8f8b91}
 .deck-made{gap:.4cqw}
 
 /* Sort line above the deck: one line, scrolls sideways on a narrow screen */
-.deck-sort{display:flex;align-items:center;gap:6px;margin:0 0 16px;overflow-x:auto;white-space:nowrap;scrollbar-width:thin;padding-bottom:2px}
-.deck-sort>span{font-size:13px;color:#2b2b2d;margin-right:4px;flex:none}
-.deck-sort button{flex:none;font-family:'Times New Roman',Times,Georgia,serif;font-size:14px;font-weight:700;padding:4px 11px;border-radius:999px;
- border:1px solid #c9a24e;background:#fbf8f1;color:#8a5a10;cursor:pointer}
-.deck-sort button:hover{background:#fff}
-.deck-sort button.on{background:linear-gradient(110deg,#b8862e,#f3d27a 35%,#fff3c4 50%,#e8bb52 65%,#b8862e);border-color:#8a5a10;color:#2a1a02}
-.deck-sort button i{font-style:normal}
+
+
+
+
+
+
 
 /* Draw picker: each subject circle with its name to the right, two columns */
 .pick-types.labeled{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 10px!important;max-width:320px!important;width:100%;justify-content:stretch!important}
@@ -967,7 +960,7 @@ body:has(.deck-mode){background:#8f8b91}
 .pick-label small{font-family:'DM Sans',Arial,sans-serif;font-size:11px;font-weight:400;color:#4a4a4e}
 .pick-star{font-size:26px!important;color:#f8f1df!important;-webkit-text-stroke:1.2px #a8761c;text-shadow:none!important}
 .pick-star.on{color:#e3ad3c!important;-webkit-text-stroke:1.2px #7a520c;text-shadow:0 0 6px #f3d27a90!important}
-.pick-years{max-width:none!important;flex-wrap:nowrap!important}
+
 .pick-year{font-size:13px!important;padding:5px 10px!important;white-space:nowrap}
 .pick-order,.pick-more{font-size:15px!important;white-space:normal!important;line-height:1.15!important;text-align:center}
 .pick-draw{font-size:16px!important}
@@ -999,8 +992,7 @@ body:has(.deck-mode){background:#8f8b91}
 .deck-back p{font-size:4.8cqw!important;line-height:1.25}
 .deck-back-actions{flex:none;position:relative;margin-top:2.4cqw}
 .deck-back .deck-bfoot{flex:none;height:21cqw;margin-top:2.4cqw;align-items:flex-start!important}
-.deck-back-note{position:absolute;left:0;right:0;bottom:calc(100% + 1.4cqw);margin:0;z-index:3;font-size:3.4cqw;line-height:1.3;
- background:#fffdf6;color:#2a1f2c;border:.3cqw solid #c9a24e;border-radius:2cqw;padding:1.8cqw 2.6cqw;box-shadow:0 1cqw 3cqw #2a1f2c33}
+
 
 /* Picker stars: the same shiny gold as the Draw button when chosen */
 .pick-star.on{color:transparent!important;-webkit-text-fill-color:transparent;
@@ -1217,8 +1209,8 @@ body:has(.deck-mode) .source-dialog button[data-slot=dialog-close],body:has(.dec
 .deck-rate button svg{width:3.8cqw!important;height:3.8cqw!important}
 
 /* Draws left today, under the Draw button */
-.pick-draws-left{grid-column:1/-1;margin:-2px 0 2px;text-align:center;font-size:13px;color:#2b2b2d}
-.pick-draws-left b{font-size:15px;color:#1c1a1e}
+
+
 .pick-draw:disabled{filter:grayscale(.6) brightness(.95)!important;cursor:not-allowed}
 /* Same card size in piles and laid out (Astra, 2026-11-14: "meet in the middle"): both grids use the same columns and
    gap; piles leave 15 px for the cards behind (5 px each, was 7), and laid-out cards are 15 px narrower than the column */
@@ -1236,21 +1228,20 @@ body:has(.deck-mode) .source-dialog button[data-slot=dialog-close],body:has(.dec
 .deck-top .deck-lv small{font-size:inherit;font-weight:inherit;line-height:1}
 /* Draw card button: the word, then a little tag with five tiny cards (filled = drawn today) and "2/5" */
 .pick-draw{display:inline-flex!important;align-items:center;justify-content:center;gap:9px!important}
-.pick-draw-word{white-space:nowrap}
-.draw-count{display:inline-flex;align-items:center;gap:5px;margin-left:4px;padding:3px 8px 3px 7px;border-radius:999px;background:#fffaf0cc;
- box-shadow:inset 0 0 0 1px #9a681466;font-family:'DM Sans',Arial,sans-serif;font-size:12px;font-weight:700;color:#3a2606;-webkit-text-fill-color:#3a2606}
-.draw-pips{display:inline-flex;gap:2px}
-.draw-pips i{display:block;width:6px;height:9px;border-radius:1.5px;border:1px solid #9a6814;background:#fffdf6;transform:rotate(-6deg)}
-.draw-pips i:nth-child(even){transform:rotate(5deg)}
-.draw-pips i.used{background:linear-gradient(135deg,#b8862e,#f3d27a 45%,#9a6814);border-color:#7a520c}
-.pick-draw.out .pick-draw-icon{display:none}
+
+
+
+
+
+
+
 
 /* ---------------- Picker rows and the Draw button, 2026-11-14 night (Astra) ---------------- */
 /* Each row: the name on the left, the choices on the right; both rows' choices start at the same place */
 .pick-row{display:grid!important;grid-template-columns:118px auto;align-items:center;justify-content:center;gap:8px!important;max-width:340px;width:100%}
 .pick-label{display:block;font-family:'Times New Roman',Times,Georgia,serif;font-size:14px;font-weight:700;color:#1c1a1e;white-space:nowrap;text-align:left}
-.pick-row .pick-stars,.pick-row .pick-years{justify-content:flex-start!important}
-.pick-years{gap:5px!important}
+.pick-row .pick-stars{justify-content:flex-start!important}
+
 .pick-year{font-size:12.5px!important;padding:4px 9px!important}
 /* Hollow stars (just a gold outline, see-through inside) until chosen; chosen stars fill with the shining gold */
 .pick-star:not(.on){color:transparent!important;-webkit-text-fill-color:transparent!important;-webkit-text-stroke:1.4px #9a6814!important;background:none!important;filter:none!important}
@@ -1436,7 +1427,7 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 :root{--pill-w:163px;--pill-h:32px}
 .pick-types.labeled{grid-template-columns:repeat(2,var(--pill-w))!important;gap:6px 10px!important;justify-content:start!important}
 .pick-types.labeled .pick-dot{width:var(--pill-w)!important;height:var(--pill-h)!important;box-sizing:border-box}
-.pick-years.pick-grid{display:grid!important;grid-template-columns:repeat(2,var(--pill-w));gap:6px 10px!important;justify-content:start}
+
 .pick-year{width:var(--pill-w)!important;height:var(--pill-h)!important;box-sizing:border-box;padding:0 10px!important;font-size:13px!important;display:inline-flex;align-items:center;justify-content:center}
 .pick-actions{grid-template-columns:repeat(2,var(--pill-w))!important;gap:10px!important;justify-content:center;max-width:none!important}
 .pick-order,.pick-more{width:var(--pill-w)!important;height:var(--pill-h)!important;min-height:0!important;box-sizing:border-box;padding:0 10px!important;font-size:14px!important;
@@ -1470,7 +1461,7 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 
 /* ---------------- Same height, not width (Astra, 2026-11-14) ---------------- */
 /* Every pill is 32 px tall; widths fit their words again. The subject choices and the four buttons stay two to a row. */
-.pick-row .pick-years{display:flex!important;flex-wrap:nowrap!important;gap:6px!important}
+
 .pick-year{width:auto!important;height:var(--pill-h)!important;padding:0 10px!important;font-size:12px!important;font-variant-numeric:tabular-nums}
 .deck-bar .tally-sub{width:auto!important;padding:0 10px 0 4px!important}
 .deck-pick select{width:auto!important;min-width:0!important}
@@ -1536,8 +1527,9 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
  border-top:.35cqw solid #b8862e!important;box-shadow:inset 0 .4cqw .8cqw #5a3c0626}
 
 /* ---------------- Enter Card Code (Astra, 2026-11-14) ---------------- */
-/* The button: the full width of the menu, first, with a little card picture like the other buttons' icons */
-.pick-actions .pick-code{grid-column:1/-1;width:100%!important}
+/* The button: a small pill like the others (Astra, 2026-11-14, later: "enter card code should be small"), sharing the
+   first row with Buy More Digital Cards, with a little card picture like the other buttons' icons */
+.pick-actions .pick-code{grid-column:auto}
 .card-icon{flex:none}
 /* The mock of a printed card's back, with the code's spot under a gold scratch-off strip along the bottom edge */
 .code-mock{display:flex;align-items:center;gap:16px;margin:4px 0 6px}
@@ -1584,3 +1576,11 @@ body:has(.deck-mode) .source-dialog{background:linear-gradient(#fbfaf6,#fbfaf6) 
 .pick-dot.any i{background:conic-gradient(#d26a9a,#16a3c4,#4f9a5e,#3f8ccc,#8d6bc8,#d26a9a) padding-box,var(--sheen) border-box!important;background-size:100% 100%,var(--gold-size)!important;background-position:0 0,var(--gold-pos,0 0)!important}
 /* A date on the card back never breaks in the middle */
 .deck-made .deck-date{font-style:normal;white-space:nowrap}
+
+/* ---------------- Fits a phone (2026-11-14) ----------------
+   Two 160 px pills plus their gap are as wide as the card on a computer; on a phone the column is narrower, so the pills
+   share whatever width there is (still 160 px each on a computer) and the single column never grows past the screen. */
+.pick-types.labeled,.pick-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%;max-width:330px}
+.pick-types.labeled .pick-dot,.pick-order,.pick-more{width:100%!important;min-width:0}
+.pick-types.labeled .pick-dot span{overflow:hidden;text-overflow:ellipsis}
+@media(max-width:720px){.deck-mode .paper-card{grid-template-columns:minmax(0,1fr)!important}.deck-mode .cotd-card,.deck-mode .paper-copy{min-width:0;max-width:100%}}
