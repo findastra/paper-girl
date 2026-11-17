@@ -65,7 +65,8 @@ the catalog under their own numbers (ten since PR #21: No. 1 to 10), so new card
 ## Reaching it from friends' phones
 
 The server listens on 127.0.0.1 only. A tunnel carries friends' requests to it (deck question 1, decided:
-Tailscale Funnel), and the site is built with the tunnel's address in `VITE_PAPERMON_SERVER`. On this PC a working
+Tailscale Funnel: `tailscale funnel --bg 8830`; its address is set as `VITE_PAPERMON_SERVER` in
+`.github/workflows/pages.yml`), and the site is built with the tunnel's address in `VITE_PAPERMON_SERVER`. On this PC a working
 copy can be pointed at a local server with `?server=http://127.0.0.1:PORT` (only loopback addresses are accepted).
 
 ## Checks
