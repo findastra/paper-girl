@@ -290,7 +290,9 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
  // Gold card (Astra, 2026-11-14): a Legendary card is gold all over, whatever the subject, with sparkles over the
  // whole card. The Subject stat's colored chip still tells the subject.
  const gold=tier>=5;
- const journal=card.src.replace(/\s*\d{4}$/,'');
+ // The Article stat is narrow: "eLife" or "PLOS" (2026-11-17: server cards said "PLoS computational biology", which ran
+ // over the Subject stat). The write-up beside the card keeps the journal's full name.
+ const journal=card.src.replace(/\s*\d{4}$/,'').replace(/^plos\b.*$/i,'PLOS');
  return <div className={'deck-slot lv'+tier+(card.author?' author':'')+(gold?' gold-card':'')} style={{'--sc':type.color} as CSSProperties}>
   <div className={'deck-card'+(flipped?' flipped':'')+(sweep?` sweep${sweep}`:'')} role="button" tabIndex={0} aria-pressed={flipped}
    // The sheen sits where the mouse is, like light on a real card (Astra, 2026-11-14); it drifts on its own otherwise.

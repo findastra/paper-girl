@@ -62,14 +62,17 @@ export function drawOnServer(o: {subject: string; lv: number; pmcid?: string}): 
   return call<DrawAnswer>('/api/draw', {method: 'POST', body: JSON.stringify({reader: readerId(), subject: o.subject, lv: o.lv, have, pmcid: o.pmcid})});
 }
 
+/** A card that could not be made; `otherPaper` = the problem was that paper only, so another paper may work. */
+export class CardFailed extends Error { constructor(message: string, readonly otherPaper: boolean) { super(message); } }
+
 /** Wait for a new card while Claude writes and OpenAI draws (about a minute), reporting each step. */
 export async function waitForCard(job: string, onStep: (text: string) => void): Promise<Card> {
   for (let i = 0; i < 150; i++) {
     await new Promise(r => setTimeout(r, 2000));
-    const r = await call<{status: string; step?: string; card?: Card}>(`/api/jobs/${job}`).catch(() => null);
+    const r = await call<{status: string; step?: string; card?: Card; error?: string; retry?: boolean}>(`/api/jobs/${job}`).catch(() => null);
     if (!r) continue;
     if (r.status === 'done' && r.card) return r.card;
-    if (r.status === 'failed' || r.error) throw new Error(r.error || 'The card could not be made.');
+    if (r.status === 'failed' || r.error) throw new CardFailed(r.error || 'The card could not be made.', r.retry === true);
     if (r.step) onStep(r.step);
   }
   throw new Error('The card is taking too long. Try again later.');

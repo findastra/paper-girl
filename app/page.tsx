@@ -8,7 +8,7 @@ import seedData from '@/lib/data/seeds.json';
 import editorialData from '@/lib/data/editorial-20261019.json';
 import {formatArticleSummary,ARTICLE_SECTION_LABELS} from '@/lib/article-summary-20261019';
 import {MyDeck,DeckCard,cards as deckCards,type Card} from '@/components/my-deck-20261114';
-import {SERVER,serverUp,drawOnServer,waitForCard,addDrawn,useDeckCards,paperOf} from '@/lib/card-server-20261114';
+import {SERVER,serverUp,drawOnServer,waitForCard,CardFailed,addDrawn,useDeckCards,paperOf} from '@/lib/card-server-20261114';
 import {CardCatalogButton} from '@/components/card-catalog-20261114';
 import {GoldSurface} from '@/components/gold-surface-20261114';
 // The page's accent is always gold, whatever card is drawn (Astra, 2026-11-14), so the line beside "Why it matters"
@@ -28,7 +28,7 @@ function PapermonWord(){
 function toPaper(){const t=document.querySelector('.pm-tagline')||document.querySelector('header');const y=t?t.getBoundingClientRect().bottom+window.scrollY+2:0;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
 const PAGE_GOLD={['--accent' as string]:'#d9a53f',['--sub' as string]:'#c9952e'};
 import {AstraFooter} from '@/components/astra-footer-20261114';
-import {DrawPicker,TYPE_ITEMS,LEVEL_ITEMS,allowedGroups,groupOfYear,groupRange,weightedPick} from '@/components/draw-bar-20261114';
+import {DrawPicker,TYPE_ITEMS,LEVEL_ITEMS,allowedGroups,groupOfYear,groupRange,weightedPick,refundDraw} from '@/components/draw-bar-20261114';
 import {HowToPlay} from '@/components/how-to-play-20261114';
 import {MethodsCredits} from '@/components/methods-credits-20261114';
 import {base,staticEdition} from '@/lib/edition';
@@ -77,16 +77,24 @@ export default function Home(){
    if(r.limit){setDrawStatus(r.error||'That’s all your draws for today.');return true}
    let fresh=false;
    if(r.need==='paper'){
-    const g=weightedPick(allowedGroups(0),x=>x.odds),years=groupRange(g);
-    const found=await shuffle({...filters,topic:type||'Everything',period:'custom',from:String(years.from),to:String(years.to)});
-    fresh=true;setDrawStatus('Papermon is making a brand-new card for this paper…');
-    r=await drawOnServer({subject:type,lv:level,pmcid:found.pmcid});
-    if(r.job){setBusy(true);try{showServerCard(await waitForCard(r.job,step=>setDrawStatus(step)),true,true)}finally{setBusy(false)}return true}
+    // Up to three papers: when a paper can't become a card (Claude or OpenAI turned it down, or its words broke a
+    // rule), Papermon quietly tries another one (Astra, 2026-11-17: friends' first five cards).
+    for(let tries=0;tries<3;tries++){
+     const g=weightedPick(allowedGroups(0),x=>x.odds),years=groupRange(g);
+     const found=await shuffle({...filters,topic:type||'Everything',period:'custom',from:String(years.from),to:String(years.to)});
+     fresh=true;setDrawStatus(tries?'That paper couldn’t become a card, so Papermon is trying another one…':'Papermon is making a brand-new card for this paper…');
+     r=await drawOnServer({subject:type,lv:level,pmcid:found.pmcid});
+     if(!r.job)break;
+     setBusy(true);
+     try{showServerCard(await waitForCard(r.job,step=>setDrawStatus(step)),true,true);return true}
+     catch(e){if(!(e instanceof CardFailed&&e.otherPaper)||tries===2)throw e}
+     finally{setBusy(false)}
+    }
    }
    if(r.card){showServerCard(r.card,fresh,false);return true}
    if(r.reason==='budget'){setDrawStatus('Today’s new cards are all made, so here is a real paper to read. Its card can come tomorrow.');return true}
-   if(r.error){setDrawStatus(r.error);return true}
-  }catch(e){setDrawStatus(e instanceof Error?e.message:'The card server didn’t answer.');return true}
+   if(r.error){refundDraw();setDrawStatus(`${r.error} This draw didn’t count.`);return true}
+  }catch(e){refundDraw();setDrawStatus(`${e instanceof Error?e.message:'The card server didn’t answer.'} This draw didn’t count.`);return true}
   return false;
  }
  // Shows a card from the server: its paper goes on the sheet (unless the paper just found is already there)

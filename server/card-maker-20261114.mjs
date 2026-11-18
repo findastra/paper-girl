@@ -38,6 +38,8 @@ const JOURNALS = /^elife$|^plos (biology|genetics|computational biology|pathogen
 export class CardError extends Error {
   constructor(message, status = 422) { super(message); this.status = status; }
 }
+/** A problem with this one paper (not the keys, the budget or a busy service): the page may try another paper. */
+const paperProblem = (message, extra = {}) => Object.assign(new CardError(message), {paper: true}, extra);
 
 // ---------------------------------------------------------------------------------------------------------------
 // 1. The paper
@@ -68,13 +70,13 @@ export async function fetchPaper(pmcid, fetchImpl = fetch) {
   const r = (await search.json()).resultList?.result?.[0];
   if (!r) throw new CardError('Europe PMC has no article with that id.', 404);
   const journal = r.journalInfo?.journal?.title || r.journalTitle || '';
-  if (!JOURNALS.test(journal)) throw new CardError('Papermon only makes cards from eLife and the five PLOS journals it searches.');
-  if (r.isOpenAccess !== 'Y') throw new CardError('That article is not open access.');
+  if (!JOURNALS.test(journal)) throw paperProblem('Papermon only makes cards from eLife and the five PLOS journals it searches.');
+  if (r.isOpenAccess !== 'Y') throw paperProblem('That article is not open access.');
   const xmlRes = await epmc(`${EPMC}/${pmcid}/fullTextXML`, fetchImpl);
-  if (!xmlRes.ok) throw new CardError('Europe PMC has no full text for that article.');
+  if (!xmlRes.ok) throw paperProblem('Europe PMC has no full text for that article.');
   const xml = await xmlRes.text();
   const licensed = /creativecommons\.org\/licenses\/by\/\d\.\d/i.test(xml) && !/licenses\/by-n[cd]/i.test(xml);
-  if (!licensed) throw new CardError('That article is not under a CC BY license.');
+  if (!licensed) throw paperProblem('That article is not under a CC BY license.');
   const words = bodyWords(xml);
   return {
     pmcid,
@@ -222,11 +224,11 @@ export async function writeWithClaude(paper, {apiKey, client} = {}) {
   const u = message.usage || {};
   const usd = ((u.input_tokens || 0) * PRICE.claude.in + (u.output_tokens || 0) * PRICE.claude.out
     + (u.cache_read_input_tokens || 0) * PRICE.claude.cacheRead + (u.cache_creation_input_tokens || 0) * PRICE.claude.cacheWrite) / 1e6;
-  if (message.stop_reason === 'refusal') throw Object.assign(new CardError('Claude would not write a card for this paper.'), {usd});
-  if (message.stop_reason === 'max_tokens') throw Object.assign(new CardError('The card came out too long. Try another paper.'), {usd});
+  if (message.stop_reason === 'refusal') throw paperProblem('Claude would not write a card for this paper.', {usd});
+  if (message.stop_reason === 'max_tokens') throw paperProblem('The card came out too long. Try another paper.', {usd});
   const text = message.content.filter(b => b.type === 'text').map(b => b.text).join('');
   let words;
-  try { words = JSON.parse(text); } catch { throw Object.assign(new CardError('Claude\'s card did not come back whole.'), {usd}); }
+  try { words = JSON.parse(text); } catch { throw paperProblem('Claude\'s card did not come back whole.', {usd}); }
   return {words, usd};
 }
 
@@ -252,6 +254,8 @@ export async function drawWithOpenAI(drawing, {apiKey, fetchImpl = fetch} = {}) 
     body: JSON.stringify({model: ARTIST_MODEL, prompt, size: '1024x1024', quality: 'medium', n: 1, output_format: 'webp', output_compression: 82}),
   });
   const body = await res.json().catch(() => ({}));
+  // OpenAI's safety check turned down this picture: another paper gets another picture
+  if (res.status === 400 && body.error?.code === 'moderation_blocked') throw paperProblem('OpenAI would not draw this card\'s picture.');
   if (!res.ok) throw new CardError(`OpenAI could not draw the picture (${res.status}${body.error?.message ? `: ${body.error.message}` : ''}).`, 502);
   const b64 = body.data?.[0]?.b64_json;
   if (!b64) throw new CardError('OpenAI sent no picture.', 502);
@@ -279,7 +283,7 @@ export async function makeCard(pmcid, {number, artDir, today, write, draw, fetch
     words = w.words;
   } catch (e) { if (e.usd) spend(e.usd, `words for ${pmcid} (failed)`); throw e; }
   const problems = checkWords(words);
-  if (problems.length) throw new CardError(`The card's words broke a rule: ${problems.join('; ')}.`, 502);
+  if (problems.length) throw paperProblem(`The card's words broke a rule: ${problems.join('; ')}.`);
   step('Drawing the picture…');
   const art = await draw(words.drawing);
   spend(art.usd, `picture for ${pmcid}`);

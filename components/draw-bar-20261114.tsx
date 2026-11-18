@@ -26,6 +26,8 @@ function useUntilTomorrow(active:boolean){
  return `${Math.floor(sec/3600)}:${String(Math.floor(sec%3600/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
 }
 function spendDraw(){try{localStorage.setItem(DRAW_KEY,JSON.stringify({day:dayKey(),n:drawsUsed()+1}))}catch{}window.dispatchEvent(new Event(DRAW_EVENT))}
+/** Gives a draw back when the card server could not make the card (a failed card costs the friend nothing). */
+export function refundDraw(){try{localStorage.setItem(DRAW_KEY,JSON.stringify({day:dayKey(),n:Math.max(0,drawsUsed()-1)}))}catch{}window.dispatchEvent(new Event(DRAW_EVENT))}
 
 type Item={key:string;view:ReactNode;label:string};
 

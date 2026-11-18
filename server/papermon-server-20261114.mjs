@@ -122,6 +122,7 @@ function startJob({pmcid, reader, who}) {
   }).catch(e => {
     job.status = 'failed';
     job.error = e instanceof CardError ? e.message : 'Something went wrong making the card.';
+    job.retry = e instanceof CardError && e.paper === true;   // this paper only: the page tries another one
     log(`card from ${pmcid} failed: ${e.message}`);
   }).finally(() => { making--; setTimeout(() => jobs.delete(id), 30 * 60e3); });
   return job;
@@ -192,7 +193,7 @@ async function route(req, res, url) {
   if (req.method === 'GET' && jobMatch) {
     const job = jobs.get(jobMatch[1]);
     if (!job) return send(res, 404, {error: 'That card job is gone. Draw again.'});
-    return send(res, 200, {status: job.status, step: job.step, card: job.card, error: job.error});
+    return send(res, 200, {status: job.status, step: job.step, card: job.card, error: job.error, retry: job.retry === true});
   }
 
   if (req.method === 'GET' && path === '/api/catalog') {

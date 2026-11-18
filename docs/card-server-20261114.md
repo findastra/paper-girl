@@ -82,15 +82,33 @@ bodies capped at 64 KB; friends' text is stored as text and shown with `textCont
 kept (network addresses only as a salted hash, for the per-network limit); at most two new cards are made at once and
 one per friend; the daily budget stops new cards before the cap is passed.
 
-## Still to do (2026-11-14)
+## The first five real cards (2026-11-17)
 
-1. Astra makes Claude's key (`PAPER_GIRL_ANTHROPIC_API_KEY`) on the Claude Platform, with prepaid credit and a monthly
-   limit, and adds it to Windows herself (API Fairy request `20261113-paper-girl-paper-girl-anthropic-api-key`).
-2. Tailscale on the PC (her OK to download the installer, her sign-in), then `tailscale funnel` to the server's port,
-   and the site built with that address in `VITE_PAPERMON_SERVER`.
-3. Run the server for real, make the first five real cards, check them against the card plan, and tell Astra what each
-   cost.
-4. Only then: merge (her OK per PR) and send friends the link.
+Claude's key is in Windows, Funnel is on, and the server ran for real from Astra's data folder. Five cards were drawn
+the way a new friend would, in fresh browsers through the Funnel address, and checked against their papers' abstracts
+and the card plan:
+
+| No. | Name | Subject, level | Journal | Words | Picture | Card |
+| --- | --- | --- | --- | --- | --- | --- |
+| 11 | Ancient Swappable Homologous Exon | Genetics, LV4 | PLOS Computational Biology | $0.130 | $0.054 | $0.184 |
+| 12 | Structure-aware Methyl-spotting Transformer | Computer science, LV4 | PLOS Computational Biology | $0.098 | $0.054 | $0.152 |
+| 13 | Recombinant Multiclonal Plasmodium | Medicine, LV4 | PLOS Computational Biology | $0.125 | $0.054 | $0.179 |
+| 14 | Prophylactic Registered Dogbite | Medicine, LV2 | PLOS Neglected Tropical Diseases | $0.107 | $0.054 | $0.161 |
+| 15 | Silent Gallstone Stowaway | Medicine, LV3 | PLOS Neglected Tropical Diseases | $0.061 | $0.054 | $0.115 |
+
+- About **$0.16 a card** (Claude's words $0.06-0.13, OpenAI's picture $0.054). The $2 a day buys about 12 cards.
+- **Two papers were turned down** by Claude's safety check for disease-causing germs (both *PLOS Pathogens*: a
+  trypanosome killing immune cells, a Toxoplasma invasion enzyme). A refusal still costs the reading, $0.10-0.13.
+  Since then a refusal (or any other problem with that one paper) is marked `retry`, the page quietly tries up to
+  three papers, and a draw that ends with no card is given back.
+- Every fact on the five cards matches its abstract. Pictures follow style E with no text; No. 13 shows two parasites
+  and No. 14 makes a record folder the hero though the paper has a dog (the guide says the living thing comes first).
+- A friend who already holds a card in the catalog gets it free in about 2 seconds; new cards took 80-100 seconds.
+
+## Still to do (2026-11-17)
+
+1. Merge (Astra's OK per PR), then check the live site against the Funnel address and send friends the link.
+2. Keep the server running on the PC (now from a `%TEMP%` worktree; Server Salamander can host it later).
 
 ## Known limits
 
