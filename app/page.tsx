@@ -7,7 +7,9 @@ import {defaultFilters,subjects,discover,buildQuery,dayKey,hash,type Filters,typ
 import seedData from '@/lib/data/seeds.json';
 import editorialData from '@/lib/data/editorial-20261019.json';
 import {formatArticleSummary,ARTICLE_SECTION_LABELS} from '@/lib/article-summary-20261019';
-import {MyDeck,DeckCard,cards as deckCards} from '@/components/my-deck-20261114';
+import {MyDeck,DeckCard,cards as deckCards,type Card} from '@/components/my-deck-20261114';
+import {SERVER,serverUp,drawOnServer,waitForCard,CardFailed,addDrawn,useDeckCards,paperOf} from '@/lib/card-server-20261114';
+import {CardCatalogButton} from '@/components/card-catalog-20261114';
 import {GoldSurface} from '@/components/gold-surface-20261114';
 // The page's accent is always gold, whatever card is drawn (Astra, 2026-11-14), so the line beside "Why it matters"
 // and the other accents stay gold.
@@ -26,7 +28,7 @@ function PapermonWord(){
 function toPaper(){const t=document.querySelector('.pm-tagline')||document.querySelector('header');const y=t?t.getBoundingClientRect().bottom+window.scrollY+2:0;window.scrollTo({top:Math.max(0,y),behavior:'smooth'})}
 const PAGE_GOLD={['--accent' as string]:'#d9a53f',['--sub' as string]:'#c9952e'};
 import {AstraFooter} from '@/components/astra-footer-20261114';
-import {DrawPicker,TYPE_ITEMS,LEVEL_ITEMS,allowedGroups,groupOfYear,groupRange,weightedPick} from '@/components/draw-bar-20261114';
+import {DrawPicker,TYPE_ITEMS,LEVEL_ITEMS,allowedGroups,groupOfYear,groupRange,weightedPick,refundDraw} from '@/components/draw-bar-20261114';
 import {HowToPlay} from '@/components/how-to-play-20261114';
 import {MethodsCredits} from '@/components/methods-credits-20261114';
 import {base,staticEdition} from '@/lib/edition';
@@ -45,7 +47,7 @@ function mla(p:Paper){
 function citation(t:string){return t.split(/(\*[^*]+\*|https?:\/\/\S+?(?=\.?$))/).map((s,i)=>s.startsWith('*')?<i key={i}>{s.slice(1,-1)}</i>:/^https?:/.test(s)?<a key={i} href={s} target="_blank" rel="noreferrer">{s}</a>:s)}
 function dailyPick(day:string):Paper{const chosen=seeds[hash(day)%seeds.length];return {...chosen,...editorials[chosen.pmcid]}}
 // Card of the day (Astra, 2026-11-14): today's paper is one that has a card, so the card can sit beside its full
-// write-up. Until Paper Patty makes cards for every paper, it rotates through the cards that exist.
+// write-up. Until Papermon makes cards for every paper, it rotates through the cards that exist.
 function todaysPaper(day:string):Paper{const c=deckCards[hash('card:'+day)%deckCards.length],s=seeds.find(x=>x.pmcid===c.pmcid);return s?{...s,...editorials[s.pmcid]}:dailyPick(day)}
 export default function Home(){
  // The static edition renders only in the browser, so it shows today's card before the first paint.
@@ -57,11 +59,48 @@ export default function Home(){
  const actions=useRef({shuffle,filters});actions.current={shuffle,filters};
  useEffect(()=>{const context=(document as any).modelContext;if(!context?.registerTool)return;const life=new AbortController();try{Promise.resolve(context.registerTool({name:'discover_scientific_paper',title:'Discover a scientific paper',description:'Shuffle an unread scientific article and display its publisher explanation on Papermon.',inputSchema:{type:'object',properties:{subject:{type:'string',enum:Object.keys(subjects)},period:{type:'string',enum:['any','recent','older','custom']},from:{type:'string'},to:{type:'string'}},additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},async execute(input:any){if(!input||typeof input!=='object'||Array.isArray(input)||Object.entries(input).some(([k,v])=>!['subject','period','from','to'].includes(k)||typeof v!=='string'))throw new Error('Invalid filters.');const f={...actions.current.filters,...(input.subject?{topic:input.subject}:{}),...(input.period?{period:input.period}:{}),...(input.from?{from:input.from}:{}),...(input.to?{to:input.to}:{})};buildQuery(f);return actions.current.shuffle(f)}},{signal:life.signal})).catch(()=>{})}catch{}return()=>life.abort()},[]);
  const summary=formatArticleSummary(paper);const p=paper.summaryParagraphs;
- const paperCard=deckCards.find(c=>c.pmcid===paper.pmcid);
+ // Every card in this browser's deck: the starters plus cards drawn from the card server
+ const allCards=useDeckCards();
+ const paperCard=allCards.find(c=>c.pmcid===paper.pmcid);
  // Draw a card (Astra, 2026-11-14): pick a card of that type and difficulty from the library; when none exists yet,
- // look up a real paper of that type instead (Paper Patty will make its card later).
+ // look up a real paper of that type instead (Papermon will make its card later).
  function drawFromReels(){setSpinning(true);setTimeout(()=>setSpinning(false),650);
-  drawCard(TYPE_ITEMS[drawType].key,Number(LEVEL_ITEMS[drawLevel].key),drawYear)}
+  const type=TYPE_ITEMS[drawType].key,level=Number(LEVEL_ITEMS[drawLevel].key);
+  drawFromServer(type,level).then(done=>{if(!done)drawCard(type,level,drawYear)})}
+ // The card server (Astra, 2026-11-14): when Papermon's server answers, a draw is a card from the Card Catalog that
+ // fits and isn't in this deck yet, or a brand-new card Claude writes and OpenAI draws for a fresh paper (about a
+ // minute, each step shown in the message line). Without the server, drawCard below works as before.
+ async function drawFromServer(type:string,level:number):Promise<boolean>{
+  if(!SERVER||!(await serverUp()))return false;
+  try{
+   let r=await drawOnServer({subject:type,lv:level});
+   if(r.limit){setDrawStatus(r.error||'That’s all your draws for today.');return true}
+   let fresh=false;
+   if(r.need==='paper'){
+    // Up to three papers: when a paper can't become a card (Claude or OpenAI turned it down, or its words broke a
+    // rule), Papermon quietly tries another one (Astra, 2026-11-17: friends' first five cards).
+    for(let tries=0;tries<3;tries++){
+     const g=weightedPick(allowedGroups(0),x=>x.odds),years=groupRange(g);
+     const found=await shuffle({...filters,topic:type||'Everything',period:'custom',from:String(years.from),to:String(years.to)});
+     fresh=true;setDrawStatus(tries?'That paper couldn’t become a card, so Papermon is trying another one…':'Papermon is making a brand-new card for this paper…');
+     r=await drawOnServer({subject:type,lv:level,pmcid:found.pmcid});
+     if(!r.job)break;
+     setBusy(true);
+     try{showServerCard(await waitForCard(r.job,step=>setDrawStatus(step)),true,true);return true}
+     catch(e){if(!(e instanceof CardFailed&&e.otherPaper)||tries===2)throw e}
+     finally{setBusy(false)}
+    }
+   }
+   if(r.card){showServerCard(r.card,fresh,false);return true}
+   if(r.reason==='budget'){setDrawStatus('Today’s new cards are all made, so here is a real paper to read. Its card can come tomorrow.');return true}
+   if(r.error){refundDraw();setDrawStatus(`${r.error} This draw didn’t count.`);return true}
+  }catch(e){refundDraw();setDrawStatus(`${e instanceof Error?e.message:'The card server didn’t answer.'} This draw didn’t count.`);return true}
+  return false;
+ }
+ // Shows a card from the server: its paper goes on the sheet (unless the paper just found is already there)
+ function showServerCard(card:Card,keepPaper:boolean,isNew:boolean){addDrawn(card);
+  if(!keepPaper){const s=seeds.find(x=>x.pmcid===card.pmcid);setPaper(s?{...s,...editorials[s.pmcid]}:paperOf(card))}
+  setError('');setDrawStatus(isNew?`A brand-new card! You drew ${card.name}, No. ${card.no}.`:`You drew ${card.name}.`)}
  // Age odds (Astra, 2026-11-14): pick an age group by its odds among the groups that have a matching card, then a
  // card in it. With no matching card, a real paper from an age group picked by the same odds.
  function drawCard(type:string,level:number,yearChoice:number){
@@ -71,9 +110,12 @@ export default function Home(){
   if(filled.length){const {cards}=weightedPick(filled,x=>x.g.odds),c=cards[Math.floor(Math.random()*cards.length)],s=seeds.find(x=>x.pmcid===c.pmcid);
    if(s){setPaper({...s,...editorials[s.pmcid]});setError('');setDrawStatus(`You drew ${c.name}.`);return}}
   const g=weightedPick(groups,x=>x.odds),years=groupRange(g);
-  setDrawStatus(`No ${type||''} card${level?` at reading difficulty ${level}`:''}${yearChoice?` from ${yearChoice===1?'this year':'past years'}`:''} in the library yet, so here is a real paper from ${g.label} to read. Paper Patty will make its card.`.replace('No  card','No card'));
+  setDrawStatus(`No ${type||''} card${level?` at reading difficulty ${level}`:''}${yearChoice?` from ${yearChoice===1?'this year':'past years'}`:''} in the library yet, so here is a real paper from ${g.label} to read. Papermon will make its card.`.replace('No  card','No card'));
   shuffle({...filters,topic:type||'Everything',period:'custom',from:String(years.from),to:String(years.to)}).catch(()=>{});
  }
+ // "Read the write-up" on a card in My deck or the Card Catalog: its paper goes on the sheet up top (server cards
+ // carry their own paper details).
+ function pickCard(c:Card){const s=seeds.find(x=>x.pmcid===c.pmcid);setPaper(s?{...s,...editorials[s.pmcid]}:paperOf(c));setError('');setDrawStatus('');(document.activeElement as HTMLElement|null)?.blur?.();setTimeout(()=>requestAnimationFrame(toPaper),60)}
  // The paper's sections can hold several paragraphs, split on a blank line.
  const paras=(t:string)=>t.split(/\n\s*\n/).map((x,i)=><p key={i}>{x}</p>);
  // The "More information" pop-up: where the write-up comes from and the paper's full source details.
@@ -87,18 +129,20 @@ export default function Home(){
  <div className="story-section paper-bib"><span className="section-label"><span>04</span> BIBLIOGRAPHY</span>
   <p className="bib-entry">{citation(paperCard?.cite||mla(paper))}</p></div>
 </div></div></div>
- <aside className="cotd-card" aria-label="Today's card">{paperCard?<DeckCard card={paperCard} onPick={()=>{(document.activeElement as HTMLElement|null)?.blur?.();toPaper()}}/>:<div className="cotd-nocard"><p>Paper Patty hasn’t made a card for this paper yet.</p></div>}
+ <aside className="cotd-card" aria-label="Today's card">{paperCard?<DeckCard card={paperCard} onPick={()=>{(document.activeElement as HTMLElement|null)?.blur?.();toPaper()}}/>:<div className="cotd-nocard"><p>Papermon hasn’t made a card for this paper yet.</p></div>}
   {/* The little motto under the card, like the old "Stay curious, sweet thing" note: every card makes you a bit smarter. */}
   <div className="cotd-below">
   <DrawPicker busy={busy} type={drawType} level={drawLevel} year={drawYear} onType={setDrawType} onLevel={setDrawLevel} onYear={setDrawYear} onDraw={drawFromReels} status={error||drawStatus}>
    {/* Every link is a button here, under the draw buttons, not on the paper (Astra, 2026-11-14) */}
+   {/* Every card anyone has drawn (card server deck Q4); only when the server answers and Astra made it public */}
+   <CardCatalogButton onPick={pickCard}/>
    {popup(<><CircleHelp size={16} aria-hidden="true"/>Rules</>,'Rules',<HowToPlay/>,'Collect real science, one card at a time.')}
    {/* Was "Where the science comes from" (Astra, 2026-11-14: "game design methodology and credits or something") */}
    {popup(<><BookOpen size={16} aria-hidden="true"/>Methods & Credits</>,'Methods & Credits',<MethodsCredits/>,'How Papermon turns real research into cards.')}
    {popup(<><Info size={16} aria-hidden="true"/>More Information</>,'More about this paper',moreInfo)}
   </DrawPicker></div></aside></article>
  </div>
- <GoldSurface/><MyDeck onPick={c=>{const s=seeds.find(x=>x.pmcid===c.pmcid);if(!s)return;setPaper({...s,...editorials[s.pmcid]});setError('');setDrawStatus('');(document.activeElement as HTMLElement|null)?.blur?.();setTimeout(()=>requestAnimationFrame(toPaper),60)}}/>
+ <GoldSurface/><MyDeck onPick={pickCard}/>
  <AstraFooter/>
  </main></div>
 }

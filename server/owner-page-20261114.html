@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Card Catalog · Astra's view</title>
+<style>
+  /* Astra's own view of the Card Catalog (2026-11-14): every card anyone has made, what friends said about it, and what
+     the new cards cost. Opens only on her PC with the owner key; nothing here is shown to friends. Gray page, one gold. */
+  :root { --bg: #2b2a30; --panel: #34333a; --line: #4a4752; --ink: #f3efe6; --muted: #c9c4d1; --gold: #d9a93a; --up: #7fc78a; --down: #e58a7a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.45 "Times New Roman", Times, serif; }
+  header { padding: 20px 16px 8px; max-width: 1200px; margin: 0 auto; }
+  h1 { margin: 0; font-size: 30px; color: var(--gold); }
+  .sub { color: var(--muted); margin: 4px 0 0; }
+  main { max-width: 1200px; margin: 0 auto; padding: 8px 16px 40px; }
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 12px 0 18px; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 8px 14px; }
+  .stat b { color: var(--gold); font-size: 20px; display: block; }
+  nav { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  nav button { background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; font: inherit; cursor: pointer; }
+  nav button[aria-pressed="true"] { border-color: var(--gold); color: var(--gold); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+  .card img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; background: #222; }
+  .card .body { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 4px; }
+  .card h2 { margin: 0; font-size: 17px; line-height: 1.2; }
+  .meta { color: var(--muted); font-size: 13px; }
+  .thumbs { display: flex; gap: 12px; font-size: 14px; }
+  .up { color: var(--up); } .down { color: var(--down); }
+  .feedback { margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); }
+  .feedback li { border-top: 1px solid var(--line); padding-top: 4px; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel); border-radius: 12px; overflow: hidden; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--gold); font-weight: normal; }
+  .empty { color: var(--muted); padding: 16px 0; }
+  a { color: var(--gold); }
+  .err { color: var(--down); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Card Catalog</h1>
+  <p class="sub">Every card anyone has drawn, and what your friends said about it. Only this PC can open this page.</p>
+</header>
+<main>
+  <div class="stats" id="stats"></div>
+  <nav>
+    <button type="button" data-tab="cards" aria-pressed="true">Cards</button>
+    <button type="button" data-tab="feedback" aria-pressed="false">Thumbs and notes</button>
+    <button type="button" data-tab="messages" aria-pressed="false">Reports and authors</button>
+    <button type="button" data-tab="spend" aria-pressed="false">Spending</button>
+  </nav>
+  <section id="view"></section>
+</main>
+<script>
+// Everything friends typed is shown with textContent, never as HTML.
+const key = new URLSearchParams(location.search).get('key') || '';
+const view = document.getElementById('view');
+let data = null, tab = 'cards';
+const el = (tag, props = {}, ...kids) => { const e = Object.assign(document.createElement(tag), props); for (const k of kids) e.append(k); return e; };
+const when = ms => new Date(ms).toLocaleString('en-US', {month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'});
+const artUrl = a => a.startsWith('/art/') ? a : '/art/' + a;
+const who = r => r ? 'reader ' + r.slice(0, 6) : 'starter';
+const stars = n => '★'.repeat(n) + '☆'.repeat(4 - n);
+
+async function load() {
+  const res = await fetch('/api/owner?key=' + encodeURIComponent(key), {cache: 'no-store'});
+  if (!res.ok) { view.replaceChildren(el('p', {className: 'err', textContent: 'This page opens only on Astra’s PC, with the link the server printed.'})); return; }
+  data = await res.json();
+  const ups = Object.values(data.tallies).reduce((n, t) => n + t.up, 0), downs = Object.values(data.tallies).reduce((n, t) => n + t.down, 0);
+  const stat = (label, value) => el('div', {className: 'stat'}, el('b', {textContent: value}), label);
+  document.getElementById('stats').replaceChildren(
+    stat('cards in the catalog', data.cards.length),
+    stat('made by friends', data.cards.filter(c => c.madeBy).length),
+    stat('thumbs up', ups), stat('thumbs down', downs),
+    stat('reports and author notes', data.messages.length),
+    stat(`spent today of $${data.config.budget}`, '$' + data.spentToday.toFixed(2)),
+    stat('keys', `Claude ${data.config.keys.claude ? 'yes' : 'no'} · OpenAI ${data.config.keys.openai ? 'yes' : 'no'}`));
+  show();
+}
+
+function show() {
+  if (!data) return;
+  if (tab === 'cards') {
+    if (!data.cards.length) return view.replaceChildren(el('p', {className: 'empty', textContent: 'No cards yet.'}));
+    const byCard = {};
+    for (const v of data.votes) (byCard[v.no] ||= []).push(v);
+    view.replaceChildren(el('div', {className: 'grid'}, ...data.cards.map(({card, writer, cost, madeBy, createdAt}) => {
+      const t = data.tallies[card.no] || {up: 0, down: 0};
+      const notes = (byCard[Number(card.no.replace(/\D/g, ''))] || []).filter(v => v.note || v.reason);
+      return el('article', {className: 'card'},
+        el('img', {src: artUrl(card.art), alt: '', loading: 'lazy'}),
+        el('div', {className: 'body'},
+          el('h2', {textContent: card.name}),
+          el('div', {className: 'meta', textContent: `No. ${card.no} · ${card.subject} · ${stars(card.lv)}`}),
+          el('div', {className: 'meta', textContent: card.headline}),
+          el('div', {className: 'meta', textContent: `${who(madeBy)} · ${when(createdAt)} · ${writer}${cost ? ` · $${cost.toFixed(2)}` : ''}`}),
+          el('div', {className: 'thumbs'}, el('span', {className: 'up', textContent: `👍 ${t.up}`}), el('span', {className: 'down', textContent: `👎 ${t.down}`}),
+            el('a', {href: card.url, target: '_blank', rel: 'noreferrer', textContent: 'Paper ↗'})),
+          notes.length ? el('ul', {className: 'feedback'}, ...notes.map(v => el('li', {textContent: `${v.thumb > 0 ? '👍' : '👎'} ${v.reason ? v.reason + '. ' : ''}${v.note || ''}`}))) : ''));
+    })));
+  } else if (tab === 'feedback') {
+    const rows = data.votes;
+    if (!rows.length) return view.replaceChildren(el('p', {className: 'empty', textContent: 'No thumbs yet.'}));
+    view.replaceChildren(el('table', {}, el('tr', {}, ...['When', 'Card', 'Thumb', 'Why', 'Note', 'Who'].map(h => el('th', {textContent: h}))),
+      ...rows.map(v => el('tr', {}, el('td', {textContent: when(v.at)}), el('td', {textContent: 'No. ' + String(v.no).padStart(6, '0').replace(/^(\d{3})/, '$1,')}),
+        el('td', {textContent: v.thumb > 0 ? '👍' : '👎'}), el('td', {textContent: v.reason || ''}), el('td', {textContent: v.note || ''}), el('td', {textContent: who(v.reader)})))));
+  } else if (tab === 'messages') {
+    const rows = data.messages;
+    if (!rows.length) return view.replaceChildren(el('p', {className: 'empty', textContent: 'No reports or author notes yet.'}));
+    view.replaceChildren(el('table', {}, el('tr', {}, ...['When', 'Kind', 'Card', 'What they wrote', 'Who'].map(h => el('th', {textContent: h}))),
+      ...rows.map(m => el('tr', {}, el('td', {textContent: when(m.at)}), el('td', {textContent: m.kind === 'author' ? 'I wrote this paper' : 'Report a problem'}),
+        el('td', {textContent: m.no ? 'No. ' + m.no : ''}), el('td', {textContent: Object.entries(m.body).map(([k, v]) => `${k}: ${v}`).join('\n'), style: 'white-space:pre-wrap'}), el('td', {textContent: who(m.reader)})))));
+  } else {
+    const rows = data.spend;
+    if (!rows.length) return view.replaceChildren(el('p', {className: 'empty', textContent: 'Nothing spent yet.'}));
+    view.replaceChildren(el('table', {}, el('tr', {}, ...['Day', 'Spent', 'Paid steps'].map(h => el('th', {textContent: h}))),
+      ...rows.map(s => el('tr', {}, el('td', {textContent: s.day}), el('td', {textContent: '$' + s.usd.toFixed(2)}), el('td', {textContent: s.items})))));
+  }
+}
+
+document.querySelector('nav').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  tab = b.dataset.tab;
+  for (const x of document.querySelectorAll('nav button')) x.setAttribute('aria-pressed', String(x === b));
+  show();
+});
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>

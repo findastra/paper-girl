@@ -5,20 +5,22 @@
 // type symbol, the level, the headline, the rarity and difficulty stars. No links on the front.
 // Back: the three sections, the "Read the paper" link, the source, the author status and the card number.
 // Live since 2026-11-14 as the normal page (?classic shows the old one). For now everyone sees the same five starter
-// cards (lib/data/sample-deck-20261114.json) until Paper Patty makes cards per visitor. Card rules: docs/card-plan-20261113.md.
+// cards (lib/data/sample-deck-20261114.json), plus the cards they draw from Papermon's card server. Card rules: docs/card-plan-20261113.md.
 import {useEffect,useState,type CSSProperties,type FormEvent} from 'react';
 import {Atom,Brain,Check,CircleHelp,ThumbsDown,ThumbsUp,TreePine,Users,Cog,Cpu,Dna,FlaskConical,Globe2,HeartPulse,Leaf,Sigma,Telescope,type LucideIcon} from 'lucide-react';
 import sample from '@/lib/data/sample-deck-20261114.json';
 import {base} from '@/lib/edition';
+import {artSrc,sendVote,sendMessage,useDeckCards,DOWN_REASONS} from '@/lib/card-server-20261114';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import '@/app/my-deck-20261114.css';
+import '@/app/card-catalog-20261114.css';
 import {CardQR} from '@/components/card-qr-20261114';
 import {SaveGifButton} from '@/components/save-gif-20261114';
 
 // certifiedBy / certifiedOn: who checked the card for its paper's authors and when (only on author-checked cards).
 // example: a gold card shown only to show the look of a certified card (Astra, 2026-11-14); it is labeled "Example" on
 // the front and its back says nobody has certified it yet, so it never claims a real author's check.
-export type Card={example?:boolean;cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;certifiedBy?:string;certifiedOn?:string;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
+export type Card={source?:{title?:string;authors?:string;journal?:string;year?:number|null;doi?:string;license?:string};example?:boolean;cite?:string;made?:string;published?:string;readMinutes?:number;paper?:{hook:string;found:string;matters:string};lv:number;author?:boolean;certifiedBy?:string;certifiedOn?:string;name:string;subject:string;src:string;art:string;no:string;url:string;pmcid:string;headline:string;hook:string;found:string;matters:string};
 export const cards=sample as Card[];
 export const RARITY:Record<number,string>={1:'Common',2:'Uncommon',3:'Rare',4:'Holo rare',5:'Legendary'};
 /**
@@ -184,26 +186,56 @@ export function useReadMap(){
 function useRead(no:string):[boolean,(v:boolean)=>void]{const m=useReadMap();return [!!m[no],v=>saveRead(no,v)]}
 
 // Thumbs up or down on a card (Astra, 2026-11-14: "you would immediately just rank it"), kept in this browser per card
-// like the read ticks, until Papermon has a server to collect them.
-const RATE_KEY='papermon:rate:v1',RATE_EVENT='papermon-rate';
+// like the read ticks, and sent to Astra's card server when the page can reach it. Thumbs + reason + note (Astra,
+// 2026-11-14, card server deck Q6): a thumbs down asks why; either thumb can carry a one-line note.
+const RATE_KEY='papermon:rate:v1',NOTE_KEY='papermon:rate-note:v1',RATE_EVENT='papermon-rate';
+type RateNote={reason?:string;note?:string};
 function loadRates():Record<string,1|-1>{try{return JSON.parse(localStorage.getItem(RATE_KEY)||'{}')}catch{return {}}}
-function useRate(no:string):[0|1|-1,(v:0|1|-1)=>void]{
- const [m,setM]=useState<Record<string,1|-1>>({});
- useEffect(()=>{const f=()=>setM(loadRates());f();window.addEventListener(RATE_EVENT,f);return()=>window.removeEventListener(RATE_EVENT,f)},[]);
- return [m[no]||0,v=>{const all=loadRates();if(v)all[no]=v;else delete all[no];try{localStorage.setItem(RATE_KEY,JSON.stringify(all))}catch{}window.dispatchEvent(new Event(RATE_EVENT))}];
+function loadNotes():Record<string,RateNote>{try{return JSON.parse(localStorage.getItem(NOTE_KEY)||'{}')}catch{return {}}}
+function useRate(no:string):[0|1|-1,RateNote,(v:0|1|-1,n?:RateNote)=>Promise<boolean>]{
+ const [m,setM]=useState<{r:Record<string,1|-1>;n:Record<string,RateNote>}>({r:{},n:{}});
+ useEffect(()=>{const f=()=>setM({r:loadRates(),n:loadNotes()});f();window.addEventListener(RATE_EVENT,f);return()=>window.removeEventListener(RATE_EVENT,f)},[]);
+ return [m.r[no]||0,m.n[no]||{},(v,n={})=>{const all=loadRates(),notes=loadNotes();if(v)all[no]=v;else delete all[no];
+  if(v&&(n.reason||n.note))notes[no]=n;else delete notes[no];
+  try{localStorage.setItem(RATE_KEY,JSON.stringify(all));localStorage.setItem(NOTE_KEY,JSON.stringify(notes))}catch{}
+  window.dispatchEvent(new Event(RATE_EVENT));return sendVote(no,v,n.reason,n.note).catch(()=>false)}];
+}
+
+/** Why a thumbs down, or a note on either thumb: a small pop-up like Report a problem. Closing it keeps the thumb. */
+function VoteForm({card,thumb,open,saved,onSend,onClose}:{card:Card;thumb:0|1|-1;open:boolean;saved:RateNote;onSend:(n:RateNote)=>Promise<boolean>;onClose:()=>void}){
+ const [reason,setReason]=useState(''),[note,setNote]=useState(''),[done,setDone]=useState<null|boolean>(null);
+ useEffect(()=>{if(open){setReason(saved.reason||'');setNote(saved.note||'');setDone(null)}},[open]);// eslint-disable-line react-hooks/exhaustive-deps
+ const down=thumb===-1;
+ const send=async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();setDone(await onSend({reason:down&&reason?reason:undefined,note:note.trim()||undefined}))};
+ return <Dialog open={open} onOpenChange={o=>{if(!o)onClose()}}>
+  <DialogContent className="source-dialog card-form">
+   <DialogTitle>{down?'What’s wrong with this card?':'Anything to add?'}</DialogTitle>
+   <DialogDescription>{card.name} · No. {cardNumber(card.no)} · {down?'Thumbs down':'Thumbs up'}</DialogDescription>
+   {done!==null?<div className="card-form-done"><p><b>Thank you.</b> {done?'Sent to Papermon. Astra reads every one.':'Papermon can’t receive this right now, so it is saved on this device for now.'}</p>
+    <button type="button" className="card-form-send" onClick={onClose}>Close</button></div>
+   :<form onSubmit={send}>
+    {down&&<fieldset><legend>Pick one</legend><div className="card-form-chips">{DOWN_REASONS.map(r=><button key={r} type="button" aria-pressed={reason===r}
+     className={reason===r?'on':''} onClick={()=>setReason(r)}>{r.replace(/'/g,'’')}</button>)}</div></fieldset>}
+    <label>One line for Astra <small>(optional)</small><input name="note" maxLength={280} value={note} onChange={e=>setNote(e.target.value)}
+     placeholder={down?'What would make it better?':'What made it a good card?'}/></label>
+    <button type="submit" className="card-form-send" disabled={down&&!reason}>Send</button>
+   </form>}
+  </DialogContent>
+ </Dialog>;
 }
 
 /**
  * Report a problem / I wrote this paper (Astra, 2026-11-14: "a big thing that pops up on your page that lets you submit
- * something"). Papermon has no inbox yet, so Send keeps the message in this browser and says so plainly; nothing
- * pretends to have been sent.
+ * something"). Send goes to Astra's card server when the page can reach it (lib/card-server-20261114.ts); otherwise the
+ * message stays in this browser and the page says so plainly. Nothing pretends to have been sent.
  */
 const OUTBOX_KEY='papermon:outbox:v1';
 const PROBLEMS=['A fact is wrong','Hard to understand','The picture does not fit','Something else'];
 function CardForm({card,kind,onClose}:{card:Card;kind:''|'report'|'author';onClose:()=>void}){
- const [done,setDone]=useState(false),[problem,setProblem]=useState(PROBLEMS[0]);
- const close=()=>{setDone(false);onClose()};
- const send=(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.currentTarget).entries());
+ const [done,setDone]=useState(false),[delivered,setDelivered]=useState(false),[problem,setProblem]=useState(PROBLEMS[0]);
+ const close=()=>{setDone(false);setDelivered(false);onClose()};
+ const send=async(e:FormEvent<HTMLFormElement>)=>{e.preventDefault();const f=Object.fromEntries([...new FormData(e.currentTarget).entries()].map(([k,v])=>[k,String(v)]));
+  if(kind&&await sendMessage(kind,card.no,{...(kind==='report'?{problem}:{}),...f}).catch(()=>false)){setDelivered(true);setDone(true);return}
   try{const box=JSON.parse(localStorage.getItem(OUTBOX_KEY)||'[]');box.push({kind,card:card.no,name:card.name,problem:kind==='report'?problem:undefined,...f,at:new Date().toISOString()});
    localStorage.setItem(OUTBOX_KEY,JSON.stringify(box))}catch{}setDone(true)};
  const report=kind==='report';
@@ -211,7 +243,7 @@ function CardForm({card,kind,onClose}:{card:Card;kind:''|'report'|'author';onClo
   <DialogContent className="source-dialog card-form">
    <DialogTitle>{report?'Report a problem':'I wrote this paper'}</DialogTitle>
    <DialogDescription>{card.name} · No. {cardNumber(card.no)} · {card.headline}</DialogDescription>
-   {done?<div className="card-form-done"><p><b>Thank you.</b> Papermon can’t receive messages yet, so this is saved on this device for now.</p>
+   {done?<div className="card-form-done"><p><b>Thank you.</b> {delivered?'Sent to Papermon. Astra reads every one.':'Papermon can’t receive messages right now, so this is saved on this device for now.'}</p>
     <button type="button" className="card-form-send" onClick={close}>Close</button></div>
    :<form onSubmit={send}>
     {report?<>
@@ -243,7 +275,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
  const [sweep,setSweep]=useState(0);
  const [read,setRead]=useRead(card.no);
  const [form,setForm]=useState<''|'report'|'author'>('');
- const [rate,setRate]=useRate(card.no);
+ const [rate,saved,setRate]=useRate(card.no),[voting,setVoting]=useState(false);
  const turn=()=>{setFlipped(f=>!f);setSweep(s=>s===1?2:1)};
  // Rarity comes from the rarity score (difficulty, age and the author's check, weighted); the stars still show how
  // hard the paper is to read.
@@ -258,7 +290,9 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
  // Gold card (Astra, 2026-11-14): a Legendary card is gold all over, whatever the subject, with sparkles over the
  // whole card. The Subject stat's colored chip still tells the subject.
  const gold=tier>=5;
- const journal=card.src.replace(/\s*\d{4}$/,'');
+ // The Article stat is narrow: "eLife" or "PLOS" (2026-11-17: server cards said "PLoS computational biology", which ran
+ // over the Subject stat). The write-up beside the card keeps the journal's full name.
+ const journal=card.src.replace(/\s*\d{4}$/,'').replace(/^plos\b.*$/i,'PLOS');
  return <div className={'deck-slot lv'+tier+(card.author?' author':'')+(gold?' gold-card':'')} style={{'--sc':type.color} as CSSProperties}>
   <div className={'deck-card'+(flipped?' flipped':'')+(sweep?` sweep${sweep}`:'')} role="button" tabIndex={0} aria-pressed={flipped}
    // The sheen sits where the mouse is, like light on a real card (Astra, 2026-11-14); it drifts on its own otherwise.
@@ -275,7 +309,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
       <div className="deck-title"><p className="deck-name">{card.name}</p></div>
       <span className="deck-lv" aria-label={`Level ${card.lv}`}><small aria-hidden="true">LV</small><b aria-hidden="true">{card.lv}</b></span>
      </div>
-     <div className="deck-frame"><div className="deck-window"><img src={`${base}art/${card.art}`} alt="" loading="lazy"/>
+     <div className="deck-frame"><div className="deck-window"><img src={artSrc(card.art)} alt="" loading="lazy"/>
       {(tier>=4||gold)&&<><Glitter seed={card.no} gold={gold} count={30}/><Glitter seed={card.no+':tiny'} gold={gold} count={42} small/></>}</div></div>
      {/* Stats (Astra, 2026-11-14): Subject, Article (the journal's name, linked), Read time (the full original
          article's, `readMinutes`) and Completion (a gold circle that fills in), centered in the space under the
@@ -327,9 +361,12 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
      {/* Thumbs up or down, under the four buttons (Astra, 2026-11-14: leaves room for long sentences); a quick rating,
          and Report a problem is still there for more */}
      {/* Not on a verified gold card or the gold example: the spot stays, empty (Astra, 2026-11-14) */}
-     <div className={'deck-rate'+(card.author||card.example?' deck-rate-off':'')} role="group" aria-label="Rate this card" aria-hidden={card.author||card.example?true:undefined}><span>Good card?</span>
-      <button type="button" aria-pressed={rate===1} aria-label="Thumbs up" className={rate===1?'on':''} onClick={()=>setRate(rate===1?0:1)}><ThumbsUp aria-hidden="true"/></button>
-      <button type="button" aria-pressed={rate===-1} aria-label="Thumbs down" className={rate===-1?'on':''} onClick={()=>setRate(rate===-1?0:-1)}><ThumbsDown aria-hidden="true"/></button>
+     {/* After a thumb, "Good card?" turns into a button for the reason and note (a thumbs down opens it at once) */}
+     <VoteForm card={card} thumb={rate} open={voting&&!!rate} saved={saved} onSend={n=>setRate(rate,n)} onClose={()=>setVoting(false)}/>
+     <div className={'deck-rate'+(card.author||card.example?' deck-rate-off':'')} role="group" aria-label="Rate this card" aria-hidden={card.author||card.example?true:undefined}>
+      {rate?<button type="button" className="deck-rate-note" onClick={()=>setVoting(true)}>{saved.reason||saved.note?'Edit note':rate===-1?'Tell us why':'Add a note'}</button>:<span>Good card?</span>}
+      <button type="button" aria-pressed={rate===1} aria-label="Thumbs up" className={rate===1?'on':''} onClick={()=>{setRate(rate===1?0:1)}}><ThumbsUp aria-hidden="true"/></button>
+      <button type="button" aria-pressed={rate===-1} aria-label="Thumbs down" className={rate===-1?'on':''} onClick={()=>{if(rate===-1)setRate(0);else{setRate(-1);setVoting(true)}}}><ThumbsDown aria-hidden="true"/></button>
      </div>
      {/* Back footer (Astra, 2026-11-14): the day the card was made; on an author-approved card, the author's own
          signature or their lab's logo as a stamp (they send it with their answer; this one is a placeholder). */}
@@ -360,7 +397,7 @@ export function DeckCard({card,onPick,onNext}:{card:Card;onPick?:(c:Card)=>void;
  * hover it for the name), how many are read, and the minutes of reading those read articles add up to.
  */
 function DeckTally(){
- const read=useReadMap();
+ const read=useReadMap(),cards=useDeckCards();
  const bySubject=Object.entries(cards.reduce<Record<string,number>>((m,c)=>{m[c.subject]=(m[c.subject]||0)+1;return m},{}));
  const done=cards.filter(c=>read[c.no]),minutes=done.reduce((n,c)=>n+(c.readMinutes||0),0);
  return <div className="deck-tally">
@@ -402,8 +439,8 @@ const ORDERS:Order[]=[
  {key:'rarity',label:'Rarity score',value:c=>rarityOf(c).score,down:true},
 ];
 const cmp=(a:number|string,b:number|string)=>a<b?-1:a>b?1:0;
-function arrange(group:Group,order:Order,reverse:boolean,read:Record<string,1>):{key:string;cards:Card[]}[]{
- const dir=(order.down?-1:1)*(reverse?-1:1),sorted=[...cards].sort((a,b)=>cmp(order.value(a),order.value(b))*dir);
+function arrange(group:Group,order:Order,reverse:boolean,read:Record<string,1>,list:Card[]):{key:string;cards:Card[]}[]{
+ const dir=(order.down?-1:1)*(reverse?-1:1),sorted=[...list].sort((a,b)=>cmp(order.value(a),order.value(b))*dir);
  if(!group.of)return [{key:'all',cards:sorted}];
  const piles=new Map<string|number,Card[]>();
  for(const c of sorted){const k=group.of(c,read);if(!piles.has(k))piles.set(k,[]);piles.get(k)!.push(c)}
@@ -425,7 +462,7 @@ export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
  const read=useReadMap();
  const [groupKey,setGroup]=useState('subject'),[orderKey,setOrder]=useState('no'),[reverse,setReverse]=useState(false);
  const group=GROUPS.find(g=>g.key===groupKey)||GROUPS[0],order=ORDERS.find(o=>o.key===orderKey)||ORDERS[0];
- const piles=arrange(group,order,reverse,read);
+ const all=useDeckCards(),piles=arrange(group,order,reverse,read,all);
  const chooseOrder=(k:string)=>{if(k===orderKey)setReverse(r=>!r);else{setOrder(k);setReverse(false)}};
  return <section className="my-deck" aria-labelledby="my-deck-title">
   <h2 id="my-deck-title" className="sr-only">Your deck</h2>
@@ -440,7 +477,8 @@ export function MyDeck({onPick}:{onPick?:(c:Card)=>void}){
    <button type="button" className="deck-dir" onClick={()=>setReverse(r=>!r)} aria-label="Turn the order around"
     title="Turn the order around">{(order.down?!reverse:reverse)?'↓':'↑'}</button>
    {/* Save as GIF (Astra, 2026-11-14): pick cards, each saves as its own animated GIF, ready for Discord */}
-   <SaveGifButton cards={cards} Card={DeckCard}/>
+   {/* Every card in this deck, drawn ones included, can be saved as a GIF */}
+   <SaveGifButton cards={all} Card={DeckCard}/>
   </div>
   {group.of
    ?<div className="my-deck-piles">{piles.map(p=><Pile key={p.key+':'+orderKey+':'+reverse} pile={p.cards} onPick={onPick}/>)}</div>
