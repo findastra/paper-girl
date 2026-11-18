@@ -215,7 +215,7 @@ function VoteForm({card,thumb,open,saved,onSend,onClose}:{card:Card;thumb:0|1|-1
     <button type="button" className="card-form-send" onClick={onClose}>Close</button></div>
    :<form onSubmit={send}>
     {down&&<fieldset><legend>Pick one</legend><div className="card-form-chips">{DOWN_REASONS.map(r=><button key={r} type="button" aria-pressed={reason===r}
-     className={reason===r?'on':''} onClick={()=>setReason(r)}>{r.replace("'",'’')}</button>)}</div></fieldset>}
+     className={reason===r?'on':''} onClick={()=>setReason(r)}>{r.replace(/'/g,'’')}</button>)}</div></fieldset>}
     <label>One line for Astra <small>(optional)</small><input name="note" maxLength={280} value={note} onChange={e=>setNote(e.target.value)}
      placeholder={down?'What would make it better?':'What made it a good card?'}/></label>
     <button type="submit" className="card-form-send" disabled={down&&!reason}>Send</button>
