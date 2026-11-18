@@ -55,7 +55,8 @@ the catalog under their own numbers (ten since PR #21: No. 1 to 10), so new card
 
 | Setting (environment) | Default | What it does |
 |---|---|---|
-| `PAPERMON_DAILY_BUDGET_USD` | `2` | Money new cards may cost a day (America/Denver days). After it, draws hand out catalog cards. |
+| `PAPERMON_DAILY_BUDGET_USD` | `2` | Money friends' new cards may cost a day (America/Denver days). After it, draws hand out catalog cards. |
+| `PAPERMON_PASS_BUDGET_USD` | `25` | The daily stop for Astra's mint pass (below), kept apart from friends' budget. Only there in case the pass link leaks. |
 | `PAPERMON_DRAWS_PER_DAY` | `5` | Draws per person a day (decided). |
 | `PAPERMON_PUBLIC_CATALOG` | off | `1` makes `/api/catalog` public and shows friends the Card Catalog button. Off since Astra's 2026-11-14 change: friends see only their own cards. |
 | `PAPERMON_ORIGINS` | the Papermon site | Pages allowed to talk to the server. |
@@ -69,9 +70,25 @@ Tailscale Funnel: `tailscale funnel --bg 8830`; its address is set as `VITE_PAPE
 `.github/workflows/pages.yml`), and the site is built with the tunnel's address in `VITE_PAPERMON_SERVER`. On this PC a working
 copy can be pointed at a local server with `?server=http://127.0.0.1:PORT` (only loopback addresses are accepted).
 
+## Astra's mint pass
+
+Astra, 2026-11-17: "can you please open up unlimited mints for me? I am going to lay in bed and just spawn a bunch".
+
+- The server keeps a `mintPass` in `papermon-server-20261114.json` (her PC data folder, made on the first start of this
+  version). Her **pass link** is the site address + `#mint=<pass>`. Only she gets it; anyone holding it can mint on her
+  money, so it never goes into the repo, a page or a chat with anyone else.
+- The browser that opens the link keeps the pass (`papermon:mint-pass:v1`), takes it out of the address bar, and sends
+  it with each draw (`X-Papermon-Pass`). The part after `#` never reaches GitHub, only her server.
+- With the pass: no five-a-day or per-network limit, the button reads "Draw Card (no limit)", and every draw mints a
+  brand-new card (no catalog hand-outs). Its spending is marked `pass: ` in the spend table and kept out of friends' $2;
+  it stops at `PAPERMON_PASS_BUDGET_USD` a day.
+- A new pass: delete `mintPass` from the JSON file and restart the server; browsers with the old one go back to five a
+  day.
+
 ## Checks
 
-- `npm test` in `server/`: offline, no AI, no money (rules check, article text, a whole card made and saved).
+- `npm test` in `server/`: offline, no AI, no money (rules check, article text, a whole card made and saved, the mint
+  pass's limits and budget).
 - With `PAPERMON_WRITER=dry`: the whole draw, a new card, reuse, five-a-day, thumbs, reports and the owner lock, end
   to end, at no cost.
 
@@ -107,8 +124,15 @@ and the card plan:
 
 ## Still to do (2026-11-17)
 
-1. Merge (Astra's OK per PR), then check the live site against the Funnel address and send friends the link.
-2. Keep the server running on the PC (now from a `%TEMP%` worktree; Server Salamander can host it later).
+1. Done: PR #20 merged (e1c8a46); the live site's build has the Funnel address, and the server answers it from outside
+   the tailnet.
+2. Keep the server running on the PC (now from a `%TEMP%` worktree; Server Salamander can host it later). A Node.js
+   update closes it (Windows' installer stops every running Node program), so restart it after one.
+3. On a device that is on Astra's tailnet, the Funnel name points at the PC's private address, and Chrome and Edge's
+   Local Network Access check blocks the public site from calling it (`LocalNetworkAccessPermissionDenied`). Friends
+   off the tailnet are not affected. Safari does not have this check.
+4. A failed paper search says "The journal library is taking too long" whatever went wrong (`lib/browser-library.ts`);
+   seen four times in a row on 2026-11-17 while Europe PMC answered in about 3 seconds.
 
 ## Known limits
 
