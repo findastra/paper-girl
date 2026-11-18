@@ -63,7 +63,10 @@ function seedStarters() {
 const today = () => new Intl.DateTimeFormat('en-CA', {timeZone: CONFIG.timeZone}).format(new Date());
 const spentToday = () => catalog.spentOn(today());
 const budgetLeft = () => Math.max(0, CONFIG.budget - spentToday());
-const canMakeNew = () => budgetLeft() >= CARD_ESTIMATE_USD && (CONFIG.writer === 'dry' || (KEYS.anthropic && KEYS.openai));
+// Always a real true/false: `a && b` hands back b itself, and /api/health is public, so a key must never be the answer
+// (2026-11-17: before this, the health check sent the OpenAI key to anyone who asked).
+const haveKeys = () => Boolean(KEYS.anthropic) && Boolean(KEYS.openai);
+const canMakeNew = () => budgetLeft() >= CARD_ESTIMATE_USD && (CONFIG.writer === 'dry' || haveKeys());
 
 function networkOf(req) {
   // Behind the tunnel the visitor's address arrives in X-Forwarded-For; only a salted hash is kept.
@@ -150,7 +153,7 @@ const short = (s, n) => String(s ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').t
 async function route(req, res, url) {
   const path = url.pathname;
   if (req.method === 'GET' && path === '/api/health') {
-    return send(res, 200, {ok: true, catalog: CONFIG.publicCatalog, cards: catalog.count(), newCardsToday: canMakeNew(), drawsPerDay: CONFIG.draws, writer: CONFIG.writer === 'dry' ? 'dry' : 'claude'});
+    return send(res, 200, {ok: true, catalog: CONFIG.publicCatalog === true, cards: catalog.count(), newCardsToday: canMakeNew() === true, drawsPerDay: CONFIG.draws, writer: CONFIG.writer === 'dry' ? 'dry' : 'claude'});
   }
 
   if (req.method === 'POST' && path === '/api/draw') {
