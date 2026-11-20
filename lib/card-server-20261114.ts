@@ -21,6 +21,34 @@ export const SERVER = (() => {
   return s.replace(/\/+$/, '');
 })();
 
+/**
+ * Astra's mint pass (Astra, 2026-11-17: "can you please open up unlimited mints for me? I am going to lay in bed and
+ * just spawn a bunch"). Her pass link is the site address + #mint=<pass>: this browser keeps the pass, takes it out of
+ * the address bar, and sends it with each draw. The server checks it; with it, draws have no daily limit and each one
+ * mints a new card. The part after # never reaches GitHub; it goes only to Astra's server.
+ */
+const PASS_KEY = 'papermon:mint-pass:v1', PASS_EVENT = 'papermon-pass';
+/** Keeps the pass from a #mint= link, on load or when the link is opened in a tab that is already open. */
+function takePassFromLink() {
+  try {
+    const m = window.location.hash.match(/(?:^#|&)mint=([A-Za-z0-9_-]{16,64})(?:&|$)/);
+    if (!m) return;
+    localStorage.setItem(PASS_KEY, m[1]);
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+    window.dispatchEvent(new Event(PASS_EVENT));
+  } catch {}
+}
+if (typeof window !== 'undefined') { takePassFromLink(); window.addEventListener('hashchange', takePassFromLink); }
+function mintPass(): string { try { return localStorage.getItem(PASS_KEY) || ''; } catch { return ''; } }
+function onPassChange(cb: () => void) {
+  window.addEventListener(PASS_EVENT, cb); window.addEventListener('storage', cb);
+  return () => { window.removeEventListener(PASS_EVENT, cb); window.removeEventListener('storage', cb); };
+}
+/** True in the browser that opened Astra's pass link (false while the page is built, so it matches on first paint). */
+export function useMintPass(): boolean {
+  return useSyncExternalStore(onPassChange, () => mintPass() !== '', () => false);
+}
+
 /** This browser's anonymous Papermon id: no name or email, just enough to count five draws a day. */
 export function readerId() {
   const KEY = 'papermon:reader:v1';
@@ -59,7 +87,9 @@ export type DrawAnswer = {http: number; card?: Card | null; job?: string; need?:
 /** Ask the server for a card: one from the catalog, or {need: 'paper'}; with a pmcid, that paper's card (maybe a new one). */
 export function drawOnServer(o: {subject: string; lv: number; pmcid?: string}): Promise<DrawAnswer> {
   const have = drawnCards().map(c => c.no).concat((sample as Card[]).map(c => c.no));
-  return call<DrawAnswer>('/api/draw', {method: 'POST', body: JSON.stringify({reader: readerId(), subject: o.subject, lv: o.lv, have, pmcid: o.pmcid})});
+  const pass = mintPass();
+  return call<DrawAnswer>('/api/draw', {method: 'POST', headers: pass ? {'X-Papermon-Pass': pass} : {},
+    body: JSON.stringify({reader: readerId(), subject: o.subject, lv: o.lv, have, pmcid: o.pmcid})});
 }
 
 /** A card that could not be made; `otherPaper` = the problem was that paper only, so another paper may work. */

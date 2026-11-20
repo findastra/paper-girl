@@ -7,6 +7,7 @@ import {ChevronUp,ChevronDown,Printer,Shuffle,ShoppingBag} from 'lucide-react';
 import {TYPES,MAX_STARS} from '@/components/my-deck-20261114';
 import {dayKey} from '@/lib/science';
 import {CardCodeButton} from '@/components/card-code-20261114';
+import {useMintPass} from '@/lib/card-server-20261114';
 
 /**
  * Five draws a day per reader (Astra, 2026-11-14: "let's do 5 a day"): every new card is written and checked by an AI,
@@ -101,7 +102,8 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
  const [ordering,setOrdering]=useState(false);
  // Buy Digital Cards (Astra, 2026-11-14): there is no shop yet, so it says so, like Order My Deck.
  const [buying,setBuying]=useState(false);
- const left=useDrawsLeft(),out=left<=0,wait=useUntilTomorrow(out);
+ // Astra's mint pass (2026-11-17): the browser that opened her pass link has no daily limit (lib/card-server-20261114.ts).
+ const left=useDrawsLeft(),pass=useMintPass(),out=!pass&&left<=0,wait=useUntilTomorrow(out);
  const message=ordering?'Printed decks are coming soon. Your cards are saved here until then.'
   :buying?'Buying more digital cards is coming soon.':status;
  // Redone 2026-11-14 (Astra did not like the little deck with "Draw" or the "Order my deck" pill): everything centered
@@ -112,7 +114,7 @@ export function DrawPicker({busy,type,level,onType,onLevel,onDraw,status,childre
   {/* Draw Card at the top of the choices, right below the divider (Astra, 2026-11-14, final). Plain words (Astra, 2026-11-14): "Draw Card 1/5" ... "Draw Card 5/5"; once all five are drawn the button goes
        gray and counts down to the next draws */}
   <button type="button" className={'pick-draw'+(busy?' busy':'')+(out?' out':'')} disabled={busy||out} onClick={()=>{if(out)return;setOrdering(false);setBuying(false);spendDraw();onDraw()}}>
-    {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:<>Draw Card <span className="draw-count-paren">({DRAWS_PER_DAY-left+1}/{DRAWS_PER_DAY})</span></>}</button>
+    {busy?'Drawing…':out?<>Next draw in <span className="pick-wait">{wait}</span></>:pass?<>Draw Card <span className="draw-count-paren">(no limit)</span></>:<>Draw Card <span className="draw-count-paren">({DRAWS_PER_DAY-left+1}/{DRAWS_PER_DAY})</span></>}</button>
   <span className="pick-label pick-label-top">Subject</span>
   {/* Each circle with its subject's name to the right, in two columns (Astra, 2026-11-14) */}
   <div className="pick-types labeled" role="radiogroup" aria-label="Type">

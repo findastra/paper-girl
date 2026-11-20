@@ -107,6 +107,8 @@ export function openCatalog(file) {
     messages: () => q('SELECT * FROM messages ORDER BY at DESC').all().map(m => ({...m, body: JSON.parse(m.body)})),
     addSpend: (day, usd, what) => q('INSERT INTO spend (day, usd, what, at) VALUES (?, ?, ?, ?)').run(day, usd, what, Date.now()),
     spentOn: day => q('SELECT COALESCE(SUM(usd), 0) s FROM spend WHERE day = ?').get(day).s,
+    // What Astra's mint pass spent (its spend rows start with "pass: "), left out of friends' daily budget.
+    passSpentOn: day => q("SELECT COALESCE(SUM(usd), 0) s FROM spend WHERE day = ? AND what LIKE 'pass:%'").get(day).s,
     spendByDay: () => q('SELECT day, ROUND(SUM(usd), 4) usd, COUNT(*) items FROM spend GROUP BY day ORDER BY day DESC LIMIT 30').all(),
   };
 }

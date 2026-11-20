@@ -27,6 +27,11 @@ const CONFIG = {
   draws: Number(env.PAPERMON_DRAWS_PER_DAY || 5),             // decided: five draws a day per person
   drawsPerNetwork: Number(env.PAPERMON_DRAWS_PER_NETWORK || 15), // one household or a person clearing their browser
   budget: Number(env.PAPERMON_DAILY_BUDGET_USD || 2),          // Astra, 2026-11-14: $2 a day to start (about 8 new cards)
+  // Astra's mint pass (Astra, 2026-11-17: "can you please open up unlimited mints for me? I am going to lay in bed and
+  // just spawn a bunch"). The browser that opened her pass link sends it with every draw: no daily draw limit, every
+  // draw mints a new card, paid from its own daily stop so friends keep the whole $2. The stop is only there in case
+  // the link ever leaks (about 150 cards a day).
+  passBudget: Number(env.PAPERMON_PASS_BUDGET_USD || 25),
   writer: env.PAPERMON_WRITER || 'claude',                     // 'claude' (decided) or 'dry' for local tests only
   // Astra, 2026-11-14: friends see only the cards they drew or were traded, so the full list is hers alone unless set to 1
   publicCatalog: env.PAPERMON_PUBLIC_CATALOG === '1',
@@ -46,11 +51,14 @@ seedStarters();
 
 function loadLocalConfig() {
   const file = join(DATA, 'papermon-server-20261114.json');
-  if (existsSync(file)) return JSON.parse(readFileSync(file, 'utf8'));
   // The owner key opens /owner; the salt makes network hashes useless outside this PC. Neither goes anywhere else.
-  const fresh = {ownerKey: randomBytes(18).toString('base64url'), salt: randomBytes(18).toString('base64url')};
-  writeFileSync(file, JSON.stringify(fresh, null, 2));
-  return fresh;
+  const conf = existsSync(file) ? JSON.parse(readFileSync(file, 'utf8'))
+    : {ownerKey: randomBytes(18).toString('base64url'), salt: randomBytes(18).toString('base64url')};
+  // Astra's mint pass: only in her pass link (the site address + #mint=<pass>). Delete it here and restart for a new one.
+  const changed = !existsSync(file) || !conf.mintPass;
+  if (!conf.mintPass) conf.mintPass = randomBytes(18).toString('base64url');
+  if (changed) writeFileSync(file, JSON.stringify(conf, null, 2));
+  return conf;
 }
 
 /** The starter cards (made by hand on 2026-11-14; ten since PR #21) keep their numbers, so new cards follow them. */
@@ -61,12 +69,22 @@ function seedStarters() {
 }
 
 const today = () => new Intl.DateTimeFormat('en-CA', {timeZone: CONFIG.timeZone}).format(new Date());
-const spentToday = () => catalog.spentOn(today());
-const budgetLeft = () => Math.max(0, CONFIG.budget - spentToday());
+const spentToday = () => catalog.spentOn(today());           // everything, for the log and Astra's page
+const passSpentToday = () => catalog.passSpentOn(today());   // what Astra's mint pass spent
+// Friends' budget leaves out the pass's cards; the pass has its own stop.
+const budgetLeft = (pass = false) => pass ? Math.max(0, CONFIG.passBudget - passSpentToday())
+  : Math.max(0, CONFIG.budget - (spentToday() - passSpentToday()));
 // Always a real true/false: `a && b` hands back b itself, and /api/health is public, so a key must never be the answer
 // (2026-11-17: before this, the health check sent the OpenAI key to anyone who asked).
 const haveKeys = () => Boolean(KEYS.anthropic) && Boolean(KEYS.openai);
-const canMakeNew = () => budgetLeft() >= CARD_ESTIMATE_USD && (CONFIG.writer === 'dry' || haveKeys());
+const canMakeNew = (pass = false) => budgetLeft(pass) >= CARD_ESTIMATE_USD && (CONFIG.writer === 'dry' || haveKeys());
+
+/** True when a draw carries Astra's mint pass (sent by the page as X-Papermon-Pass). */
+function passOK(req) {
+  const given = Buffer.from(String(req.headers['x-papermon-pass'] || ''));
+  const want = Buffer.from(String(local.mintPass || ''));
+  return want.length > 0 && given.length === want.length && timingSafeEqual(given, want);
+}
 
 function networkOf(req) {
   // Behind the tunnel the visitor's address arrives in X-Forwarded-For; only a salted hash is kept.
@@ -95,7 +113,7 @@ const jobs = new Map();
 let making = 0;
 const MAX_AT_ONCE = 2;
 
-function startJob({pmcid, reader, who}) {
+function startJob({pmcid, reader, who, pass = false}) {
   const id = randomBytes(9).toString('base64url');
   const job = {id, status: 'working', step: 'Starting…', reader, pmcid, created: Date.now()};
   jobs.set(id, job);
@@ -106,7 +124,8 @@ function startJob({pmcid, reader, who}) {
   let cost = 0;
   makeCard(pmcid, {
     number: catalog.nextNumber() + making - 1, artDir: ART, today: today(), write, draw,
-    spend: (usd, what) => { if (usd > 0) { cost += usd; catalog.addSpend(today(), usd, what); } },
+    // The pass's spending is marked "pass: ", so friends' $2 a day leaves it out (catalog.passSpentOn).
+    spend: (usd, what) => { if (usd > 0) { cost += usd; catalog.addSpend(today(), usd, (pass ? 'pass: ' : '') + what); } },
     step: text => { job.step = text; },
   }).then(({card}) => {
     const existing = catalog.byPmcid(pmcid);   // another friend may have drawn the same paper meanwhile
@@ -118,7 +137,7 @@ function startJob({pmcid, reader, who}) {
     // A draw counts once the card is in the friend's hands; a failed card costs them nothing.
     catalog.recordDraw({reader, who, day: today(), no: numberOf(job.card.no), kind: 'new'});
     job.status = 'done';
-    log(`card ${job.card.no} made from ${pmcid} for ${reader.slice(0, 8)}; spent today $${spentToday().toFixed(2)}`);
+    log(`card ${job.card.no} made from ${pmcid} for ${reader.slice(0, 8)}${pass ? ' (mint pass)' : ''}; spent today $${spentToday().toFixed(2)} (mint pass $${passSpentToday().toFixed(2)})`);
   }).catch(e => {
     job.status = 'failed';
     job.error = e instanceof CardError ? e.message : 'Something went wrong making the card.';
@@ -164,21 +183,23 @@ async function route(req, res, url) {
     const subject = SUBJECTS[b.subject] ? b.subject : '';
     const lv = [1, 2, 3, 4].includes(b.lv) ? b.lv : 0;
     const have = Array.isArray(b.have) ? b.have.slice(0, 2000) : [];
-    const who = networkOf(req), day = today();
+    const who = networkOf(req), day = today(), pass = passOK(req);
     const used = catalog.drawsToday(day, reader, who);
-    if ((used.byReader || 0) >= CONFIG.draws || (used.byWho || 0) >= CONFIG.drawsPerNetwork) {
+    if (!pass && ((used.byReader || 0) >= CONFIG.draws || (used.byWho || 0) >= CONFIG.drawsPerNetwork)) {
       return send(res, 429, {error: `That's all ${CONFIG.draws} draws for today. New draws at midnight.`, limit: true});
     }
     // The same paper always gives the same card.
     if (typeof b.pmcid === 'string' && b.pmcid) {
       const known = catalog.byPmcid(b.pmcid);
       if (known) { catalog.recordDraw({reader, who, day, no: numberOf(known.no), kind: 'catalog'}); return send(res, 200, {card: known, from: 'catalog'}); }
-      if (!canMakeNew()) return send(res, 200, {card: null, reason: 'budget'});
+      if (!canMakeNew(pass)) return send(res, 200, {card: null, reason: 'budget'});
       if (making >= MAX_AT_ONCE) return send(res, 503, {error: 'Two cards are being made right now. Try again in a minute.'});
       for (const j of jobs.values()) if (j.reader === reader && j.status === 'working') return send(res, 409, {error: 'Your last card is still being made.', job: j.id});
-      const job = startJob({pmcid: b.pmcid, reader, who});
+      const job = startJob({pmcid: b.pmcid, reader, who, pass});
       return send(res, 202, {job: job.id, step: job.step});
     }
+    // Astra's mint pass mints: every draw is a brand-new card, until the pass's own daily stop.
+    if (pass && canMakeNew(true)) return send(res, 200, {need: 'paper'});
     // Reuse first: a catalog card that fits and that this friend doesn't hold yet (card plan: reuse saves money).
     const fit = catalog.pick({subject, lv, have});
     if (fit) { catalog.recordDraw({reader, who, day, no: numberOf(fit.no), kind: 'catalog'}); return send(res, 200, {card: fit, from: 'catalog'}); }
@@ -274,7 +295,7 @@ export const server = http.createServer(async (req, res) => {
   const url = new URL(req.url || '/', 'http://127.0.0.1');
   res.corsHeaders = cors(req);
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, {...res.corsHeaders, 'Access-Control-Allow-Methods': 'GET, POST', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Max-Age': '600'});
+    res.writeHead(204, {...res.corsHeaders, 'Access-Control-Allow-Methods': 'GET, POST', 'Access-Control-Allow-Headers': 'Content-Type, X-Papermon-Pass', 'Access-Control-Max-Age': '600'});
     return res.end();
   }
   try { await route(req, res, url); }
