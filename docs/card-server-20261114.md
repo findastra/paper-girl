@@ -130,9 +130,11 @@ and the card plan:
    update closes it (Windows' installer stops every running Node program), so restart it after one.
 3. On a device that is on Astra's tailnet, the Funnel name points at the PC's private address, and Chrome and Edge's
    Local Network Access check blocks the public site from calling it (`LocalNetworkAccessPermissionDenied`). Friends
-   off the tailnet are not affected. Safari does not have this check.
-4. A failed paper search says "The journal library is taking too long" whatever went wrong (`lib/browser-library.ts`);
-   seen four times in a row on 2026-11-17 while Europe PMC answered in about 3 seconds.
+   off the tailnet are not affected. Safari does not have this check. Since 2026-11-20 the page says so instead of
+   quietly drawing a starter card ([changes/draw-fixes-20261120.md](../changes/draw-fixes-20261120.md)).
+4. Every new card depends on Europe PMC (the page finds the paper, the server reads its text). On 2026-11-20 it was so
+   slow (8-40 s for one paper's text) that no card could be made; the page now says when it is slow. A second source
+   for papers' text (for example NCBI's PMC, which answered in about 1 s that day) is not built.
 
 ## Known limits
 

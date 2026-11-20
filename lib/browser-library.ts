@@ -60,9 +60,15 @@ const strip = (s = '') => s.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 
 async function verify(record: RecordData, signal: AbortSignal): Promise<Paper | null> {
   const s = store();
-  const xml = await libraryGet(`${API}/${record.pmcid}/fullTextXML`, signal);
+  // The search lists papers in Europe PMC's quick "lite" form; this one paper's full record (its corrections and
+  // retractions included) comes with its text, by PMCID, which answers in a moment.
+  const [xml, full] = await Promise.all([
+    libraryGet(`${API}/${record.pmcid}/fullTextXML`, signal),
+    search(`PMCID:${record.pmcid}`, {pageSize: 1, core: true}, signal).then(d => d.resultList?.result?.[0]),
+  ]);
+  const r = full && full.pmcid === record.pmcid ? full : record;
   // Europe PMC titles can carry inline markup such as <i>; the headline and history show plain text.
-  const paper = xml ? parsePublisherXml(await xml.text(), {...record, title: strip(record.title)}) : null;
+  const paper = xml ? parsePublisherXml(await xml.text(), {...r, title: strip(r.title)}) : null;
   s.checked[record.pmcid] = paper ? 'ready' : 'unavailable';
   return paper;
 }
@@ -71,16 +77,18 @@ async function verify(record: RecordData, signal: AbortSignal): Promise<Paper | 
 async function selectPaper(filters: Filters, current: string, exclude: string[], signal?: AbortSignal): Promise<Paper> {
   const query = buildQuery(filters);
   const [, start, end] = query.match(/FIRST_PDATE:\[([^ ]+) TO ([^\]]+)\]/)!;
-  const deadline = signal ? AbortSignal.any([signal, AbortSignal.timeout(40000)]) : AbortSignal.timeout(40000);
+  const deadline = signal ? AbortSignal.any([signal, AbortSignal.timeout(60000)]) : AbortSignal.timeout(60000);
   const s = store();
   const seen = new Set([...s.visits, ...exclude, current]);
   const usable = (r: RecordData) => eligible(r) && !seen.has(r.pmcid) && s.checked[r.pmcid] !== 'unavailable';
 
   // Sample the dates that actually contain research. Starting every draw in 1900 heavily
   // favored the first few papers from these much newer journals.
+  // Lists are asked for in the quick "lite" form (2026-11-20: Europe PMC took 5-21 s for one "core" row and over a
+  // minute for 25, but under a second for lite); verify() reads each checked paper's full record.
   const [oldest, newest] = await Promise.all([
-    search(query, {pageSize: 1, core: true, sort: 'FIRST_PDATE_D asc'}, deadline),
-    search(query, {pageSize: 1, core: true, sort: 'FIRST_PDATE_D desc'}, deadline),
+    search(query, {pageSize: 1, sort: 'FIRST_PDATE_D asc'}, deadline),
+    search(query, {pageSize: 1, sort: 'FIRST_PDATE_D desc'}, deadline),
   ]);
   const total = oldest.hitCount;
   if (!total) throw new LibraryError('No papers match these filters yet. Try another subject or a wider date range.', 404);
@@ -89,7 +97,7 @@ async function selectPaper(filters: Filters, current: string, exclude: string[],
   // forwards or backwards from it, which needs no server-side index.
   const rounds: (() => Promise<RecordData[]>)[] = [];
   if (total <= 300) {
-    rounds.push(async () => (await search(query, {pageSize: 300, core: true}, deadline)).resultList?.result || []);
+    rounds.push(async () => (await search(query, {pageSize: 300}, deadline)).resultList?.result || []);
   } else {
     const firstDate = Date.parse(oldest.resultList?.result?.[0]?.firstPublicationDate || start);
     const lastDate = Date.parse(newest.resultList?.result?.[0]?.firstPublicationDate || end);
@@ -100,14 +108,14 @@ async function selectPaper(filters: Filters, current: string, exclude: string[],
       const forward = i % 2 === 0;
       const window = forward ? `FIRST_PDATE:[${pivot} TO ${end}]` : `FIRST_PDATE:[${start} TO ${pivot}]`;
       const q = query.replace(/FIRST_PDATE:\[[^\]]+\]/, window);
-      return (await search(q, {pageSize: 25, core: true, sort: forward ? 'FIRST_PDATE_D asc' : 'FIRST_PDATE_D desc'}, deadline)).resultList?.result || [];
+      return (await search(q, {pageSize: 25, sort: forward ? 'FIRST_PDATE_D asc' : 'FIRST_PDATE_D desc'}, deadline)).resultList?.result || [];
     });
     // A draw may land on already-read papers. Walk a few real cursor pages as a fallback
     // instead of interpreting those repeated samples as an exhausted collection.
     let cursor: string | undefined = '*';
     for (let i = 0; i < 3; i++) rounds.push(async () => {
       if (!cursor) return [];
-      const data = await search(query, {pageSize: PAGE, core: true, sort: 'FIRST_PDATE_D desc', cursor}, deadline);
+      const data = await search(query, {pageSize: PAGE, sort: 'FIRST_PDATE_D desc', cursor}, deadline);
       cursor = data.nextCursorMark && data.nextCursorMark !== cursor ? data.nextCursorMark : undefined;
       return data.resultList?.result || [];
     });
@@ -196,7 +204,10 @@ async function discover(body: unknown, signal?: AbortSignal) {
   } catch (error) {
     if (signal?.aborted) throw error;
     const known = error instanceof LibraryError;
-    const message = known ? error.message : 'The journal library is taking too long. Please try again; your current paper is still here.';
+    // Say which went wrong: Europe PMC answering too slowly, or not being reached at all
+    const slow = error instanceof DOMException && (error.name === 'TimeoutError' || error.name === 'AbortError');
+    const message = known ? error.message : slow ? 'The journal library (Europe PMC) is slow right now. Please try again in a minute; your current paper is still here.'
+      : 'Papermon couldn’t reach the journal library (Europe PMC). Please try again; your current paper is still here.';
     remember({id, filters, pmcid: null, title: null, journal: null, outcome: known && error.status === 404 ? 'no_match' : 'error', message, created_at: Date.now()});
     throw known ? error : new LibraryError(message);
   }

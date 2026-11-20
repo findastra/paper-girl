@@ -2,17 +2,21 @@ import { DOMParser } from '@xmldom/xmldom';
 import type { Paper } from './science';
 
 export const API = 'https://www.ebi.ac.uk/europepmc/webservices/rest';
-export type RecordData = { pmcid: string; id?: string; source?: string; doi?: string; title?: string; authorString?: string; journalTitle?: string; journalInfo?: {journal?: {title?: string}}; pubYear?: string; firstPublicationDate?: string; abstractText?: string; pubTypeList?: {pubType?: string[]}; commentCorrectionList?: {commentCorrection?: {type?: string}[]} };
+export type RecordData = { pmcid: string; id?: string; source?: string; doi?: string; title?: string; authorString?: string; journalTitle?: string; journalInfo?: {journal?: {title?: string}}; pubYear?: string; firstPublicationDate?: string; abstractText?: string; pubType?: string; pubTypeList?: {pubType?: string[]}; commentCorrectionList?: {commentCorrection?: {type?: string}[]} };
 export class LibraryError extends Error { constructor(message: string, public status = 503) {super(message)} }
+// 25 s for one answer: on 2026-11-20 Europe PMC took 8 s for one paper's text and up to 21 s for a search, and the old
+// 12 s stopped every draw (Astra: "Draw card is not working with that link").
 export async function libraryGet(url: string, signal?: AbortSignal) {
-  const response = await fetch(url, {signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(12000)]) : AbortSignal.timeout(12000)});
+  const response = await fetch(url, {signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(25000)]) : AbortSignal.timeout(25000)});
   if (response.status === 404) return null;
   if (!response.ok) throw new LibraryError(response.status === 429 ? 'The journal library is busy. Please try again shortly.' : 'The journal library is unavailable. Your current paper is still here.', response.status === 429 ? 429 : 503);
   return response;
 }
 export function eligible(r: RecordData) {
+  // A "core" record lists its types in pubTypeList; a "lite" one in pubType, separated by semicolons.
+  const types = r.pubTypeList?.pubType || (r.pubType ? r.pubType.split(/;\s*/) : []);
   return /^PMC\d+$/.test(r.pmcid || '') && r.source === 'MED' &&
-    !(r.pubTypeList?.pubType || []).some(t => /retract|preprint|review|expression of concern/i.test(t)) &&
+    !types.some(t => /retract|preprint|review|expression of concern/i.test(t)) &&
     !(r.commentCorrectionList?.commentCorrection || []).some(c => /retract|expression of concern/i.test(c.type || ''));
 }
 const clean = (s: string) => s.replace(/\s+/g, ' ').trim();

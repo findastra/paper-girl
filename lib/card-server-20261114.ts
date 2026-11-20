@@ -44,6 +44,8 @@ function onPassChange(cb: () => void) {
   window.addEventListener(PASS_EVENT, cb); window.addEventListener('storage', cb);
   return () => { window.removeEventListener(PASS_EVENT, cb); window.removeEventListener('storage', cb); };
 }
+/** True in the browser that opened Astra's pass link. */
+export function hasMintPass(): boolean { return mintPass() !== ''; }
 /** True in the browser that opened Astra's pass link (false while the page is built, so it matches on first paint). */
 export function useMintPass(): boolean {
   return useSyncExternalStore(onPassChange, () => mintPass() !== '', () => false);
@@ -69,18 +71,34 @@ async function call<T>(path: string, init?: RequestInit, ms = 15000): Promise<T 
 }
 
 type Health = {ok?: boolean; catalog?: boolean};
-let health: Promise<Health> | null = null, upAt = 0;
+/**
+ * Why the server didn't answer the last time it was asked: 'slow' (no answer in time), 'blocked' (this browser couldn't
+ * connect at all, for example a phone on Astra's tailnet in Chrome), 'down' (it answered with a problem).
+ */
+export type ServerProblem = 'slow' | 'blocked' | 'down' | '';
+let health: Promise<Health> | null = null, upAt = 0, problem: ServerProblem = '';
 function checkHealth(): Promise<Health> {
   if (!SERVER) return Promise.resolve({});
+  // A good answer is kept for a minute. A failed one is not kept: the next draw asks again (Astra, 2026-11-19: one
+  // failed check was kept for a minute, and every draw in that minute quietly gave an old card).
   if (health && Date.now() - upAt < 60e3) return health;
   upAt = Date.now();
-  health = call<Health>('/api/health', undefined, 4000).catch(() => ({}));
-  return health;
+  const asking: Promise<Health> = call<Health>('/api/health', undefined, 8000)
+    .then(h => { problem = h.ok ? '' : 'down'; if (!h.ok && health === asking) health = null; return h; })
+    .catch((e: unknown) => {
+      problem = e instanceof DOMException && e.name === 'AbortError' ? 'slow' : 'blocked';
+      if (health === asking) health = null;
+      return {};
+    });
+  health = asking;
+  return asking;
 }
-/** Whether the server answers right now (asked at most once a minute). */
+/** Whether the server answers right now (a good answer is trusted for a minute). */
 export function serverUp(): Promise<boolean> {
   return checkHealth().then(h => !!h.ok);
 }
+/** Why the last check failed ('' when it answered). */
+export function serverProblem(): ServerProblem { return problem; }
 
 export type DrawAnswer = {http: number; card?: Card | null; job?: string; need?: 'paper'; reason?: 'budget'; limit?: boolean; error?: string; relaxed?: boolean};
 

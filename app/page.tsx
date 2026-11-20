@@ -8,7 +8,7 @@ import seedData from '@/lib/data/seeds.json';
 import editorialData from '@/lib/data/editorial-20261019.json';
 import {formatArticleSummary,ARTICLE_SECTION_LABELS} from '@/lib/article-summary-20261019';
 import {MyDeck,DeckCard,cards as deckCards,type Card} from '@/components/my-deck-20261114';
-import {SERVER,serverUp,drawOnServer,waitForCard,CardFailed,addDrawn,useDeckCards,paperOf} from '@/lib/card-server-20261114';
+import {SERVER,serverUp,serverProblem,hasMintPass,drawOnServer,waitForCard,CardFailed,addDrawn,useDeckCards,paperOf} from '@/lib/card-server-20261114';
 import {CardCatalogButton} from '@/components/card-catalog-20261114';
 import {GoldSurface} from '@/components/gold-surface-20261114';
 // The page's accent is always gold, whatever card is drawn (Astra, 2026-11-14), so the line beside "Why it matters"
@@ -66,12 +66,20 @@ export default function Home(){
  // look up a real paper of that type instead (Papermon will make its card later).
  function drawFromReels(){setSpinning(true);setTimeout(()=>setSpinning(false),650);
   const type=TYPE_ITEMS[drawType].key,level=Number(LEVEL_ITEMS[drawLevel].key);
-  drawFromServer(type,level).then(done=>{if(!done)drawCard(type,level,drawYear)})}
+  drawFromServer(type,level).then(done=>{if(done!==true)drawCard(type,level,drawYear,done||'')})}
  // The card server (Astra, 2026-11-14): when Papermon's server answers, a draw is a card from the Card Catalog that
  // fits and isn't in this deck yet, or a brand-new card Claude writes and OpenAI draws for a fresh paper (about a
  // minute, each step shown in the message line). Without the server, drawCard below works as before.
- async function drawFromServer(type:string,level:number):Promise<boolean>{
-  if(!SERVER||!(await serverUp()))return false;
+ // Answers true when the draw is done, false to draw from this page, or a note to show before this page's card.
+ async function drawFromServer(type:string,level:number):Promise<boolean|string>{
+  if(!SERVER)return false;
+  if(!(await serverUp())){
+   // Say why, never quietly hand out an old card (Astra, 2026-11-19: "Draw card is not working with that link. its
+   // still showing older cards"). With her mint pass a draw means a new card, so there is no old card instead.
+   const why=serverProblem();
+   if(hasMintPass()){setDrawStatus(why==='blocked'?'This browser couldn’t reach your card server, so no card was made. If Tailscale is on, turn it off (or use Safari) and draw again.':why==='slow'?'Your card server took too long to answer, so no card was made. Draw again in a moment.':'Your card server answered with a problem, so no card was made. Draw again in a moment.');return true}
+   return 'Papermon’s card server isn’t answering right now (Astra’s computer may be asleep), so no new card. ';
+  }
   try{
    let r=await drawOnServer({subject:type,lv:level});
    if(r.limit){setDrawStatus(r.error||'That’s all your draws for today.');return true}
@@ -103,14 +111,14 @@ export default function Home(){
   setError('');setDrawStatus(isNew?`A brand-new card! You drew ${card.name}, No. ${card.no}.`:`You drew ${card.name}.`)}
  // Age odds (Astra, 2026-11-14): pick an age group by its odds among the groups that have a matching card, then a
  // card in it. With no matching card, a real paper from an age group picked by the same odds.
- function drawCard(type:string,level:number,yearChoice:number){
+ function drawCard(type:string,level:number,yearChoice:number,note=''){
   const groups=allowedGroups(yearChoice);
   const pool=deckCards.filter(c=>(!type||c.subject===type)&&(!level||c.lv===level)&&c.pmcid!==paper.pmcid);
   const filled=groups.map(g=>({g,cards:pool.filter(c=>!!c.published&&groupOfYear(+c.published.slice(0,4))===g)})).filter(x=>x.cards.length);
   if(filled.length){const {cards}=weightedPick(filled,x=>x.g.odds),c=cards[Math.floor(Math.random()*cards.length)],s=seeds.find(x=>x.pmcid===c.pmcid);
-   if(s){setPaper({...s,...editorials[s.pmcid]});setError('');setDrawStatus(`You drew ${c.name}.`);return}}
+   if(s){setPaper({...s,...editorials[s.pmcid]});setError('');setDrawStatus(`${note}You drew ${c.name}.`);return}}
   const g=weightedPick(groups,x=>x.odds),years=groupRange(g);
-  setDrawStatus(`No ${type||''} card${level?` at reading difficulty ${level}`:''}${yearChoice?` from ${yearChoice===1?'this year':'past years'}`:''} in the library yet, so here is a real paper from ${g.label} to read. Papermon will make its card.`.replace('No  card','No card'));
+  setDrawStatus(note+`No ${type||''} card${level?` at reading difficulty ${level}`:''}${yearChoice?` from ${yearChoice===1?'this year':'past years'}`:''} in the library yet, so here is a real paper from ${g.label} to read. Papermon will make its card.`.replace('No  card','No card'));
   shuffle({...filters,topic:type||'Everything',period:'custom',from:String(years.from),to:String(years.to)}).catch(()=>{});
  }
  // "Read the write-up" on a card in My deck or the Card Catalog: its paper goes on the sheet up top (server cards

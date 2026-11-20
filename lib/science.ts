@@ -24,7 +24,7 @@ export function buildQuery(f:Filters,now=new Date()):string{
 }
 export async function discover(filters:Filters,exclude:Set<string>,signal?:AbortSignal,current=''):Promise<{paper:Paper}>{
  buildQuery(filters);
- const response=await fetch('/api/discover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filters,current,exclude:[...exclude].slice(-100),requestId:crypto.randomUUID()}),signal:signal?AbortSignal.any([signal,AbortSignal.timeout(45000)]):AbortSignal.timeout(45000)});
+ const response=await fetch('/api/discover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filters,current,exclude:[...exclude].slice(-100),requestId:crypto.randomUUID()}),signal:signal?AbortSignal.any([signal,AbortSignal.timeout(65000)]):AbortSignal.timeout(65000)});
  const result=await response.json() as {paper:Paper;error?:string};
  if(!response.ok)throw new Error(result.error || 'Unable to find a new paper. Please try again.');
  if(!result.paper || result.paper.pmcid===current || exclude.has(result.paper.pmcid))throw new Error('That paper has already been shown. Please try again.');
