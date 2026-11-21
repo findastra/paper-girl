@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>What Color Is This Note?</title>
+<meta name="description" content="A chromesthesia quiz: hear a hidden piano note, pick the color it feels like, and compare with other players and with published studies.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Pitch black and grayscale only, so the only color on screen is the color being judged.
+   The wheel stays hidden until the note has been heard. */
+:root {
+  --bg: #000000; --surface: #0b0b0b; --raise: #161616; --fg: #f2f2f2; --muted: #9a9a9a; --line: #2a2a2a; --accent: #ffffff; --accent-fg: #000000; --danger: #d0d0d0;
+  --display: "Unbounded", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; background: #000; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.5; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+a { color: var(--fg); }
+.wrap { max-width: 640px; margin: 0 auto; padding-block: 28px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 22px; }
+header { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 6vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); }
+.lede b { color: var(--fg); font-weight: 600; }
+/* The one moving color on the page: the word itself cycles through red, green and blue. */
+.lede b.rgb { font-weight: 700; background: linear-gradient(90deg, #ff2a2a, #ffe12a, #2aff5a, #2ad4ff, #3a5bff, #c42aff, #ff2a2a);
+  background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rgbflow 4s linear infinite; }
+@keyframes rgbflow { from { background-position: 0% 50%; } to { background-position: 150% 50%; } }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 18px; align-items: center; }
+.round { display: flex; justify-content: space-between; gap: 10px; width: 100%; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.round span:first-child { white-space: nowrap; }
+.round span:last-child { text-align: right; }
+.name-row { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.name-row label { font-size: 13px; font-weight: 600; }
+.name-row input[type=text] { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #000; color: var(--fg); width: 100%; }
+.name-row small { color: var(--muted); font-size: 12px; }
+.play { font-family: var(--display); font-weight: 500; font-size: 16px; border: 0; border-radius: 999px; padding: 14px 26px; background: var(--accent); color: var(--accent-fg); cursor: pointer; display: inline-flex; gap: 10px; align-items: center; }
+.play:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.play svg { width: 18px; height: 18px; }
+.hint { font-size: 13px; color: var(--muted); text-align: center; margin: 0; }
+.wheel-box { position: relative; width: min(300px, 80vw); aspect-ratio: 1; max-width: 100%; touch-action: none; }
+.wheel-box canvas { width: 100%; height: 100%; border-radius: 50%; display: block; cursor: crosshair; }
+.marker { position: absolute; width: 22px; height: 22px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1.5px #000, 0 2px 6px #000; transform: translate(-50%, -50%); pointer-events: none; }
+.light { width: min(300px, 80vw); display: flex; flex-direction: column; gap: 6px; }
+.light label { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; font-family: var(--mono); }
+.light input { width: 100%; accent-color: #fff; }
+.pick-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.chip { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: #000; }
+.hex { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.submit { font-family: var(--body); font-weight: 600; font-size: 15px; padding: 12px 22px; border-radius: 12px; border: 1px solid #fff; background: #fff; color: #000; cursor: pointer; }
+.submit.ghost { background: transparent; color: var(--fg); border-color: #555; }
+.submit:disabled { opacity: .35; cursor: not-allowed; }
+.reveal { width: 100%; display: flex; flex-direction: column; gap: 16px; }
+.reveal h2 { font-family: var(--display); font-size: 22px; margin: 0; text-align: center; }
+.reveal h2 span { color: var(--muted); font-size: 14px; font-family: var(--mono); font-weight: 400; display: block; margin-top: 4px; }
+.duo { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.sw { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.sw .block { aspect-ratio: 1.6; border-radius: 14px; border: 1px solid var(--line); max-width: 100%; }
+.sw .lab { font-size: 13px; font-weight: 600; }
+.sw .sub { font-family: var(--mono); font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.refs { display: flex; flex-direction: column; gap: 8px; }
+.refs h3, .panel h3 { font-size: 12px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0; }
+.ref { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; font-size: 13px; }
+.ref i { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--line); }
+.ref i.none { background: repeating-linear-gradient(45deg, transparent 0 4px, #333 4px 6px); }
+.ref small { color: var(--muted); display: block; font-size: 11.5px; }
+.ref b { font-family: var(--mono); font-weight: 500; }
+.score { text-align: center; font-size: 14px; color: var(--muted); }
+.score b { color: var(--fg); font-family: var(--mono); }
+.next-row { display: flex; justify-content: center; }
+.status { font-size: 13px; color: var(--muted); text-align: center; min-height: 1.5em; }
+.status.err { color: var(--fg); }
+/* Piano: one octave, C to B. White keys carry two colors (top: you, bottom: the one you compare with). */
+.piano { position: relative; width: 100%; max-width: 560px; margin: 0 auto; aspect-ratio: 7 / 3.4; user-select: none; }
+.piano .wk, .piano .bk { position: absolute; top: 0; display: flex; flex-direction: column; overflow: hidden; }
+.piano .wk { width: calc(100% / 7); height: 100%; border: 1px solid #444; border-radius: 0 0 8px 8px; background: #e8e8e8; }
+.piano .bk { width: calc(100% / 7 * .6); height: 60%; border: 1px solid #444; border-radius: 0 0 6px 6px; background: #111; z-index: 2; }
+.piano .half { flex: 1; }
+.piano .wk .lbl { font-family: var(--mono); font-size: 11px; color: #000; background: #e8e8e8; text-align: center; padding: 2px 0 6px; flex: 0 0 auto; }
+.piano .bk .lbl { font-family: var(--mono); font-size: 9px; color: #fff; background: #111; text-align: center; padding: 1px 0 4px; flex: 0 0 auto; }
+.piano .wk.on { box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 5px #000; }
+.piano .bk.on { box-shadow: inset 0 0 0 2px #fff; }
+.piano .wk .empty-half { background: #e8e8e8; }
+.piano .bk .empty-half { background: #111; }
+#revealPiano { aspect-ratio: 7 / 2.4; max-width: 420px; }
+.key-legend { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; font-size: 12px; color: var(--muted); }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+summary { cursor: pointer; padding: 14px 18px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--mono); color: var(--muted); }
+details[open] summary::after { content: "\2212"; }
+.panel { padding: 0 18px 18px; display: flex; flex-direction: column; gap: 16px; }
+.compare-row { display: flex; flex-direction: column; gap: 6px; }
+.compare-row label { font-size: 13px; font-weight: 600; }
+select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #000; color: var(--fg); width: 100%; }
+.overall { font-size: 14px; color: var(--muted); text-align: center; margin: 0; }
+.overall b { color: var(--fg); font-family: var(--mono); }
+.about { font-size: 12.5px; color: var(--muted); margin: 0; }
+.hist { display: flex; flex-direction: column; gap: 6px; max-height: 340px; overflow-y: auto; }
+.hrow { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: center; font-size: 13px; }
+.hrow b { font-family: var(--display); font-weight: 500; }
+.hrow .dots { display: flex; gap: 4px; }
+.hrow .dots i { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--line); }
+.hrow time { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.empty { color: var(--muted); font-size: 13px; margin: 0; }
+.how { margin: 0; padding-left: 18px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
+.how b { color: var(--fg); font-weight: 600; }
+.foot { font-size: 12.5px; color: var(--muted); margin: 0; }
+/* One heading style for Instructions, Editorial Note and Bibliography: small white monospace capitals. */
+.sect { font-family: var(--mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--fg); margin: 0 0 2px; }
+.biblio .sect { margin-bottom: 8px; }
+header .sect { margin-top: 8px; }
+.biblio ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.biblio li { font-size: 12.5px; color: var(--muted); padding-left: 1.5em; text-indent: -1.5em; overflow-wrap: anywhere; }
+/* Unified footer (astras-pet-os-unified-footer): By Astra ✦ photostar ✦ Find Out More, GitHub only; the star is never a link. */
+.astra-footer { display: grid; justify-items: center; gap: 8px; text-align: center; font-size: 13px; border-top: 1px solid var(--line); padding-top: 22px; }
+.footer-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 18px; }
+.footer-group { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
+.footer-group::before, .footer-sparkle { content: "\2726"; color: var(--muted); font-size: 12px; line-height: 1; margin-right: 8px; }
+.footer-by::before { content: none; }
+.footer-sparkle { margin: 0 -8px 0 0; }
+.footer-title { font-weight: 600; letter-spacing: .02em; }
+.footer-icons { display: inline-flex; gap: 4px; }
+.footer-icons a { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; color: var(--fg); text-decoration: none; }
+.footer-icons a:hover { background: var(--line); }
+.footer-icons svg { width: 22px; height: 22px; fill: currentColor; }
+.footer-star { display: block; line-height: 0; }
+.footer-star img { width: 48px; height: 48px; filter: grayscale(1); }
+@media (max-width: 760px) {
+  .footer-line { display: grid; grid-template-columns: repeat(4, auto); grid-template-areas: "by spark star more" "icons icons icons icons"; justify-content: center; justify-items: center; align-items: center; gap: 6px 10px; }
+  .footer-by { grid-area: by; }
+  .footer-sparkle { grid-area: spark; margin: 0; }
+  .footer-star { grid-area: star; }
+  .footer-more { display: contents; }
+  .footer-more::before { content: none; }
+  .footer-more > .footer-title { grid-area: more; }
+  .footer-more > .footer-title::before { content: "\2726"; color: var(--muted); font-size: 12px; margin-right: 10px; }
+  .footer-icons { grid-area: icons; }
+}
+.col-info, .col-play { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.notes-body { padding: 0 18px 18px; display: flex; flex-direction: column; gap: 16px; }
+/* Phones, upright tablets and short windows: one column, quiz first, the Editorial Note and Bibliography folded
+   into one box below it, everything sized down so as little as possible needs scrolling. */
+@media (max-width: 639px), (max-width: 899px) and (orientation: portrait) {
+  .col-info { display: contents; }
+  header { order: 0; } .col-play { order: 1; } .notes { order: 2; } .astra-footer { order: 3; }
+  .wrap { padding-block: 12px 14px; gap: 12px; }
+  header { gap: 4px; }
+  h1 { font-size: clamp(22px, 6.5vw, 30px); }
+  .lede { font-size: 13.5px; line-height: 1.45; }
+  .col-play { gap: 12px; }
+  .stage { padding: 12px 14px; gap: 10px; }
+  .name-row { flex-direction: row; align-items: center; gap: 10px; }
+  .name-row label { white-space: nowrap; }
+  .name-row input[type=text] { padding: 7px 10px; }
+  .play { padding: 10px 22px; font-size: 15px; }
+  .hint { font-size: 12px; }
+  .status:empty { display: none; }
+  .wheel-box, .light { width: min(250px, 70vw, 32vh); }
+  .light { gap: 2px; }
+  .reveal { gap: 10px; }
+  .reveal h2 { font-size: 19px; }
+  #revealPiano { max-width: 300px; }
+  .sw .block { aspect-ratio: 3; }
+  .ref { grid-template-columns: 24px 1fr auto; font-size: 12.5px; }
+  .ref i { width: 24px; height: 24px; border-radius: 6px; }
+  details > summary { padding: 11px 16px; }
+  .astra-footer { padding-top: 10px; gap: 0; }
+  .footer-star img { width: 34px; height: 34px; }
+}
+/* Answer screen: swatches beside the studies whenever there is room. */
+@media (min-width: 520px) {
+  .reveal-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 16px; align-items: start; }
+  .reveal-body .duo { grid-template-columns: 1fr; gap: 8px; }
+  .sw { display: grid; grid-template-columns: 44px 1fr; grid-template-rows: auto auto; column-gap: 8px; align-items: center; }
+  .sw .block { grid-row: 1 / 3; width: 44px; height: 44px; aspect-ratio: auto; border-radius: 10px; }
+  .ref small { display: inline; margin-left: 6px; }
+}
+/* Computer windows: one screen, no page scroll. Left: what this is, the note and the sources. Right: the quiz,
+   with Compare and history scrolling inside its own box when open. Phones keep one scrolling column. */
+@media (min-width: 900px) and (min-height: 500px), (min-width: 640px) and (orientation: landscape) {
+  .notes { background: none; border: 0; border-radius: 0; }
+  .notes > summary { display: none; }
+  .notes-body { padding: 0; gap: 12px; }
+  html, body { height: 100%; overflow: hidden; }
+  .wrap { max-width: 1240px; height: 100vh; height: 100dvh; padding-block: 16px 8px; display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); grid-template-rows: minmax(0, 1fr) auto; gap: 10px 40px; }
+  .col-info, .col-play { min-height: 0; overflow-y: auto; gap: 12px; scrollbar-width: thin; }
+  .col-info { padding-top: 4px; }
+  h1 { font-size: clamp(24px, 2.6vw, 34px); }
+  .lede { font-size: 14px; }
+  .stage { padding: 14px 18px; gap: 10px; flex: 0 0 auto; }
+  .name-row { flex-direction: row; align-items: center; gap: 10px; }
+  .name-row label { white-space: nowrap; }
+  .name-row input[type=text] { padding: 7px 10px; }
+  .play { padding: 10px 22px; font-size: 15px; }
+  .wheel-box, .light { width: min(260px, 33vh); }
+  .reveal { gap: 10px; }
+  .reveal h2 { font-size: 19px; }
+  #revealPiano { max-width: 320px; }
+  .reveal-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 16px; align-items: start; }
+  .reveal-body .duo { grid-template-columns: 1fr; gap: 8px; }
+  .sw { display: grid; grid-template-columns: 44px 1fr; grid-template-rows: auto auto; column-gap: 8px; align-items: center; }
+  .sw .block { grid-row: 1 / 3; width: 44px; height: 44px; aspect-ratio: auto; border-radius: 10px; }
+  .status:empty { display: none; }
+  .ref { grid-template-columns: 24px 1fr auto; gap: 8px; font-size: 12.5px; }
+  .ref i { width: 24px; height: 24px; border-radius: 6px; }
+  .ref small { display: inline; margin-left: 6px; }
+  .submit { padding: 9px 18px; }
+  details { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  details > summary { padding: 10px 16px; }
+  details[open] { flex: 1 1 auto; }
+  details .panel { overflow-y: auto; min-height: 0; }
+  .biblio li { font-size: 12px; }
+  .astra-footer { grid-column: 1 / -1; padding-top: 8px; gap: 0; }
+  .footer-star img { width: 34px; height: 34px; }
+}
+/* Too short for one screen (a phone on its side, a window squashed flat): keep the two columns but let the whole
+   page scroll, instead of scrolling inside each column. */
+@media (min-width: 640px) and (orientation: landscape) and (max-height: 499px) {
+  html, body { height: auto; overflow: auto; }
+  .wrap { height: auto; }
+  .col-info, .col-play { overflow: visible; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .reveal, #pickArea > * { animation: rise .35s ease-out; }
+  @keyframes rise { from { transform: translateY(6px); opacity: .4; } to { transform: none; opacity: 1; } }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="col-info">
+  <header>
+    <div class="eyebrow">Paper Girl · chromesthesia study</div>
+    <h1>What color is this note?</h1>
+    <p class="lede">Hearing colors is called <b class="rgb">chromesthesia</b>, a kind of synesthesia where sounds bring up colors. This website collects the quiz results for everyone who takes the test.</p>
+    <h2 class="sect">Instructions</h2>
+    <p class="lede">Play the piano note, then pick the color it feels like. Afterwards, compare your colors with other players and with published studies. A game is 12 notes, one for every piano key in an octave.</p>
+  </header>
+
+  <details class="notes" id="notesBox">
+  <summary><span>Editorial Note and Bibliography</span></summary>
+  <div class="notes-body">
+  <section class="biblio" aria-labelledby="noteTitle">
+    <h2 class="sect" id="noteTitle">Editorial Note</h2>
+    <p class="foot">There is no real right answer: people with chromesthesia rarely agree with each other, so the studies under "Compare and history" are things to compare with, not answer keys. One pattern most people share, with or without synesthesia, is that higher notes feel lighter (Ward, Huckstep and Tsakanikos, 2006). The crowd average uses each person's latest answer for each note.</p>
+  </section>
+
+  <section class="biblio" aria-labelledby="biblioTitle">
+    <h2 class="sect" id="biblioTitle">Bibliography</h2>
+    <ul>
+      <li>Castel, L.-B. (1725–1735). Writings on the ocular harpsichord (<i>clavecin oculaire</i>). <i>Mémoires de Trévoux</i>.</li>
+      <li>Itoh, K., Sakata, H., Kwee, I. L., &amp; Nakada, T. (2017). Musical pitch classes have rainbow hues in pitch class-color synesthesia. <i>Scientific Reports</i>, 7, 17781. https://doi.org/10.1038/s41598-017-18150-y</li>
+      <li>Newton, I. (1704). <i>Opticks</i>. London: Smith and Walford.</li>
+      <li>Scriabin, A. (1910). <i>Prometheus: The Poem of Fire</i>, Op. 60.</li>
+      <li>Ward, J., Huckstep, B., &amp; Tsakanikos, E. (2006). Sound-colour synaesthesia: To what extent does it use cross-modal mechanisms common to us all? <i>Cortex</i>, 42(2), 264–280. https://doi.org/10.1016/s0010-9452(08)70352-6</li>
+    </ul>
+  </section>
+  </div>
+  </details>
+</div>
+<div class="col-play">
+  <section class="stage" aria-label="Quiz">
+    <div class="round"><span id="roundLabel">Round 1/12</span><span id="crowdLabel">Loading everyone's answers…</span></div>
+    <div class="name-row">
+      <label for="playerName">Your name</label>
+      <input id="playerName" type="text" maxlength="40" autocomplete="nickname" placeholder="So your answers have a name on them">    </div>
+    <button class="play" id="playBtn" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+      <span id="playText">Play the note</span>
+    </button>
+    <p class="hint" id="wheelHint">The color wheel appears after you hear the note, so the colors don't sway you first.</p>
+
+    <div id="pickArea" hidden>
+      <div class="wheel-box" id="wheelBox">
+        <canvas id="wheel" width="600" height="600" aria-label="Color wheel. Click or drag to pick a color."></canvas>
+        <div class="marker" id="marker" hidden></div>
+      </div>
+      <div class="light">
+        <label for="lightness"><span>Darker</span><span>Brightness</span><span>Lighter</span></label>
+        <input id="lightness" type="range" min="10" max="90" value="50">
+      </div>
+      <div class="pick-row">
+        <div class="chip" id="chip"></div>
+        <div class="hex" id="hex">Tap the wheel</div>
+        <button class="submit" id="submitBtn" type="button" disabled>Lock it in</button>
+      </div>
+    </div>
+
+    <div class="reveal" id="reveal" hidden>
+      <h2 id="revealNote"></h2>
+      <div class="piano" id="revealPiano" aria-hidden="true"></div>
+      <div class="reveal-body">
+      <div class="duo">
+        <div class="sw"><div class="block" id="swYou"></div><div class="lab">You</div><div class="sub" id="swYouHex"></div></div>
+        <div class="sw"><div class="block" id="swAll"></div><div class="lab">Everyone</div><div class="sub" id="swAllSub"></div></div>
+      </div>
+      <div class="refs" id="refs"><h3>What the studies say</h3></div>
+      </div>
+      <div class="score" id="score"></div>
+      <div class="next-row"><button class="submit" id="nextBtn" type="button">Next note</button></div>
+    </div>
+    <div class="status" id="status" role="status"></div>
+  </section>
+
+  <details id="historyBox">
+    <summary><span>Compare and history</span><span class="hex" id="histCount"></span></summary>
+    <div class="panel">
+      <div class="compare-row">
+        <label for="compareWith">Compare your colors with</label>
+        <select id="compareWith"></select>
+      </div>
+      <div class="piano" id="comparePiano" role="img" aria-label="Piano keys colored by your answers and the comparison"></div>
+      <p class="overall" id="overall"></p>
+      <ul class="how">
+        <li>Each key is one note.</li>
+        <li><b>Top half:</b> your color.</li>
+        <li><b>Bottom half:</b> <span id="legendThem">everyone's average</span>.</li>
+        <li>A plain key has no color yet.</li>
+        <li id="compareAbout" hidden></li>
+      </ul>
+      <h3>Your answers, newest first</h3>
+      <div class="key-legend" style="justify-content:flex-start"><span>Swatches: you, everyone</span></div>
+      <div class="hist" id="histList"></div>
+    </div>
+  </details>
+</div>
+
+  <footer class="astra-footer" aria-label="By Astra and her links">
+    <div class="footer-line">
+      <div class="footer-group footer-by"><span class="footer-title">By Astra</span></div>
+      <span class="footer-sparkle" aria-hidden="true">✦</span><span class="footer-star"><img src="https://findastra.github.io/astras-star-window/star-window.svg" alt="Astra's photostar" width="48" height="48" loading="lazy"></span>
+      <div class="footer-group footer-more"><span class="footer-title">Find Out More</span><span class="footer-icons"><a href="https://github.com/findastra" title="GitHub: Astra" aria-label="GitHub: Astra"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.09c-3.14.68-3.8-1.33-3.8-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 1.73 2.63 1.23 3.27.94.1-.73.4-1.23.71-1.51-2.51-.29-5.15-1.26-5.15-5.58 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.08 1.16A10.7 10.7 0 0 1 12 6.12c.95 0 1.9.13 2.8.38 2.14-1.46 3.08-1.16 3.08-1.16.61 1.55.23 2.69.11 2.98.72.79 1.16 1.8 1.16 3.03 0 4.33-2.65 5.29-5.17 5.57.41.35.77 1.03.77 2.08v3.09c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg></a></span></div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(() => {
+  const NOTES = [
+    { n: "C",  f: 261.63, black: false }, { n: "C♯", f: 277.18, black: true },
+    { n: "D",  f: 293.66, black: false }, { n: "D♯", f: 311.13, black: true },
+    { n: "E",  f: 329.63, black: false }, { n: "F",  f: 349.23, black: false },
+    { n: "F♯", f: 369.99, black: true },  { n: "G",  f: 392.00, black: false },
+    { n: "G♯", f: 415.30, black: true },  { n: "A",  f: 440.00, black: false },
+    { n: "A♯", f: 466.16, black: true },  { n: "B",  f: 493.88, black: false },
+  ];
+  const TOTAL = NOTES.length;
+  const $ = id => document.getElementById(id);
+
+  // ---------- color helpers ----------
+  function hslToRgb(h, s, l) {
+    s /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    return [f(0) * 255, f(8) * 255, f(4) * 255].map(Math.round);
+  }
+  const rgbHex = ([r, g, b]) => "#" + [r, g, b].map(v => v.toString(16).padStart(2, "0")).join("");
+  const hslHex = p => rgbHex(hslToRgb(p.h, p.s, p.l));
+  const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  function closeness(hexA, hexB) {
+    const a = hexRgb(hexA), b = hexRgb(hexB);
+    const rm = (a[0] + b[0]) / 2, dr = a[0] - b[0], dg = a[1] - b[1], db = a[2] - b[2];
+    const d = Math.sqrt((2 + rm / 256) * dr * dr + 4 * dg * dg + (2 + (255 - rm) / 256) * db * db);
+    return Math.max(0, Math.round(100 * (1 - d / 765)));
+  }
+
+  // ---------- studies (index = note, C..B; null = no color given) ----------
+  // Itoh 2017: hue rises about 51° per natural note from do = red (slope 1.09 on 2π/7 steps); saturation falls toward si.
+  const ITOH_NATURAL = [0, 2, 4, 5, 7, 9, 11];
+  const itoh = Array(12).fill(null);
+  ITOH_NATURAL.forEach((note, k) => {
+    const p = { h: Math.round(k * 360 / 7), s: Math.round(95 - k * 6), l: 50 };
+    itoh[note] = hslHex(p);
+    if (note + 1 < 12 && !ITOH_NATURAL.includes(note + 1)) itoh[note + 1] = hslHex({ h: (p.h + 10) % 360, s: p.s - 10, l: 50 });
+  });
+  const STUDIES = [
+    { id: "itoh", name: "Itoh et al. 2017", short: "15 synesthetes, averaged (estimated)", colors: itoh },
+    { id: "scriabin", name: "Scriabin 1910", short: "one composer's color keyboard",
+      colors: ["#ff0000", "#8f00ff", "#ffff00", "#b7468b", "#c3f2ff", "#ab0034", "#7f8bfd", "#ff7f00", "#bb75fc", "#33cc33", "#a9677c", "#8ec9ff"] },
+    { id: "castel", name: "Castel 1730s", short: "color harpsichord design",
+      colors: ["#1f3fff", "#0d98ba", "#1fa31f", "#808000", "#ffe600", "#ffb347", "#ff8000", "#ff0000", "#c8143c", "#8f00ff", "#a05a96", "#4b0082"] },
+    { id: "newton", name: "Newton 1704", short: "rainbow matched to a scale",
+      colors: ["#8f00ff", null, "#ff0000", null, "#ff8000", "#ffff00", null, "#00b000", null, "#0000ff", null, "#4b0082"] },
+  ];
+
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  };
+  let player = store.get("cq-player");
+  if (!player || !/^[a-z0-9]{16,40}$/.test(player)) {
+    const a = new Uint8Array(12); crypto.getRandomValues(a);
+    player = Array.from(a, b => b.toString(36).padStart(2, "0")).join("").slice(0, 24);
+    store.set("cq-player", player);
+  }
+  $("playerName").value = store.get("cq-name") || "";
+  $("playerName").addEventListener("input", () => { store.set("cq-name", $("playerName").value.trim()); updateSubmit(); });
+
+  let round = 1, current = -1, deck = [], game = [];
+  let pick = null, played = false;
+  let crowd = Array.from({ length: TOTAL }, () => ({ avg: null, n: 0 })), players = 0, crowdOk = false;
+  let history = [], others = [];
+
+  const shuffle = () => { deck = NOTES.map((_, i) => i); for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; } };
+  shuffle();
+
+  // ---------- piano drawing ----------
+  // White keys sit side by side; each black key straddles the gap after its white key.
+  function drawPiano(el, topColors, bottomColors, highlight) {
+    el.textContent = "";
+    let w = 0;
+    NOTES.forEach((note, i) => {
+      const key = document.createElement("div");
+      key.className = note.black ? "bk" : "wk";
+      if (note.black) key.style.left = "calc(100% / 7 * " + w + " - 100% / 7 * .3)";
+      else { key.style.left = "calc(100% / 7 * " + w + ")"; w++; }
+      if (i === highlight) key.classList.add("on");
+      for (const c of [topColors[i], bottomColors ? bottomColors[i] : undefined]) {
+        if (c === undefined) continue;
+        const h = document.createElement("div"); h.className = "half" + (c ? "" : " empty-half");
+        if (c) h.style.background = c;
+        key.append(h);
+      }
+      const lbl = document.createElement("div"); lbl.className = "lbl"; lbl.textContent = note.n;
+      key.append(lbl);
+      key.title = note.n;
+      el.append(key);
+    });
+  }
+
+  // ---------- wheel ----------
+  const canvas = $("wheel"), ctx = canvas.getContext("2d");
+  function drawWheel() {
+    const L = +$("lightness").value, W = canvas.width, R = W / 2;
+    const img = ctx.createImageData(W, W), d = img.data;
+    for (let y = 0; y < W; y++) for (let x = 0; x < W; x++) {
+      const dx = x - R, dy = y - R, r = Math.hypot(dx, dy), o = (y * W + x) * 4;
+      if (r > R) { d[o + 3] = 0; continue; }
+      let h = Math.atan2(dy, dx) * 180 / Math.PI; if (h < 0) h += 360;
+      const [rr, gg, bb] = hslToRgb(h, (r / R) * 100, L);
+      d[o] = rr; d[o + 1] = gg; d[o + 2] = bb; d[o + 3] = r > R - 1.5 ? 255 * (R - r) / 1.5 : 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  function setFromPointer(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2, y = e.clientY - rect.top - rect.height / 2;
+    const R = rect.width / 2, r = Math.min(Math.hypot(x, y), R);
+    let h = Math.atan2(y, x) * 180 / Math.PI; if (h < 0) h += 360;
+    pick = { h: Math.round(h) % 360, s: Math.round(r / R * 100), l: +$("lightness").value };
+    showPick();
+  }
+  function updateSubmit() { $("submitBtn").disabled = !(pick && played && current >= 0 && $("reveal").hidden); }
+  function resetPick() {
+    pick = null; $("marker").hidden = true; $("chip").style.background = "#000"; $("hex").textContent = "Tap the wheel";
+    $("lightness").value = 50; drawWheel();
+  }
+  function showPick() {
+    if (!pick) return;
+    pick.l = +$("lightness").value;
+    const hex = hslHex(pick);
+    $("chip").style.background = hex; $("hex").textContent = hex.toUpperCase();
+    const m = $("marker"); m.hidden = false; m.style.background = hex;
+    const a = pick.h * Math.PI / 180, rr = pick.s / 100 * 50;
+    m.style.left = (50 + Math.cos(a) * rr) + "%"; m.style.top = (50 + Math.sin(a) * rr) + "%";
+    updateSubmit();
+  }
+  let dragging = false;
+  canvas.addEventListener("pointerdown", e => { dragging = true; canvas.setPointerCapture(e.pointerId); setFromPointer(e); });
+  canvas.addEventListener("pointermove", e => { if (dragging) setFromPointer(e); });
+  canvas.addEventListener("pointerup", () => { dragging = false; });
+  let lightTimer;
+  $("lightness").addEventListener("input", () => { showPick(); clearTimeout(lightTimer); lightTimer = setTimeout(drawWheel, 30); });
+
+  // ---------- piano sound ----------
+  // A struck string: a quick hammer attack, slightly stretched overtones that fade faster the higher they are,
+  // and a soft felt thump.
+  let actx = null;
+  function playNote(freq) {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === "suspended") actx.resume();
+    const t = actx.currentTime;
+    const out = actx.createGain(); out.gain.value = 0.32;
+    const tone = actx.createBiquadFilter(); tone.type = "lowpass";
+    tone.frequency.setValueAtTime(freq * 9, t); tone.frequency.exponentialRampToValueAtTime(freq * 2.5, t + 1.6);
+    tone.connect(out).connect(actx.destination);
+    const B = 0.0004, amps = [1, 0.55, 0.32, 0.22, 0.14, 0.09, 0.06, 0.04];
+    amps.forEach((amp, k) => {
+      const n = k + 1, f = freq * n * Math.sqrt(1 + B * n * n);
+      const o = actx.createOscillator(), g = actx.createGain();
+      o.type = "sine"; o.frequency.value = f;
+      const decay = 3.2 / (1 + k * 0.7);
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(amp, t + 0.006);
+      g.gain.exponentialRampToValueAtTime(amp * 0.35, t + 0.25);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + decay);
+      o.connect(g).connect(tone); o.start(t); o.stop(t + decay + 0.05);
+    });
+    const len = Math.floor(actx.sampleRate * 0.03), buf = actx.createBuffer(1, len, actx.sampleRate), ch = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+    const thump = actx.createBufferSource(), tf = actx.createBiquadFilter(), tg = actx.createGain();
+    thump.buffer = buf; tf.type = "lowpass"; tf.frequency.value = 1200; tg.gain.value = 0.18;
+    thump.connect(tf).connect(tg).connect(out); thump.start(t);
+  }
+  // On a screen too small to hold the whole quiz (a phone), move the part that just appeared into view.
+  // On a one-screen layout the page cannot scroll, so this does nothing there.
+  function bringIntoView(el, block) {
+    if (document.documentElement.scrollHeight <= innerHeight + 1) return;
+    const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    requestAnimationFrame(() => el.scrollIntoView({ block, behavior: smooth ? "smooth" : "auto" }));
+  }
+  function playCurrent() {
+    playNote(NOTES[current].f);
+    if (!played) { played = true; $("pickArea").hidden = false; $("wheelHint").hidden = true; bringIntoView($("submitBtn"), "nearest"); }
+    $("playText").textContent = "Play it again"; updateSubmit();
+  }
+  $("playBtn").addEventListener("click", playCurrent);
+
+  // ---------- rounds ----------
+  function newRound() {
+    current = deck[round - 1]; played = false;
+    $("roundLabel").textContent = "Round " + round + "/" + TOTAL;
+    $("playText").textContent = "Play the note";
+    $("reveal").hidden = true; $("pickArea").hidden = true; $("wheelHint").hidden = false; $("playBtn").hidden = false;
+    $("status").textContent = ""; $("status").classList.remove("err");
+    resetPick(); updateSubmit();
+  }
+  // Moving on never plays the note by itself: the player presses Play when ready.
+  $("nextBtn").addEventListener("click", () => {
+    if (round >= TOTAL) { round = 1; game = []; shuffle(); } else round++;
+    newRound(); $("playBtn").focus();
+  });
+
+  function setStatus(text, err) { $("status").textContent = text; $("status").classList.toggle("err", !!err); }
+
+  $("submitBtn").addEventListener("click", async () => {
+    if (!pick || current < 0) return;
+    const name = $("playerName").value.trim();
+    if (!name) { setStatus("Add your name first, then lock it in.", true); $("playerName").focus(); return; }
+    const p = { h: pick.h, s: pick.s, l: pick.l };
+    const note = current;
+    $("submitBtn").disabled = true;
+    setStatus("Saving…");
+    try {
+      const res = await fetch("/api/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ player, name, note, ...p, share: true }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Couldn't save your answer.");
+      setStatus("Saved.");
+      history.unshift({ note, ...p, at: Date.now() });
+      await loadCrowd();
+    } catch (e) {
+      setStatus((e && e.message) || "Couldn't save your answer. Check your connection and try the next one.", true);
+    }
+    reveal(note, p);
+    renderAll();
+  });
+
+  function reveal(i, p) {
+    const note = NOTES[i], you = hslHex(p), { avg, n } = crowd[i];
+    $("revealNote").textContent = note.n;
+    const sp = document.createElement("span"); sp.textContent = note.f.toFixed(1) + " Hz, middle-C octave"; $("revealNote").append(sp);
+    const youRow = Array(12).fill(null); youRow[i] = you;
+    drawPiano($("revealPiano"), youRow, null, i);
+    $("swYou").style.background = you; $("swYouHex").textContent = you.toUpperCase();
+    if (avg) { const a = hslHex(avg); $("swAll").style.background = a; $("swAllSub").textContent = a.toUpperCase() + " · " + n + (n === 1 ? " person" : " people"); }
+    else { $("swAll").style.background = "transparent"; $("swAllSub").textContent = "No answers yet"; }
+
+    const refs = $("refs"); refs.querySelectorAll(".ref").forEach(r => r.remove());
+    const row = { note: i, you, vs: {} };
+    for (const st of STUDIES) {
+      const c = st.colors[i], r = document.createElement("div"); r.className = "ref";
+      const sw = document.createElement("i"); if (c) sw.style.background = c; else sw.className = "none";
+      const txt = document.createElement("div"); txt.textContent = st.name;
+      const sm = document.createElement("small"); sm.textContent = st.short; txt.append(sm);
+      const m = document.createElement("b");
+      if (c) { const v = closeness(you, c); m.textContent = v + "%"; row.vs[st.id] = v; } else m.textContent = "no color";
+      r.append(sw, txt, m); refs.append(r);
+    }
+    game.push(row);
+
+    const score = $("score"); score.textContent = "";
+    const add = (t, b) => { score.append(t); const el = document.createElement("b"); el.textContent = b; score.append(el); };
+    if (avg && n > 1) add("Match with everyone: ", closeness(you, hslHex(avg)) + "%");
+    if (round >= TOTAL) {
+      if (score.childNodes.length) score.append(document.createElement("br"));
+      score.append("Game over! You heard all " + TOTAL + " notes. Your average match:");
+      for (const st of STUDIES) {
+        const vals = game.map(g => g.vs[st.id]).filter(v => v !== undefined);
+        if (!vals.length) continue;
+        score.append(document.createElement("br"));
+        add(st.name + ": ", Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) + "%");
+      }
+      $("nextBtn").textContent = "Play again";
+    } else $("nextBtn").textContent = "Next note (" + (round + 1) + "/" + TOTAL + ")";
+    $("pickArea").hidden = true; $("playBtn").hidden = true; $("reveal").hidden = false;
+    bringIntoView($("reveal"), "start");
+    updateSubmit();
+  }
+
+  // ---------- compare and history ----------
+  function myLatest() {
+    const out = Array(12).fill(null);
+    for (const e of history) if (out[e.note] === null && NOTES[e.note]) out[e.note] = hslHex(e);
+    return out;
+  }
+  function fillCompare() {
+    const sel = $("compareWith"), keep = sel.value || "crowd";
+    sel.textContent = "";
+    const add = (parent, value, label) => { const o = document.createElement("option"); o.value = value; o.textContent = label; parent.append(o); };
+    add(sel, "crowd", "Everyone's average");
+    const g1 = document.createElement("optgroup"); g1.label = "Studies";
+    STUDIES.forEach(st => add(g1, "study:" + st.id, st.name + " (" + st.short + ")"));
+    sel.append(g1);
+    const g2 = document.createElement("optgroup"); g2.label = others.length ? "Other players" : "Other players (none yet)";
+    others.forEach((p, k) => add(g2, "player:" + k, p.name + " · " + p.notes + "/12 notes"));
+    sel.append(g2);
+    sel.value = [...sel.querySelectorAll("option")].some(o => o.value === keep) ? keep : "crowd";
+  }
+  function compareTarget() {
+    const v = $("compareWith").value || "crowd";
+    if (v.startsWith("study:")) { const st = STUDIES.find(s => "study:" + s.id === v); return { label: st.name, colors: st.colors }; }
+    if (v.startsWith("player:")) { const p = others[+v.slice(7)]; if (p) return { label: p.name, colors: NOTES.map((_, i) => p.latest[i] ? hslHex(p.latest[i]) : null) }; }
+    return { label: "everyone's average", colors: crowd.map(c => c.avg ? hslHex(c.avg) : null) };
+  }
+  function renderCompare() {
+    const mine = myLatest(), t = compareTarget();
+    drawPiano($("comparePiano"), mine, t.colors, -1);
+    $("legendThem").textContent = t.label;
+    const pairs = mine.map((m, i) => m && t.colors[i] ? closeness(m, t.colors[i]) : null).filter(v => v !== null);
+    const o = $("overall"); o.textContent = "";
+    if (pairs.length) {
+      o.append("You and " + t.label + " match ");
+      const b = document.createElement("b"); b.textContent = Math.round(pairs.reduce((a, c) => a + c, 0) / pairs.length) + "%"; o.append(b);
+      o.append(" across " + pairs.length + (pairs.length === 1 ? " note" : " notes") + ".");
+    } else o.textContent = "Play a round to start comparing. Plain keys have no color yet.";
+    const v = $("compareWith").value || "";
+    const about = {
+      "crowd": "Notes people disagree about come out grayer.",
+      "study:itoh": "Itoh's colors are estimated from the paper's hue rule.",
+      "study:newton": "Newton gave sharps no color.",
+    }[v] || (v.startsWith("player:") ? "Their latest color for each note." : "");
+    $("compareAbout").textContent = about; $("compareAbout").hidden = !about;
+  }
+  function fmtTime(ms) { const d = new Date(ms); return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " + d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }); }
+  function renderHistory() {
+    const list = $("histList"); list.textContent = "";
+    $("histCount").textContent = history.length ? history.length + " answered" : "";
+    if (!history.length) { const p = document.createElement("p"); p.className = "empty"; p.textContent = "Your answers show up here after your first round."; list.append(p); return; }
+    for (const e of history) {
+      const note = NOTES[e.note]; if (!note) continue;
+      const row = document.createElement("div"); row.className = "hrow";
+      const b = document.createElement("b"); b.textContent = note.n;
+      const dots = document.createElement("div"); dots.className = "dots";
+      const { avg } = crowd[e.note];
+      [hslHex(e), avg ? hslHex(avg) : null].forEach((hx, j) => {
+        const i = document.createElement("i");
+        i.style.background = hx || "transparent";
+        i.title = ["You", "Everyone"][j] + (hx ? " " + hx.toUpperCase() : "");
+        dots.append(i);
+      });
+      const t = document.createElement("time"); t.textContent = fmtTime(e.at);
+      row.append(b, dots, t); list.append(row);
+    }
+  }
+  function renderAll() { renderCompare(); renderHistory(); }
+  $("compareWith").addEventListener("change", renderCompare);
+
+  // ---------- server ----------
+  async function loadCrowd() {
+    try {
+      const res = await fetch("/api/crowd", { cache: "no-store" });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (Array.isArray(data.notes) && data.notes.length === TOTAL) crowd = data.notes;
+      players = data.players || 0; crowdOk = true;
+      $("crowdLabel").textContent = players + (players === 1 ? " person has played" : " people have played");
+    } catch {
+      if (!crowdOk) $("crowdLabel").textContent = "Can't reach everyone's answers right now";
+    }
+    renderAll();
+  }
+  async function loadMine() {
+    try {
+      const res = await fetch("/api/mine?player=" + encodeURIComponent(player), { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (Array.isArray(data.history)) { history = data.history; renderAll(); }
+    } catch {}
+  }
+  async function loadOthers() {
+    try {
+      const res = await fetch("/api/players?player=" + encodeURIComponent(player), { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (Array.isArray(data.players)) { others = data.players; fillCompare(); renderCompare(); }
+    } catch {}
+  }
+  $("historyBox").addEventListener("toggle", () => { if ($("historyBox").open) loadOthers(); });
+
+  // On a computer screen the Editorial Note and Bibliography are always shown; elsewhere they sit in a fold.
+  const wide = matchMedia("(min-width: 900px) and (min-height: 500px), (min-width: 640px) and (orientation: landscape)");
+  const syncNotes = () => { if (wide.matches) $("notesBox").open = true; };
+  syncNotes(); wide.addEventListener("change", syncNotes);
+
+  drawWheel(); fillCompare(); newRound(); renderAll();
+  loadCrowd(); loadMine(); loadOthers();
+})();
+</script>
+</body>
+</html>

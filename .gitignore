@@ -50,3 +50,6 @@ next-env.d.ts
 
 # Full-size style drafts stay on this PC; the 512 px WebP copies are committed.
 /art-originals/drafts/*.png
+
+# wrangler cache in any Worker folder
+.wrangler/

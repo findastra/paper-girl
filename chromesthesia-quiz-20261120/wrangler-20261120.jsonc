@@ -1,0 +1,11 @@
+// Paper Girl's chromesthesia quiz on Cloudflare. No secrets here: the results key is set apart with
+// `npx wrangler secret put RESULTS_KEY --config chromesthesia-quiz-20261120/wrangler-20261120.jsonc` and never enters this repo.
+{
+  "name": "paper-girl-chromesthesia",
+  "main": "worker-20261120.js",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "d1_databases": [
+    { "binding": "DB", "database_name": "paper-girl-chromesthesia", "database_id": "92408c8f-4211-434b-b41a-63a6acec55e8" }
+  ]
+}
