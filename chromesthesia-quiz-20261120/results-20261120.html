@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Chromesthesia Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column of players, newest first; each row is a strip of their 12 note colors over Scriabin's. */
+:root {
+  --bg: #f2f1f7; --surface: #ffffff; --fg: #1c1a2e; --muted: #676480; --line: #dcd9e8; --accent: #5a3cf0; --danger: #b3261e;
+  --display: "Unbounded", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #121120; --surface: #1c1a2e; --fg: #ecebf5; --muted: #a09cbc; --line: #2f2c47; --accent: #9b88ff; --danger: #ff8a80; color-scheme: dark;
+} }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 28px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 20px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(24px, 5vw, 32px); line-height: 1.15; margin: 4px 0 0; }
+.sub { color: var(--muted); margin: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.card h2 { font-size: 12px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0; }
+.strip { display: grid; grid-template-columns: 64px repeat(12, minmax(0, 1fr)); gap: 3px; align-items: center; }
+.strip i { aspect-ratio: 1; border-radius: 5px; border: 1px solid var(--line); max-width: 100%; display: block; }
+.strip small { font-family: var(--mono); font-size: 10px; color: var(--muted); text-align: center; }
+.strip .rowlab { font-size: 11px; color: var(--muted); font-family: var(--mono); }
+.prow { display: flex; flex-direction: column; gap: 6px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.prow:last-child { border-bottom: 0; padding-bottom: 0; }
+.prow-top { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.prow-top b { font-weight: 600; overflow-wrap: anywhere; }
+.prow-top span { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.msg { color: var(--muted); margin: 0; }
+.msg.err { color: var(--danger); }
+a { color: var(--accent); }
+/* Unified footer (astras-pet-os-unified-footer): By Astra ✦ photostar ✦ Find Out More, GitHub only; the star is never a link. */
+.astra-footer { display: grid; justify-items: center; gap: 8px; text-align: center; font-size: 13px; border-top: 1px solid var(--line); padding-top: 22px; }
+.footer-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 18px; }
+.footer-group { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
+.footer-group::before, .footer-sparkle { content: "\2726"; color: var(--accent); font-size: 12px; line-height: 1; margin-right: 8px; }
+.footer-by::before { content: none; }
+.footer-sparkle { margin: 0 -8px 0 0; }
+.footer-title { font-weight: 600; letter-spacing: .02em; }
+.footer-icons { display: inline-flex; gap: 4px; }
+.footer-icons a { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; color: var(--fg); text-decoration: none; }
+.footer-icons a:hover { background: var(--line); }
+.footer-icons svg { width: 22px; height: 22px; fill: currentColor; }
+.footer-star { display: block; line-height: 0; }
+.footer-star img { width: 48px; height: 48px; }
+@media (max-width: 760px) {
+  .footer-line { display: grid; grid-template-columns: repeat(4, auto); grid-template-areas: "by spark star more" "icons icons icons icons"; justify-content: center; justify-items: center; align-items: center; gap: 6px 10px; }
+  .footer-by { grid-area: by; }
+  .footer-sparkle { grid-area: spark; margin: 0; }
+  .footer-star { grid-area: star; }
+  .footer-more { display: contents; }
+  .footer-more::before { content: none; }
+  .footer-more > .footer-title { grid-area: more; }
+  .footer-more > .footer-title::before { content: "\2726"; color: var(--accent); font-size: 12px; margin-right: 10px; }
+  .footer-icons { grid-area: icons; }
+  .strip { grid-template-columns: 44px repeat(12, minmax(0, 1fr)); }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Paper Girl · chromesthesia study</div>
+    <h1>Everyone's answers</h1>
+    <p class="sub">Each square is that person's latest color for the note. The top row is Scriabin's colors. <a href="/">Open the quiz</a></p>
+  </header>
+
+  <section class="card">
+    <h2>Scriabin and the crowd</h2>
+    <div class="strip" id="keyStrip"></div>
+  </section>
+
+  <section class="card">
+    <h2 id="playersTitle">Players</h2>
+    <p class="msg" id="msg">Loading…</p>
+    <div id="playersList"></div>
+  </section>
+
+  <footer class="astra-footer" aria-label="By Astra and her links">
+    <div class="footer-line">
+      <div class="footer-group footer-by"><span class="footer-title">By Astra</span></div>
+      <span class="footer-sparkle" aria-hidden="true">✦</span><span class="footer-star"><img src="https://findastra.github.io/astras-star-window/star-window.svg" alt="Astra's photostar" width="48" height="48" loading="lazy"></span>
+      <div class="footer-group footer-more"><span class="footer-title">Find Out More</span><span class="footer-icons"><a href="https://github.com/findastra" title="GitHub: Astra" aria-label="GitHub: Astra"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.09c-3.14.68-3.8-1.33-3.8-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 1.73 2.63 1.23 3.27.94.1-.73.4-1.23.71-1.51-2.51-.29-5.15-1.26-5.15-5.58 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.08 1.16A10.7 10.7 0 0 1 12 6.12c.95 0 1.9.13 2.8.38 2.14-1.46 3.08-1.16 3.08-1.16.61 1.55.23 2.69.11 2.98.72.79 1.16 1.8 1.16 3.03 0 4.33-2.65 5.29-5.17 5.57.41.35.77 1.03.77 2.08v3.09c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg></a></span></div>
+    </div>
+  </footer>
+</div>
+<script>
+(() => {
+  const NOTES = [["C","#ff0000"],["C♯","#8f00ff"],["D","#ffff00"],["D♯","#b7468b"],["E","#c3f2ff"],["F","#ab0034"],["F♯","#7f8bfd"],["G","#ff7f00"],["G♯","#bb75fc"],["A","#33cc33"],["A♯","#a9677c"],["B","#8ec9ff"]];
+  const $ = id => document.getElementById(id);
+  function hslToRgb(h, s, l) { s /= 100; l /= 100; const k = n => (n + h / 30) % 12, a = s * Math.min(l, 1 - l); const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1))); return [f(0) * 255, f(8) * 255, f(4) * 255].map(Math.round); }
+  const hslHex = p => "#" + hslToRgb(p.h, p.s, p.l).map(v => v.toString(16).padStart(2, "0")).join("");
+  const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  function closeness(A, B) { const a = hexRgb(A), b = hexRgb(B); const rm = (a[0] + b[0]) / 2, dr = a[0] - b[0], dg = a[1] - b[1], db = a[2] - b[2]; const d = Math.sqrt((2 + rm / 256) * dr * dr + 4 * dg * dg + (2 + (255 - rm) / 256) * db * db); return Math.max(0, Math.round(100 * (1 - d / 765))); }
+  const fmt = ms => { const d = new Date(ms); return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " + d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }); };
+
+  function stripRow(label, colors, titles) {
+    const frag = document.createDocumentFragment();
+    const lab = document.createElement("span"); lab.className = "rowlab"; lab.textContent = label; frag.append(lab);
+    colors.forEach((c, i) => { const sq = document.createElement("i"); sq.style.background = c || "transparent"; sq.title = titles[i]; frag.append(sq); });
+    return frag;
+  }
+  function noteLabels() { const f = document.createDocumentFragment(); f.append(document.createElement("span")); NOTES.forEach(([n]) => { const s = document.createElement("small"); s.textContent = n; f.append(s); }); return f; }
+
+  async function load() {
+    const key = decodeURIComponent(location.hash.replace(/^#/, ""));
+    const ks = $("keyStrip"); ks.textContent = "";
+    ks.append(stripRow("Scriabin", NOTES.map(n => n[1]), NOTES.map(n => n[0] + " " + n[1].toUpperCase())));
+    try {
+      const c = await (await fetch("/api/crowd", { cache: "no-store" })).json();
+      ks.append(stripRow("Crowd", c.notes.map(x => x.avg ? hslHex(x.avg) : null), c.notes.map((x, i) => NOTES[i][0] + (x.avg ? " " + hslHex(x.avg).toUpperCase() + " · " + x.n : " no answers"))));
+    } catch {}
+    ks.append(noteLabels());
+
+    if (!key) { $("msg").textContent = "This page needs the private results link."; $("msg").classList.add("err"); return; }
+    try {
+      const res = await fetch("/api/results", { headers: { authorization: "Bearer " + key }, cache: "no-store" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Couldn't load the results.");
+      const list = $("playersList"); list.textContent = "";
+      $("playersTitle").textContent = "Players (" + data.players.length + ")";
+      if (!data.players.length) { $("msg").textContent = "Nobody has answered yet. When someone plays, their colors show up here."; return; }
+      $("msg").hidden = true;
+      for (const p of data.players) {
+        const row = document.createElement("div"); row.className = "prow";
+        const top = document.createElement("div"); top.className = "prow-top";
+        const name = document.createElement("b"); name.textContent = p.name || "No name";
+        const scores = NOTES.map((n, i) => p.latest[i] ? closeness(hslHex(p.latest[i]), n[1]) : null).filter(v => v !== null);
+        const avg = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : null;
+        const meta = document.createElement("span");
+        meta.textContent = scores.length + "/12 notes · " + p.answers + " answers" + (avg !== null ? " · " + avg + "% Scriabin match" : "") + " · " + fmt(p.last);
+        top.append(name, meta);
+        const strip = document.createElement("div"); strip.className = "strip";
+        strip.append(stripRow("Latest", NOTES.map((n, i) => p.latest[i] ? hslHex(p.latest[i]) : null), NOTES.map((n, i) => n[0] + (p.latest[i] ? " " + hslHex(p.latest[i]).toUpperCase() : " not answered"))));
+        strip.append(noteLabels());
+        row.append(top, strip); list.append(row);
+      }
+    } catch (e) {
+      $("msg").textContent = e.message; $("msg").classList.add("err");
+    }
+  }
+  load();
+  window.addEventListener("hashchange", load);
+})();
+</script>
+</body>
+</html>

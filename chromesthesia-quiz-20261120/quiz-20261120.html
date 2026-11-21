@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>What Color Is This Note?</title>
+<meta name="description" content="A chromesthesia quiz: hear a hidden note, pick the color it feels like, and compare with everyone else and with Scriabin.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one centered column; the wheel is the instrument, results fan out beneath it. */
+:root {
+  --bg: #f2f1f7; --surface: #ffffff; --fg: #1c1a2e; --muted: #676480; --line: #dcd9e8; --accent: #5a3cf0; --accent-fg: #ffffff; --danger: #b3261e;
+  --display: "Unbounded", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root {
+  --bg: #121120; --surface: #1c1a2e; --fg: #ecebf5; --muted: #a09cbc; --line: #2f2c47; --accent: #9b88ff; --accent-fg: #121120; --danger: #ff8a80; color-scheme: dark;
+} }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.5; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.wrap { max-width: 640px; margin: 0 auto; padding-block: 28px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 22px; }
+header { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 6vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 60ch; }
+.lede b { color: var(--fg); font-weight: 600; }
+.stage { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 18px; align-items: center; }
+.round { display: flex; justify-content: space-between; gap: 10px; width: 100%; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.name-row { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+.name-row label { font-size: 13px; font-weight: 600; }
+.name-row input { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); width: 100%; }
+.name-row small { color: var(--muted); font-size: 12px; }
+.play { font-family: var(--display); font-weight: 500; font-size: 16px; border: 0; border-radius: 999px; padding: 14px 26px; background: var(--accent); color: var(--accent-fg); cursor: pointer; display: inline-flex; gap: 10px; align-items: center; }
+.play:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.play svg { width: 18px; height: 18px; }
+.wheel-box { position: relative; width: min(300px, 80vw); aspect-ratio: 1; max-width: 100%; touch-action: none; }
+.wheel-box canvas { width: 100%; height: 100%; border-radius: 50%; display: block; cursor: crosshair; }
+.marker { position: absolute; width: 22px; height: 22px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1.5px #000a, 0 2px 6px #0006; transform: translate(-50%, -50%); pointer-events: none; }
+.light { width: min(300px, 80vw); display: flex; flex-direction: column; gap: 6px; }
+.light label { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; font-family: var(--mono); }
+.light input { width: 100%; }
+.pick-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.chip { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--line); }
+.hex { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.submit { font-family: var(--body); font-weight: 600; font-size: 15px; padding: 12px 22px; border-radius: 12px; border: 1px solid var(--fg); background: var(--fg); color: var(--bg); cursor: pointer; }
+.submit:disabled { opacity: .35; cursor: not-allowed; }
+.reveal { width: 100%; display: flex; flex-direction: column; gap: 14px; }
+.reveal h2 { font-family: var(--display); font-size: 22px; margin: 0; text-align: center; }
+.reveal h2 span { color: var(--muted); font-size: 14px; font-family: var(--mono); font-weight: 400; display: block; margin-top: 4px; }
+.trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.sw { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.sw .block { aspect-ratio: 1; border-radius: 14px; border: 1px solid var(--line); max-width: 100%; }
+.sw .lab { font-size: 13px; font-weight: 600; }
+.sw .sub { font-family: var(--mono); font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.score { text-align: center; font-size: 14px; color: var(--muted); }
+.score b { color: var(--fg); font-family: var(--mono); }
+.next-row { display: flex; justify-content: center; }
+.status { font-size: 13px; color: var(--muted); text-align: center; min-height: 1.5em; }
+.status.err { color: var(--danger); }
+details { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; }
+summary { cursor: pointer; padding: 14px 18px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 10px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--mono); color: var(--muted); }
+details[open] summary::after { content: "\2212"; }
+.panel { padding: 0 18px 18px; display: flex; flex-direction: column; gap: 18px; }
+.panel h3 { font-size: 12px; font-family: var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0; }
+.notes { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 10px; }
+.note-card { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.note-card .pair { display: flex; height: 40px; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
+.note-card .pair i { flex: 1; }
+.note-card b { font-family: var(--display); font-size: 13px; font-weight: 500; }
+.note-card span { font-family: var(--mono); color: var(--muted); font-size: 11px; }
+.hist { display: flex; flex-direction: column; gap: 6px; max-height: 340px; overflow-y: auto; }
+.hrow { display: grid; grid-template-columns: 40px 1fr auto; gap: 10px; align-items: center; font-size: 13px; }
+.hrow b { font-family: var(--display); font-weight: 500; }
+.hrow .dots { display: flex; gap: 4px; }
+.hrow .dots i { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--line); }
+.hrow time { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.empty { color: var(--muted); font-size: 13px; margin: 0; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.foot { font-size: 12.5px; color: var(--muted); max-width: 62ch; margin: 0; }
+/* Unified footer (astras-pet-os-unified-footer): By Astra ✦ photostar ✦ Find Out More, GitHub only; the star is never a link. */
+.astra-footer { display: grid; justify-items: center; gap: 8px; text-align: center; font-size: 13px; border-top: 1px solid var(--line); padding-top: 22px; }
+.footer-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 18px; }
+.footer-group { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; }
+.footer-group::before, .footer-sparkle { content: "\2726"; color: var(--accent); font-size: 12px; line-height: 1; margin-right: 8px; }
+.footer-by::before { content: none; }
+.footer-sparkle { margin: 0 -8px 0 0; }
+.footer-title { font-weight: 600; letter-spacing: .02em; }
+.footer-icons { display: inline-flex; gap: 4px; }
+.footer-icons a { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 8px; color: var(--fg); text-decoration: none; }
+.footer-icons a:hover { background: var(--line); }
+.footer-icons svg { width: 22px; height: 22px; fill: currentColor; }
+.footer-star { display: block; line-height: 0; }
+.footer-star img { width: 48px; height: 48px; }
+@media (max-width: 760px) {
+  .footer-line { display: grid; grid-template-columns: repeat(4, auto); grid-template-areas: "by spark star more" "icons icons icons icons"; justify-content: center; justify-items: center; align-items: center; gap: 6px 10px; }
+  .footer-by { grid-area: by; }
+  .footer-sparkle { grid-area: spark; margin: 0; }
+  .footer-star { grid-area: star; }
+  .footer-more { display: contents; }
+  .footer-more::before { content: none; }
+  .footer-more > .footer-title { grid-area: more; }
+  .footer-more > .footer-title::before { content: "\2726"; color: var(--accent); font-size: 12px; margin-right: 10px; }
+  .footer-icons { grid-area: icons; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { animation: rise .35s ease-out; }
+  @keyframes rise { from { transform: translateY(6px); opacity: .6; } to { transform: none; opacity: 1; } }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Paper Girl · chromesthesia study</div>
+    <h1>What color is this note?</h1>
+    <p class="lede">Hearing colors is called <b>chromesthesia</b>, a kind of synesthesia where sounds bring up colors. Play the hidden note, pick the color it feels like, then see what everyone else picked and what the composer Scriabin assigned it. A game is 12 notes.</p>
+  </header>
+
+  <section class="stage" aria-label="Quiz">
+    <div class="round"><span id="roundLabel">Round 1/12</span><span id="crowdLabel">Loading everyone's answers…</span></div>
+    <div class="name-row">
+      <label for="playerName">Your name</label>
+      <input id="playerName" type="text" maxlength="40" autocomplete="nickname" placeholder="So your answers have a name on them">
+      <small>Your name and colors are saved with everyone's answers. The person who made this can see each player's answers.</small>
+    </div>
+    <button class="play" id="playBtn" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+      <span id="playText">Play the note</span>
+    </button>
+
+    <div id="pickArea" style="display:contents">
+      <div class="wheel-box" id="wheelBox">
+        <canvas id="wheel" width="600" height="600" aria-label="Color wheel. Click or drag to pick a color."></canvas>
+        <div class="marker" id="marker" hidden></div>
+      </div>
+      <div class="light">
+        <label for="lightness"><span>Darker</span><span>Brightness</span><span>Lighter</span></label>
+        <input id="lightness" type="range" min="10" max="90" value="50">
+      </div>
+      <div class="pick-row">
+        <div class="chip" id="chip"></div>
+        <div class="hex" id="hex">Tap the wheel</div>
+        <button class="submit" id="submitBtn" type="button" disabled>Lock it in</button>
+      </div>
+    </div>
+
+    <div class="reveal" id="reveal" hidden>
+      <h2 id="revealNote"></h2>
+      <div class="trio">
+        <div class="sw"><div class="block" id="swYou"></div><div class="lab">You</div><div class="sub" id="swYouHex"></div></div>
+        <div class="sw"><div class="block" id="swAll"></div><div class="lab">Everyone</div><div class="sub" id="swAllSub"></div></div>
+        <div class="sw"><div class="block" id="swKey"></div><div class="lab">Scriabin</div><div class="sub" id="swKeySub"></div></div>
+      </div>
+      <div class="score" id="score"></div>
+      <div class="next-row"><button class="submit" id="nextBtn" type="button">Next note</button></div>
+    </div>
+    <div class="status" id="status" role="status"></div>
+  </section>
+
+  <details id="historyBox">
+    <summary><span>History and every note</span><span class="hex" id="histCount"></span></summary>
+    <div class="panel">
+      <h3>Every note: crowd average vs. Scriabin</h3>
+      <div class="legend"><span>Left half: everyone's average</span><span>Right half: Scriabin</span></div>
+      <div class="notes" id="notesGrid"></div>
+      <h3>Your answers, newest first</h3>
+      <div class="legend"><span>Swatches: you, everyone, Scriabin</span></div>
+      <div class="hist" id="histList"></div>
+    </div>
+  </details>
+
+  <p class="foot">There is no real right answer: people with chromesthesia rarely agree with each other. "Correct" here means the color Alexander Scriabin gave each key for his piece <i>Prometheus</i> (1910), using the common modern approximation of his color keyboard. The crowd average uses each person's latest answer for each note.</p>
+
+  <footer class="astra-footer" aria-label="By Astra and her links">
+    <div class="footer-line">
+      <div class="footer-group footer-by"><span class="footer-title">By Astra</span></div>
+      <span class="footer-sparkle" aria-hidden="true">✦</span><span class="footer-star"><img src="https://findastra.github.io/astras-star-window/star-window.svg" alt="Astra's photostar" width="48" height="48" loading="lazy"></span>
+      <div class="footer-group footer-more"><span class="footer-title">Find Out More</span><span class="footer-icons"><a href="https://github.com/findastra" title="GitHub: Astra" aria-label="GitHub: Astra"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .8a11.2 11.2 0 0 0-3.54 21.83c.56.1.77-.24.77-.54v-2.09c-3.14.68-3.8-1.33-3.8-1.33-.51-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.68.08-.68 1.13.08 1.73 1.16 1.73 1.16 1 1.73 2.63 1.23 3.27.94.1-.73.4-1.23.71-1.51-2.51-.29-5.15-1.26-5.15-5.58 0-1.23.44-2.24 1.16-3.03-.12-.29-.5-1.43.11-2.98 0 0 .95-.3 3.08 1.16A10.7 10.7 0 0 1 12 6.12c.95 0 1.9.13 2.8.38 2.14-1.46 3.08-1.16 3.08-1.16.61 1.55.23 2.69.11 2.98.72.79 1.16 1.8 1.16 3.03 0 4.33-2.65 5.29-5.17 5.57.41.35.77 1.03.77 2.08v3.09c0 .3.2.65.78.54A11.2 11.2 0 0 0 12 .8Z"/></svg></a></span></div>
+    </div>
+  </footer>
+</div>
+
+<script>
+(() => {
+  // Scriabin's key colors (common approximation of his "clavier à lumières")
+  const NOTES = [
+    { n: "C",  f: 261.63, hex: "#ff0000", name: "red" },
+    { n: "C♯", f: 277.18, hex: "#8f00ff", name: "violet" },
+    { n: "D",  f: 293.66, hex: "#ffff00", name: "yellow" },
+    { n: "D♯", f: 311.13, hex: "#b7468b", name: "steely flesh" },
+    { n: "E",  f: 329.63, hex: "#c3f2ff", name: "pearly sky blue" },
+    { n: "F",  f: 349.23, hex: "#ab0034", name: "deep red" },
+    { n: "F♯", f: 369.99, hex: "#7f8bfd", name: "bright blue" },
+    { n: "G",  f: 392.00, hex: "#ff7f00", name: "orange-pink" },
+    { n: "G♯", f: 415.30, hex: "#bb75fc", name: "purple" },
+    { n: "A",  f: 440.00, hex: "#33cc33", name: "green" },
+    { n: "A♯", f: 466.16, hex: "#a9677c", name: "steely rose" },
+    { n: "B",  f: 493.88, hex: "#8ec9ff", name: "pearly blue" },
+  ];
+  const TOTAL = NOTES.length;
+  const $ = id => document.getElementById(id);
+
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+  };
+  let player = store.get("cq-player");
+  if (!player || !/^[a-z0-9]{16,40}$/.test(player)) {
+    const a = new Uint8Array(12); crypto.getRandomValues(a);
+    player = Array.from(a, b => b.toString(36).padStart(2, "0")).join("").slice(0, 24);
+    store.set("cq-player", player);
+  }
+  $("playerName").value = store.get("cq-name") || "";
+  $("playerName").addEventListener("input", () => { store.set("cq-name", $("playerName").value.trim()); updateSubmit(); });
+
+  let round = 1, current = -1, deck = [], gameScores = [];
+  let pick = null, played = false;
+  let crowd = Array.from({ length: TOTAL }, () => ({ avg: null, n: 0 })), players = 0, crowdOk = false;
+  let history = [];
+
+  const shuffle = () => { deck = NOTES.map((_, i) => i); for (let i = deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [deck[i], deck[j]] = [deck[j], deck[i]]; } };
+  shuffle();
+
+  // ---------- color helpers ----------
+  function hslToRgb(h, s, l) {
+    s /= 100; l /= 100;
+    const k = n => (n + h / 30) % 12, a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    return [f(0) * 255, f(8) * 255, f(4) * 255].map(Math.round);
+  }
+  const rgbHex = ([r, g, b]) => "#" + [r, g, b].map(v => v.toString(16).padStart(2, "0")).join("");
+  const hslHex = p => rgbHex(hslToRgb(p.h, p.s, p.l));
+  const hexRgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+  function closeness(hexA, hexB) {
+    const a = hexRgb(hexA), b = hexRgb(hexB);
+    const rm = (a[0] + b[0]) / 2, dr = a[0] - b[0], dg = a[1] - b[1], db = a[2] - b[2];
+    const d = Math.sqrt((2 + rm / 256) * dr * dr + 4 * dg * dg + (2 + (255 - rm) / 256) * db * db);
+    return Math.max(0, Math.round(100 * (1 - d / 765)));
+  }
+
+  // ---------- wheel ----------
+  const canvas = $("wheel"), ctx = canvas.getContext("2d");
+  function drawWheel() {
+    const L = +$("lightness").value, W = canvas.width, R = W / 2;
+    const img = ctx.createImageData(W, W), d = img.data;
+    for (let y = 0; y < W; y++) for (let x = 0; x < W; x++) {
+      const dx = x - R, dy = y - R, r = Math.hypot(dx, dy), o = (y * W + x) * 4;
+      if (r > R) { d[o + 3] = 0; continue; }
+      let h = Math.atan2(dy, dx) * 180 / Math.PI; if (h < 0) h += 360;
+      const [rr, gg, bb] = hslToRgb(h, (r / R) * 100, L);
+      d[o] = rr; d[o + 1] = gg; d[o + 2] = bb; d[o + 3] = r > R - 1.5 ? 255 * (R - r) / 1.5 : 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+  function setFromPointer(e) {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2, y = e.clientY - rect.top - rect.height / 2;
+    const R = rect.width / 2, r = Math.min(Math.hypot(x, y), R);
+    let h = Math.atan2(y, x) * 180 / Math.PI; if (h < 0) h += 360;
+    pick = { h: Math.round(h) % 360, s: Math.round(r / R * 100), l: +$("lightness").value };
+    showPick();
+  }
+  function updateSubmit() { $("submitBtn").disabled = !(pick && played && current >= 0 && $("reveal").hidden); }
+  function showPick() {
+    if (!pick) return;
+    pick.l = +$("lightness").value;
+    const hex = hslHex(pick);
+    $("chip").style.background = hex; $("hex").textContent = hex.toUpperCase();
+    const m = $("marker"); m.hidden = false; m.style.background = hex;
+    const a = pick.h * Math.PI / 180, rr = pick.s / 100 * 50;
+    m.style.left = (50 + Math.cos(a) * rr) + "%"; m.style.top = (50 + Math.sin(a) * rr) + "%";
+    updateSubmit();
+  }
+  let dragging = false;
+  canvas.addEventListener("pointerdown", e => { dragging = true; canvas.setPointerCapture(e.pointerId); setFromPointer(e); });
+  canvas.addEventListener("pointermove", e => { if (dragging) setFromPointer(e); });
+  canvas.addEventListener("pointerup", () => { dragging = false; });
+  let lightTimer;
+  $("lightness").addEventListener("input", () => { showPick(); clearTimeout(lightTimer); lightTimer = setTimeout(drawWheel, 30); });
+
+  // ---------- sound ----------
+  let actx = null;
+  function playNote(freq) {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === "suspended") actx.resume();
+    const t = actx.currentTime, out = actx.createGain();
+    out.gain.setValueAtTime(0.0001, t);
+    out.gain.exponentialRampToValueAtTime(0.35, t + 0.02);
+    out.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+    out.connect(actx.destination);
+    [[1, "sine", 1], [2, "triangle", 0.25], [3, "sine", 0.08]].forEach(([mult, type, g]) => {
+      const o = actx.createOscillator(), gn = actx.createGain();
+      o.type = type; o.frequency.value = freq * mult; gn.gain.value = g;
+      o.connect(gn).connect(out); o.start(t); o.stop(t + 2.3);
+    });
+  }
+  function playCurrent() { playNote(NOTES[current].f); played = true; $("playText").textContent = "Play it again"; updateSubmit(); }
+  $("playBtn").addEventListener("click", playCurrent);
+
+  // ---------- rounds ----------
+  function newRound() {
+    current = deck[round - 1]; played = false;
+    $("roundLabel").textContent = "Round " + round + "/" + TOTAL;
+    $("playText").textContent = "Play the note";
+    $("reveal").hidden = true; $("pickArea").style.display = "contents";
+    $("status").textContent = ""; $("status").classList.remove("err");
+    updateSubmit();
+  }
+  $("nextBtn").addEventListener("click", () => {
+    if (round >= TOTAL) { round = 1; gameScores = []; shuffle(); } else round++;
+    newRound(); playCurrent();
+  });
+
+  function setStatus(text, err) { $("status").textContent = text; $("status").classList.toggle("err", !!err); }
+
+  $("submitBtn").addEventListener("click", async () => {
+    if (!pick || current < 0) return;
+    const name = $("playerName").value.trim();
+    if (!name) { setStatus("Add your name first, then lock it in.", true); $("playerName").focus(); return; }
+    const p = { h: pick.h, s: pick.s, l: pick.l };
+    const note = current;
+    $("submitBtn").disabled = true;
+    setStatus("Saving…");
+    try {
+      const res = await fetch("/api/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ player, name, note, ...p }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Couldn't save your answer.");
+      setStatus("Saved.");
+      history.unshift({ note, ...p, at: Date.now() });
+      await loadCrowd();
+    } catch (e) {
+      setStatus((e && e.message) || "Couldn't save your answer. Check your connection and try the next one.", true);
+    }
+    reveal(note, p);
+    renderHistory();
+  });
+
+  function reveal(i, p) {
+    const note = NOTES[i], you = hslHex(p), { avg, n } = crowd[i];
+    $("revealNote").textContent = note.n;
+    const sp = document.createElement("span"); sp.textContent = note.f.toFixed(1) + " Hz"; $("revealNote").append(sp);
+    $("swYou").style.background = you; $("swYouHex").textContent = you.toUpperCase();
+    if (avg) { const a = hslHex(avg); $("swAll").style.background = a; $("swAllSub").textContent = a.toUpperCase() + " · " + n + (n === 1 ? " person" : " people"); }
+    else { $("swAll").style.background = "transparent"; $("swAllSub").textContent = "No answers yet"; }
+    $("swKey").style.background = note.hex; $("swKeySub").textContent = note.name;
+    const vsKey = closeness(you, note.hex);
+    const vsAll = avg && n > 1 ? closeness(you, hslHex(avg)) : null;
+    const score = $("score"); score.textContent = "";
+    const add = (t, b) => { score.append(t); const el = document.createElement("b"); el.textContent = b; score.append(el); };
+    add("Match with Scriabin: ", vsKey + "%");
+    if (vsAll !== null) add("  ·  Match with everyone: ", vsAll + "%");
+    gameScores.push(vsKey);
+    if (round >= TOTAL) {
+      const avgScore = Math.round(gameScores.reduce((a, b) => a + b, 0) / gameScores.length);
+      score.append(document.createElement("br"));
+      add("Game over! You heard all " + TOTAL + " notes. Average match with Scriabin: ", avgScore + "%");
+      $("nextBtn").textContent = "Play again";
+    } else $("nextBtn").textContent = "Next note (" + (round + 1) + "/" + TOTAL + ")";
+    $("pickArea").style.display = "none"; $("reveal").hidden = false;
+    updateSubmit();
+  }
+
+  // ---------- history ----------
+  function fmtTime(ms) { const d = new Date(ms); return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " + d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }); }
+  function renderHistory() {
+    const grid = $("notesGrid"); grid.textContent = "";
+    NOTES.forEach((note, i) => {
+      const { avg, n } = crowd[i];
+      const c = document.createElement("div"); c.className = "note-card";
+      const pair = document.createElement("div"); pair.className = "pair";
+      const a = document.createElement("i"); a.style.background = avg ? hslHex(avg) : "repeating-linear-gradient(45deg, transparent 0 4px, var(--line) 4px 6px)";
+      const k = document.createElement("i"); k.style.background = note.hex;
+      pair.append(a, k);
+      const b = document.createElement("b"); b.textContent = note.n;
+      const s = document.createElement("span"); s.textContent = n ? n + (n === 1 ? " answer" : " answers") : "no answers";
+      c.append(pair, b, s); grid.append(c);
+    });
+    const list = $("histList"); list.textContent = "";
+    $("histCount").textContent = history.length ? history.length + " answered" : "";
+    if (!history.length) { const p = document.createElement("p"); p.className = "empty"; p.textContent = "Your answers show up here after your first round."; list.append(p); return; }
+    for (const e of history) {
+      const note = NOTES[e.note]; if (!note) continue;
+      const row = document.createElement("div"); row.className = "hrow";
+      const b = document.createElement("b"); b.textContent = note.n;
+      const dots = document.createElement("div"); dots.className = "dots";
+      const { avg } = crowd[e.note];
+      [hslHex(e), avg ? hslHex(avg) : null, note.hex].forEach((hx, j) => {
+        const i = document.createElement("i");
+        i.style.background = hx || "transparent";
+        i.title = ["You", "Everyone", "Scriabin"][j] + (hx ? " " + hx.toUpperCase() : "");
+        dots.append(i);
+      });
+      const t = document.createElement("time"); t.textContent = fmtTime(e.at);
+      row.append(b, dots, t); list.append(row);
+    }
+  }
+
+  // ---------- server ----------
+  async function loadCrowd() {
+    try {
+      const res = await fetch("/api/crowd", { cache: "no-store" });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      if (Array.isArray(data.notes) && data.notes.length === TOTAL) crowd = data.notes;
+      players = data.players || 0; crowdOk = true;
+      $("crowdLabel").textContent = players + (players === 1 ? " person has played" : " people have played");
+    } catch {
+      if (!crowdOk) $("crowdLabel").textContent = "Can't reach everyone's answers right now";
+    }
+    renderHistory();
+  }
+  async function loadMine() {
+    try {
+      const res = await fetch("/api/mine?player=" + encodeURIComponent(player), { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (Array.isArray(data.history)) { history = data.history; renderHistory(); }
+    } catch {}
+  }
+
+  drawWheel(); newRound(); renderHistory();
+  loadCrowd(); loadMine();
+})();
+</script>
+</body>
+</html>
