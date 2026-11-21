@@ -28,7 +28,7 @@ a { color: var(--fg); }
 header { display: flex; flex-direction: column; gap: 6px; }
 .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 6vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
-.lede { margin: 0; color: var(--muted); max-width: 60ch; }
+.lede { margin: 0; color: var(--muted); }
 .lede b { color: var(--fg); font-weight: 600; }
 /* The one moving color on the page: the word itself cycles through red, green and blue. */
 .lede b.rgb { font-weight: 700; background: linear-gradient(90deg, #ff2a2a, #ffe12a, #2aff5a, #2ad4ff, #3a5bff, #c42aff, #ff2a2a);
@@ -111,9 +111,11 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 .empty { color: var(--muted); font-size: 13px; margin: 0; }
 .how { margin: 0; padding-left: 18px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
 .how b { color: var(--fg); font-weight: 600; }
-.foot { font-size: 12.5px; color: var(--muted); max-width: 62ch; margin: 0; }
-.foot b { color: var(--fg); font-weight: 600; }
-.biblio h2 { font-family: var(--mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 8px; }
+.foot { font-size: 12.5px; color: var(--muted); margin: 0; }
+/* One heading style for Instructions, Editorial Note and Bibliography: small white monospace capitals. */
+.sect { font-family: var(--mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--fg); margin: 0 0 2px; }
+.biblio .sect { margin-bottom: 8px; }
+header .sect { margin-top: 8px; }
 .biblio ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .biblio li { font-size: 12.5px; color: var(--muted); padding-left: 1.5em; text-indent: -1.5em; overflow-wrap: anywhere; }
 /* Unified footer (astras-pet-os-unified-footer): By Astra ✦ photostar ✦ Find Out More, GitHub only; the star is never a link. */
@@ -141,6 +143,43 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
   .footer-more > .footer-title::before { content: "\2726"; color: var(--muted); font-size: 12px; margin-right: 10px; }
   .footer-icons { grid-area: icons; }
 }
+.col-info, .col-play { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+/* Computer windows: one screen, no page scroll. Left: what this is, the note and the sources. Right: the quiz,
+   with Compare and history scrolling inside its own box when open. Phones keep one scrolling column. */
+@media (min-width: 900px) and (min-height: 560px) {
+  html, body { height: 100%; overflow: hidden; }
+  .wrap { max-width: 1240px; height: 100vh; height: 100dvh; padding-block: 16px 8px; display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); grid-template-rows: minmax(0, 1fr) auto; gap: 10px 40px; }
+  .col-info, .col-play { min-height: 0; overflow-y: auto; gap: 12px; scrollbar-width: thin; }
+  .col-info { padding-top: 4px; }
+  h1 { font-size: clamp(24px, 2.6vw, 34px); }
+  .lede { font-size: 14px; }
+  .stage { padding: 14px 18px; gap: 10px; flex: 0 0 auto; }
+  .name-row { flex-direction: row; align-items: center; gap: 10px; }
+  .name-row label { white-space: nowrap; }
+  .name-row input[type=text] { padding: 7px 10px; }
+  .play { padding: 10px 22px; font-size: 15px; }
+  .wheel-box, .light { width: min(260px, 33vh); }
+  .reveal { gap: 10px; }
+  .reveal h2 { font-size: 19px; }
+  #revealPiano { max-width: 320px; }
+  .reveal-body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 16px; align-items: start; }
+  .reveal-body .duo { grid-template-columns: 1fr; gap: 8px; }
+  .sw { display: grid; grid-template-columns: 44px 1fr; grid-template-rows: auto auto; column-gap: 8px; align-items: center; }
+  .sw .block { grid-row: 1 / 3; width: 44px; height: 44px; aspect-ratio: auto; border-radius: 10px; }
+  .status:empty { display: none; }
+  .ref { grid-template-columns: 24px 1fr auto; gap: 8px; font-size: 12.5px; }
+  .ref i { width: 24px; height: 24px; border-radius: 6px; }
+  .ref small { display: inline; margin-left: 6px; }
+  .submit { padding: 9px 18px; }
+  details { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  details > summary { padding: 10px 16px; }
+  details[open] { flex: 1 1 auto; }
+  details .panel { overflow-y: auto; min-height: 0; }
+  .biblio li { font-size: 12px; }
+  .astra-footer { grid-column: 1 / -1; padding-top: 8px; gap: 0; }
+  .footer-star img { width: 34px; height: 34px; }
+}
 @media (prefers-reduced-motion: no-preference) {
   .reveal, #pickArea > * { animation: rise .35s ease-out; }
   @keyframes rise { from { transform: translateY(6px); opacity: .4; } to { transform: none; opacity: 1; } }
@@ -149,13 +188,32 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 </head>
 <body>
 <div class="wrap">
+<div class="col-info">
   <header>
     <div class="eyebrow">Paper Girl · chromesthesia study</div>
     <h1>What color is this note?</h1>
     <p class="lede">Hearing colors is called <b class="rgb">chromesthesia</b>, a kind of synesthesia where sounds bring up colors. This website collects the quiz results for everyone who takes the test.</p>
-    <p class="lede">→ Play the piano note, then pick the color it feels like. Afterwards, compare your colors with other players and with published studies. A game is 12 notes, one for every piano key in an octave.</p>
+    <h2 class="sect">Instructions</h2>
+    <p class="lede">Play the piano note, then pick the color it feels like. Afterwards, compare your colors with other players and with published studies. A game is 12 notes, one for every piano key in an octave.</p>
   </header>
 
+  <section class="biblio" aria-labelledby="noteTitle">
+    <h2 class="sect" id="noteTitle">Editorial Note</h2>
+    <p class="foot">There is no real right answer: people with chromesthesia rarely agree with each other, so the studies under "Compare and history" are things to compare with, not answer keys. One pattern most people share, with or without synesthesia, is that higher notes feel lighter (Ward, Huckstep and Tsakanikos, 2006). The crowd average uses each person's latest answer for each note.</p>
+  </section>
+
+  <section class="biblio" aria-labelledby="biblioTitle">
+    <h2 class="sect" id="biblioTitle">Bibliography</h2>
+    <ul>
+      <li>Castel, L.-B. (1725–1735). Writings on the ocular harpsichord (<i>clavecin oculaire</i>). <i>Mémoires de Trévoux</i>.</li>
+      <li>Itoh, K., Sakata, H., Kwee, I. L., &amp; Nakada, T. (2017). Musical pitch classes have rainbow hues in pitch class-color synesthesia. <i>Scientific Reports</i>, 7, 17781. https://doi.org/10.1038/s41598-017-18150-y</li>
+      <li>Newton, I. (1704). <i>Opticks</i>. London: Smith and Walford.</li>
+      <li>Scriabin, A. (1910). <i>Prometheus: The Poem of Fire</i>, Op. 60.</li>
+      <li>Ward, J., Huckstep, B., &amp; Tsakanikos, E. (2006). Sound-colour synaesthesia: To what extent does it use cross-modal mechanisms common to us all? <i>Cortex</i>, 42(2), 264–280. https://doi.org/10.1016/s0010-9452(08)70352-6</li>
+    </ul>
+  </section>
+</div>
+<div class="col-play">
   <section class="stage" aria-label="Quiz">
     <div class="round"><span id="roundLabel">Round 1/12</span><span id="crowdLabel">Loading everyone's answers…</span></div>
     <div class="name-row">
@@ -186,11 +244,13 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
     <div class="reveal" id="reveal" hidden>
       <h2 id="revealNote"></h2>
       <div class="piano" id="revealPiano" aria-hidden="true"></div>
+      <div class="reveal-body">
       <div class="duo">
         <div class="sw"><div class="block" id="swYou"></div><div class="lab">You</div><div class="sub" id="swYouHex"></div></div>
         <div class="sw"><div class="block" id="swAll"></div><div class="lab">Everyone</div><div class="sub" id="swAllSub"></div></div>
       </div>
       <div class="refs" id="refs"><h3>What the studies say</h3></div>
+      </div>
       <div class="score" id="score"></div>
       <div class="next-row"><button class="submit" id="nextBtn" type="button">Next note</button></div>
     </div>
@@ -218,19 +278,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
       <div class="hist" id="histList"></div>
     </div>
   </details>
-
-  <p class="foot"><b>Editorial Note:</b> There is no real right answer: people with chromesthesia rarely agree with each other, so the studies under "Compare and history" are things to compare with, not answer keys. One pattern most people share, with or without synesthesia, is that higher notes feel lighter (Ward, Huckstep and Tsakanikos, 2006). The crowd average uses each person's latest answer for each note.</p>
-
-  <section class="biblio" aria-labelledby="biblioTitle">
-    <h2 id="biblioTitle">Bibliography</h2>
-    <ul>
-      <li>Castel, L.-B. (1725–1735). Writings on the ocular harpsichord (<i>clavecin oculaire</i>). <i>Mémoires de Trévoux</i>.</li>
-      <li>Itoh, K., Sakata, H., Kwee, I. L., &amp; Nakada, T. (2017). Musical pitch classes have rainbow hues in pitch class-color synesthesia. <i>Scientific Reports</i>, 7, 17781. https://doi.org/10.1038/s41598-017-18150-y</li>
-      <li>Newton, I. (1704). <i>Opticks</i>. London: Smith and Walford.</li>
-      <li>Scriabin, A. (1910). <i>Prometheus: The Poem of Fire</i>, Op. 60.</li>
-      <li>Ward, J., Huckstep, B., &amp; Tsakanikos, E. (2006). Sound-colour synaesthesia: To what extent does it use cross-modal mechanisms common to us all? <i>Cortex</i>, 42(2), 264–280. https://doi.org/10.1016/s0010-9452(08)70352-6</li>
-    </ul>
-  </section>
+</div>
 
   <footer class="astra-footer" aria-label="By Astra and her links">
     <div class="footer-line">
