@@ -30,14 +30,16 @@ header { display: flex; flex-direction: column; gap: 6px; }
 h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 6vw, 38px); line-height: 1.1; margin: 0; text-wrap: balance; }
 .lede { margin: 0; color: var(--muted); max-width: 60ch; }
 .lede b { color: var(--fg); font-weight: 600; }
+/* The one moving color on the page: the word itself cycles through red, green and blue. */
+.lede b.rgb { font-weight: 700; background: linear-gradient(90deg, #ff2a2a, #ffe12a, #2aff5a, #2ad4ff, #3a5bff, #c42aff, #ff2a2a);
+  background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: rgbflow 4s linear infinite; }
+@keyframes rgbflow { from { background-position: 0% 50%; } to { background-position: 150% 50%; } }
 .stage { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: flex; flex-direction: column; gap: 18px; align-items: center; }
 .round { display: flex; justify-content: space-between; gap: 10px; width: 100%; font-family: var(--mono); font-size: 12px; color: var(--muted); }
 .name-row { width: 100%; display: flex; flex-direction: column; gap: 6px; }
 .name-row label { font-size: 13px; font-weight: 600; }
 .name-row input[type=text] { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: #000; color: var(--fg); width: 100%; }
 .name-row small { color: var(--muted); font-size: 12px; }
-.share { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
-.share input { accent-color: #fff; width: 16px; height: 16px; }
 .play { font-family: var(--display); font-weight: 500; font-size: 16px; border: 0; border-radius: 999px; padding: 14px 26px; background: var(--accent); color: var(--accent-fg); cursor: pointer; display: inline-flex; gap: 10px; align-items: center; }
 .play:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 .play svg { width: 18px; height: 18px; }
@@ -107,8 +109,13 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
 .hrow .dots i { width: 22px; height: 22px; border-radius: 6px; border: 1px solid var(--line); }
 .hrow time { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .empty { color: var(--muted); font-size: 13px; margin: 0; }
-.sources { font-size: 12.5px; color: var(--muted); margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+.how { margin: 0; padding-left: 18px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 3px; }
+.how b { color: var(--fg); font-weight: 600; }
 .foot { font-size: 12.5px; color: var(--muted); max-width: 62ch; margin: 0; }
+.foot b { color: var(--fg); font-weight: 600; }
+.biblio h2 { font-family: var(--mono); font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 8px; }
+.biblio ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.biblio li { font-size: 12.5px; color: var(--muted); padding-left: 1.5em; text-indent: -1.5em; overflow-wrap: anywhere; }
 /* Unified footer (astras-pet-os-unified-footer): By Astra ✦ photostar ✦ Find Out More, GitHub only; the star is never a link. */
 .astra-footer { display: grid; justify-items: center; gap: 8px; text-align: center; font-size: 13px; border-top: 1px solid var(--line); padding-top: 22px; }
 .footer-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 18px; }
@@ -145,17 +152,15 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
   <header>
     <div class="eyebrow">Paper Girl · chromesthesia study</div>
     <h1>What color is this note?</h1>
-    <p class="lede">Hearing colors is called <b>chromesthesia</b>, a kind of synesthesia where sounds bring up colors. Play the hidden piano note, then pick the color it feels like. Afterwards, compare your colors with other players and with published studies. A game is 12 notes, one for every piano key in an octave.</p>
+    <p class="lede">Hearing colors is called <b class="rgb">chromesthesia</b>, a kind of synesthesia where sounds bring up colors. This website collects the quiz results for everyone who takes the test.</p>
+    <p class="lede">→ Play the piano note, then pick the color it feels like. Afterwards, compare your colors with other players and with published studies. A game is 12 notes, one for every piano key in an octave.</p>
   </header>
 
   <section class="stage" aria-label="Quiz">
     <div class="round"><span id="roundLabel">Round 1/12</span><span id="crowdLabel">Loading everyone's answers…</span></div>
     <div class="name-row">
       <label for="playerName">Your name</label>
-      <input id="playerName" type="text" maxlength="40" autocomplete="nickname" placeholder="So your answers have a name on them">
-      <label class="share"><input id="shareMe" type="checkbox" checked> Let other players compare their colors with mine</label>
-      <small id="privacyLine">Your name and colors are saved. Other players can see them to compare, and the person who made this can see every player's answers.</small>
-    </div>
+      <input id="playerName" type="text" maxlength="40" autocomplete="nickname" placeholder="So your answers have a name on them">    </div>
     <button class="play" id="playBtn" type="button">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
       <span id="playText">Play the note</span>
@@ -200,23 +205,32 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
         <select id="compareWith"></select>
       </div>
       <div class="piano" id="comparePiano" role="img" aria-label="Piano keys colored by your answers and the comparison"></div>
-      <div class="key-legend"><span>Top of each key: you</span><span id="legendThem">Bottom: everyone</span></div>
       <p class="overall" id="overall"></p>
-      <p class="about" id="compareAbout"></p>
+      <ul class="how">
+        <li>Each key is one note.</li>
+        <li><b>Top half:</b> your color.</li>
+        <li><b>Bottom half:</b> <span id="legendThem">everyone's average</span>.</li>
+        <li>A plain key has no color yet.</li>
+        <li id="compareAbout" hidden></li>
+      </ul>
       <h3>Your answers, newest first</h3>
       <div class="key-legend" style="justify-content:flex-start"><span>Swatches: you, everyone</span></div>
       <div class="hist" id="histList"></div>
-      <h3>Studies used here</h3>
-      <ul class="sources">
-        <li><b>Itoh et al. 2017</b>, 15 people with pitch-to-color synesthesia, averaged: do red, re yellow and on through the rainbow to si violet, less saturated toward the top. The paper gives a hue rule, not exact colors, so the colors here are estimated from that rule; sharps take their base note's color. <a href="https://doi.org/10.1038/s41598-017-18150-y" target="_blank" rel="noopener">Scientific Reports</a></li>
-        <li><b>Scriabin 1910</b>, the color keyboard of his piece <i>Prometheus</i> (common modern approximation). One composer's own colors.</li>
-        <li><b>Castel 1734</b>, the color scale of his "ocular harpsichord", as it is usually cited. A design, not a study of people.</li>
-        <li><b>Newton 1704</b>, <i>Opticks</i>: he split the rainbow into seven colors to match the notes of a scale from D. Sharps have no color in his scheme.</li>
-      </ul>
     </div>
   </details>
 
-  <p class="foot">There is no real right answer: people with chromesthesia rarely agree with each other, so the studies under "Compare and history" are things to compare with, not answer keys. One pattern most people share, with or without synesthesia, is that higher notes feel lighter (Ward, Huckstep and Tsakanikos, 2006). The crowd average uses each person's latest answer for each note.</p>
+  <p class="foot"><b>Editorial Note:</b> There is no real right answer: people with chromesthesia rarely agree with each other, so the studies under "Compare and history" are things to compare with, not answer keys. One pattern most people share, with or without synesthesia, is that higher notes feel lighter (Ward, Huckstep and Tsakanikos, 2006). The crowd average uses each person's latest answer for each note.</p>
+
+  <section class="biblio" aria-labelledby="biblioTitle">
+    <h2 id="biblioTitle">Bibliography</h2>
+    <ul>
+      <li>Castel, L.-B. (1725–1735). Writings on the ocular harpsichord (<i>clavecin oculaire</i>). <i>Mémoires de Trévoux</i>.</li>
+      <li>Itoh, K., Sakata, H., Kwee, I. L., &amp; Nakada, T. (2017). Musical pitch classes have rainbow hues in pitch class-color synesthesia. <i>Scientific Reports</i>, 7, 17781. https://doi.org/10.1038/s41598-017-18150-y</li>
+      <li>Newton, I. (1704). <i>Opticks</i>. London: Smith and Walford.</li>
+      <li>Scriabin, A. (1910). <i>Prometheus: The Poem of Fire</i>, Op. 60.</li>
+      <li>Ward, J., Huckstep, B., &amp; Tsakanikos, E. (2006). Sound-colour synaesthesia: To what extent does it use cross-modal mechanisms common to us all? <i>Cortex</i>, 42(2), 264–280. https://doi.org/10.1016/s0010-9452(08)70352-6</li>
+    </ul>
+  </section>
 
   <footer class="astra-footer" aria-label="By Astra and her links">
     <div class="footer-line">
@@ -270,7 +284,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
     { id: "itoh", name: "Itoh et al. 2017", short: "15 synesthetes, averaged (estimated)", colors: itoh },
     { id: "scriabin", name: "Scriabin 1910", short: "one composer's color keyboard",
       colors: ["#ff0000", "#8f00ff", "#ffff00", "#b7468b", "#c3f2ff", "#ab0034", "#7f8bfd", "#ff7f00", "#bb75fc", "#33cc33", "#a9677c", "#8ec9ff"] },
-    { id: "castel", name: "Castel 1734", short: "color harpsichord design",
+    { id: "castel", name: "Castel 1730s", short: "color harpsichord design",
       colors: ["#1f3fff", "#0d98ba", "#1fa31f", "#808000", "#ffe600", "#ffb347", "#ff8000", "#ff0000", "#c8143c", "#8f00ff", "#a05a96", "#4b0082"] },
     { id: "newton", name: "Newton 1704", short: "rainbow matched to a scale",
       colors: ["#8f00ff", null, "#ff0000", null, "#ff8000", "#ffff00", null, "#00b000", null, "#0000ff", null, "#4b0082"] },
@@ -288,8 +302,6 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
   }
   $("playerName").value = store.get("cq-name") || "";
   $("playerName").addEventListener("input", () => { store.set("cq-name", $("playerName").value.trim()); updateSubmit(); });
-  $("shareMe").checked = store.get("cq-share") !== "0";
-  $("shareMe").addEventListener("change", () => store.set("cq-share", $("shareMe").checked ? "1" : "0"));
 
   let round = 1, current = -1, deck = [], game = [];
   let pick = null, played = false;
@@ -430,7 +442,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
     $("submitBtn").disabled = true;
     setStatus("Saving…");
     try {
-      const res = await fetch("/api/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ player, name, note, ...p, share: $("shareMe").checked }) });
+      const res = await fetch("/api/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ player, name, note, ...p, share: true }) });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Couldn't save your answer.");
       setStatus("Saved.");
@@ -512,7 +524,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
   function renderCompare() {
     const mine = myLatest(), t = compareTarget();
     drawPiano($("comparePiano"), mine, t.colors, -1);
-    $("legendThem").textContent = "Bottom: " + t.label;
+    $("legendThem").textContent = t.label;
     const pairs = mine.map((m, i) => m && t.colors[i] ? closeness(m, t.colors[i]) : null).filter(v => v !== null);
     const o = $("overall"); o.textContent = "";
     if (pairs.length) {
@@ -521,8 +533,12 @@ select { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px sol
       o.append(" across " + pairs.length + (pairs.length === 1 ? " note" : " notes") + ".");
     } else o.textContent = "Play a round to start comparing. Plain keys have no color yet.";
     const v = $("compareWith").value || "";
-    $("compareAbout").textContent = v.startsWith("player:") ? "Their latest color for each note. Players appear here only if they ticked the compare box."
-      : v === "crowd" ? "The average of every player's latest color for each note. Notes people disagree about come out grayer." : "";
+    const about = {
+      "crowd": "Notes people disagree about come out grayer.",
+      "study:itoh": "Itoh's colors are estimated from the paper's hue rule.",
+      "study:newton": "Newton gave sharps no color.",
+    }[v] || (v.startsWith("player:") ? "Their latest color for each note." : "");
+    $("compareAbout").textContent = about; $("compareAbout").hidden = !about;
   }
   function fmtTime(ms) { const d = new Date(ms); return d.toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " + d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" }); }
   function renderHistory() {

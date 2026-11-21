@@ -49,6 +49,12 @@ to, and you can compare between other uses who have visited the site."
   default, untickable). The table gained `share` (`migrate-share-20261120.sql`). Answers saved before this pass stay
   unshared, because those players were told only the maker could see them.
 
+**Third pass, same day.** Astra rewrote the intro: "This website collects the quiz results for everyone who takes
+the test." The word chromesthesia moves through the rainbow, and the compare checkbox and the privacy line are gone
+at her request. Every new answer is shared for comparing; answers from before the second pass stay unshared. The
+footnote is now an "Editorial Note", with a plain bibliography under it (Castel, Itoh et al., Newton, Scriabin,
+Ward et al.). The piano key is explained as short bullets.
+
 **Not recorded yet:** the hub's records for a new native program (`system-map.json`, the pet program page's tool
 panel, TOOLS-AND-TRICKS.md, the new-pet-or-tool decisions table) are not changed by this pull request.
 
