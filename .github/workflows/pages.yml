@@ -29,7 +29,8 @@ jobs:
         env:
           # Papermon's card server on Astra's PC, reached through Tailscale Funnel (card server deck Q1).
           # While the PC or the server is off, the page works as before (docs/card-server-20261114.md).
-          VITE_PAPERMON_SERVER: https://nv-1408202680.tail41447f.ts.net
+          # The address follows the PC's Tailscale name; renaming the PC changes it (changes/server-address-20261121.md).
+          VITE_PAPERMON_SERVER: https://makima.tail41447f.ts.net
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist-static
