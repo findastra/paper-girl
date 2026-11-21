@@ -10,15 +10,13 @@
 <style>
 /* Layout: one column of players, newest first; each row is a strip of their 12 note colors over Scriabin's. */
 :root {
-  --bg: #f2f1f7; --surface: #ffffff; --fg: #1c1a2e; --muted: #676480; --line: #dcd9e8; --accent: #5a3cf0; --danger: #b3261e;
+  /* Pitch black and grayscale, like the quiz: the only color on screen is the players' colors. */
+  --bg: #000000; --surface: #0b0b0b; --fg: #f2f2f2; --muted: #9a9a9a; --line: #2a2a2a; --accent: #ffffff; --danger: #d0d0d0;
   --display: "Unbounded", "Segoe UI", system-ui, sans-serif;
   --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
-  color-scheme: light;
+  color-scheme: dark;
 }
-@media (prefers-color-scheme: dark) { :root {
-  --bg: #121120; --surface: #1c1a2e; --fg: #ecebf5; --muted: #a09cbc; --line: #2f2c47; --accent: #9b88ff; --danger: #ff8a80; color-scheme: dark;
-} }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html, body { margin: 0; }
@@ -56,7 +54,7 @@ a { color: var(--accent); }
 .footer-icons a:hover { background: var(--line); }
 .footer-icons svg { width: 22px; height: 22px; fill: currentColor; }
 .footer-star { display: block; line-height: 0; }
-.footer-star img { width: 48px; height: 48px; }
+.footer-star img { width: 48px; height: 48px; filter: grayscale(1); }
 @media (max-width: 760px) {
   .footer-line { display: grid; grid-template-columns: repeat(4, auto); grid-template-areas: "by spark star more" "icons icons icons icons"; justify-content: center; justify-items: center; align-items: center; gap: 6px 10px; }
   .footer-by { grid-area: by; }

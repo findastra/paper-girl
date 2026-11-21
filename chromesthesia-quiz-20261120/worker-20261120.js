@@ -62,7 +62,7 @@ function circularAverage(picks) {
 // Each player's latest answer for each note.
 async function latestRows(db) {
   const { results } = await db.prepare(
-    `SELECT a.player, a.name, a.note, a.h, a.s, a.l, a.at FROM answers a
+    `SELECT a.id, a.player, a.name, a.note, a.h, a.s, a.l, a.at, a.share FROM answers a
      JOIN (SELECT MAX(id) AS mid FROM answers GROUP BY player, note) m ON a.id = m.mid`
   ).all();
   return results;
@@ -105,6 +105,27 @@ export default {
         return json({ history: results });
       }
 
+      // Other players to compare with: only those whose newest answer says they agreed to be compared.
+      // Player ids are never sent out (they are what lets a browser save answers); each player is name + colors.
+      if (request.method === "GET" && path === "/api/players") {
+        const me = url.searchParams.get("player") || "";
+        const rows = await latestRows(env.DB);
+        const byPlayer = new Map();
+        for (const r of rows) {
+          if (r.player === me) continue;
+          let p = byPlayer.get(r.player);
+          if (!p) byPlayer.set(r.player, (p = { name: r.name, newest: -1, share: 0, last: 0, latest: {} }));
+          p.latest[r.note] = { h: r.h, s: r.s, l: r.l };
+          if (r.id > p.newest) { p.newest = r.id; p.name = r.name; p.share = r.share; p.last = r.at; }
+        }
+        const players = [...byPlayer.values()]
+          .filter((p) => p.share === 1)
+          .sort((a, b) => b.last - a.last)
+          .slice(0, 100)
+          .map((p) => ({ name: p.name, notes: Object.keys(p.latest).length, latest: p.latest }));
+        return json({ players });
+      }
+
       if (request.method === "POST" && path === "/api/answer") {
         if ((request.headers.get("content-type") || "").split(";")[0].trim() !== "application/json") return json({ error: "send JSON" }, 415);
         const origin = request.headers.get("origin");
@@ -118,8 +139,9 @@ export default {
         if (!intIn(note, 0, 11) || !intIn(h, 0, 360) || !intIn(s, 0, 100) || !intIn(l, 0, 100)) return json({ error: "bad answer" }, 400);
         const count = await env.DB.prepare("SELECT COUNT(*) AS c FROM answers WHERE player = ?").bind(player).first("c");
         if (count >= MAX_ANSWERS_PER_PLAYER) return json({ error: "That's the most answers one player can save." }, 429);
-        await env.DB.prepare("INSERT INTO answers (player, name, note, h, s, l, at) VALUES (?, ?, ?, ?, ?, ?, ?)")
-          .bind(player, name, note, h, s, l, Date.now()).run();
+        const share = body.share === false ? 0 : 1;
+        await env.DB.prepare("INSERT INTO answers (player, name, note, h, s, l, at, share) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+          .bind(player, name, note, h, s, l, Date.now(), share).run();
         return json({ ok: true });
       }
 

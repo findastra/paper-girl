@@ -30,6 +30,25 @@ a sparkle, Find Out More, and only the GitHub link.
 player with the same name. Names are what people type; they are not checked. One player can save at most 1,000
 answers. The crowd average uses each player's latest answer for each note.
 
+**Second pass, same day.** Astra: "make it so that when you say next note it doesnt automatically play ... the
+background needs to be pitch black and all of the accents gray scale, and color wheel doest show until you play the
+sound so it doesnt skew the readers eyes. also, make this piano keys. also, get other studies to comapare your results
+to, and you can compare between other uses who have visited the site."
+
+- Next note waits for Play. The wheel, the brightness slider and the swatch stay hidden until the note has played.
+- The background is #000 and every control is gray, white or black. The only color left is the wheel and the answers;
+  the photostar in the footer is shown in grayscale. The results page matches.
+- The tone is a piano sound: a fast hammer attack, slightly stretched overtones that fade faster the higher they are,
+  and a soft felt thump. The reveal and the comparisons show one octave of piano keys colored by the answers.
+- Studies to compare with: Itoh et al. 2017 (Sci Rep, doi:10.1038/s41598-017-18150-y; 15 pitch-class synesthetes,
+  rainbow hues from do red to si violet). The paper gives a hue rule, not per-note colors, so its colors are
+  estimated from that rule and labelled that way. Also Scriabin 1910, Castel 1734 and Newton 1704, each labelled as
+  a design rather than a study of people.
+- Players can compare with each other. `GET /api/players` lists other players' names and latest colors, never their
+  ids, and only players whose newest answer says "Let other players compare their colors with mine" (ticked by
+  default, untickable). The table gained `share` (`migrate-share-20261120.sql`). Answers saved before this pass stay
+  unshared, because those players were told only the maker could see them.
+
 **Not recorded yet:** the hub's records for a new native program (`system-map.json`, the pet program page's tool
 panel, TOOLS-AND-TRICKS.md, the new-pet-or-tool decisions table) are not changed by this pull request.
 
